@@ -78,7 +78,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir);$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)cpp;$(ProjectDir)cuda;$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -96,7 +96,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir);$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)cpp;$(ProjectDir)cuda;$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir);$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)cpp;$(ProjectDir)cuda;$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir);$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)cpp;$(ProjectDir)cuda;$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -161,31 +161,26 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="generators\perlin.cu" />
-    <CudaCompile Include="generators\simplex.cu" />
-    <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="cuda\kernel.cu" />
+    <CudaCompile Include="cuda\generators\perlin.cu" />
+    <CudaCompile Include="cuda\generators\simplex.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cuda_assert.h" />
-    <ClInclude Include="cuda_stdafx.cuh" />
-    <ClInclude Include="generators\perlin.cuh" />
-    <ClInclude Include="modules\Perlin.h" />
-    <ClInclude Include="generators\simplex.cuh" />
-    <ClInclude Include="modules\Base.h" />
-    <ClInclude Include="renderer\context.h" />
-    <ClInclude Include="renderer\Quad.h" />
-    <ClInclude Include="renderer\Shader.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="cpp\modules\Base.h" />
+    <ClInclude Include="cpp\modules\Perlin.h" />
+    <ClInclude Include="cpp\renderer\context.h" />
+    <ClInclude Include="cpp\renderer\Quad.h" />
+    <ClInclude Include="cpp\renderer\Shader.h" />
+    <ClInclude Include="cpp\stdafx.h" />
+    <ClInclude Include="cuda\cuda_assert.h" />
+    <ClInclude Include="cuda\cuda_stdafx.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="modules\Base.cpp" />
-    <ClCompile Include="modules\Perlin.cpp" />
-    <ClCompile Include="renderer\context.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="renderer\Shader.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="cpp\modules\Base.cpp" />
+    <ClCompile Include="cpp\modules\Perlin.cpp" />
+    <ClCompile Include="cpp\renderer\context.cpp" />
+    <ClCompile Include="cpp\renderer\Shader.cpp" />
+    <ClCompile Include="cpp\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

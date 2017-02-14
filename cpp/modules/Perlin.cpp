@@ -58,5 +58,12 @@ namespace noise {
 			cudaCreateTextureObject(&permutation, &permRDescr, &permTDescr, nullptr);
 
 		}
+
+		// TODO: Implement these. Just here so compiler shuts up.
+		int Perlin2D::GetSourceModuleCount() const{
+			return 0;
+		}
+		void Perlin2D::Generate(){
+		}
 	}
 }

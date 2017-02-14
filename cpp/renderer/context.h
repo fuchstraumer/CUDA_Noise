@@ -2,7 +2,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 #include "stdafx.h"
-#include "..\cuda_stdafx.cuh"
+#include "cuda_stdafx.cuh"
 #include "Shader.h"
 /*
 	

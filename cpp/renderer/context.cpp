@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "context.h"
-#include "..\cuda_assert.h"
+#include "cuda_assert.h"
 
 
 // Used to find which keys are active/toggled
