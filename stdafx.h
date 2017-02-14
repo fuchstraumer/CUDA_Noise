@@ -1,0 +1,37 @@
+#pragma once
+
+ // Common includes for C++ elements of this program.
+
+// Standard library includes.
+
+#include <vector>
+#include <iostream>
+#include <array>
+#include <random>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <unordered_map>
+#include <string>
+
+// OpenGL includes
+
+// GLEW (must come first)
+// Define as static so no need to package DLL in this repo.
+#define GLEW_STATIC
+#include "GL\glew.h"
+
+// GLFW
+#include "GLFW\glfw3.h"
+
+// GLM
+#define GLM_SWIZZLE
+#include "glm\glm.hpp"
+#include "glm\gtc\matrix_transform.hpp"
+#include "glm\gtc\type_ptr.hpp"
+
+// Set screen width and height
+static constexpr int SCR_WIDTH = 1440, SCR_HEIGHT = 720;
+
+// How long to run the simulation for
+static constexpr float SIMULATION_TIME = 30.0f;
