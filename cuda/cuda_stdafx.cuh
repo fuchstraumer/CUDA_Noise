@@ -11,6 +11,8 @@
 
 */
 
+
+
 // Need this for GL types from GLEW
 #include "stdafx.h"
 
@@ -26,5 +28,15 @@
 
 // alias declaration so I can be lazier about using unsigned ints
 using uint = unsigned int;
+
+// Check CUDA version and decide if we'll enable half-precision
+#if CUDART_VERSION >= 7050
+#define HALF_PRECISION_SUPPORT
+#endif
+
+#ifdef HALF_PRECISION_SUPPORT
+#include <cuda_fp16.h>
+#endif // HALF_PRECISION_SUPPORT
+
 
 #endif // !CUDA_STDAFX_H

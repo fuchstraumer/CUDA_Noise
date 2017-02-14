@@ -202,6 +202,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
+    <ClInclude Include="cuda\modifiers\select.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\modules\Base.cpp" />
