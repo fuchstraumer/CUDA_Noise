@@ -1,24 +1,23 @@
 #include "stdafx.h"
-#include "Perlin.h"
-#include "..\cuda\generators\perlin.cuh"
-#include "..\cuda\cuda_assert.h"
+#include "Billow.h"
+
+// Include cuda modules
+#include "..\cuda\generators\billow.cuh"
+
 namespace noise {
-	
 	namespace module {
 
-		// Pass width and height to base class ctor, initialize configuration struct, initialize origin (using initializer list)
-		Perlin2D::Perlin2D(int width, int height, int x, int y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height), 
-			Attributes(freq, lacun, persist, octaves, seed, PERLIN_MAX_OCTAVES), Origin(x,y) {
-			
+		Billow2D::Billow2D(int width, int height, int x, int y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height),
+			Attributes(freq, lacun, persist, octaves, seed, BILLOW_MAX_OCTAVES), Origin(x, y) {
 			// Setup lookup texture object.
 
 			// Permutation table.
 			unsigned char perm[512];
-			
+
 			// Setup perm table with unshuffled values.
 			for (size_t c = 0; c < 255; ++c) {
-				perm[c] = c;
-				perm[c + 256] = c;
+				perm[c] = static_cast<unsigned char>(c);
+				perm[c + 256] = static_cast<unsigned char>(c);
 			}
 
 			// Shuffle permutation table.
@@ -58,17 +57,16 @@ namespace noise {
 			// Lastly, create the texture object for Perm.
 			permutation = 0;
 			cudaCreateTextureObject(&permutation, &permRDescr, &permTDescr, nullptr);
-
 		}
 
-		// TODO: Implement these. Just here so compiler shuts up.
-		int Perlin2D::GetSourceModuleCount() const{
+		int Billow2D::GetSourceModuleCount() const {
 			return 0;
 		}
 
-		void Perlin2D::Generate(){
-			PerlinLauncher(output, permutation, dims.x, dims.y, make_float2(Origin.x, Origin.y), Attributes.Frequency,
+		void Billow2D::Generate(){
+			BillowLauncher(output, permutation, dims.x, dims.y, make_float2(Origin.x, Origin.y), Attributes.Frequency,
 				Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 		}
+
 	}
 }

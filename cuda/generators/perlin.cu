@@ -1,7 +1,5 @@
 #include "perlin.cuh"
 
-typedef unsigned char uchar;
-
 // Linear interpolation between given values.
 __device__ float lerp(const float a, const float b, const float c) {
 	float res;
@@ -56,7 +54,7 @@ __device__ float grad4(uchar hash, float4 p) {
 	return res;
 }
 
-__device__ float perlin2d(float2 point, cudaTextureObject_t perm){
+__device__ float perlin2d(float2 point, cudaTextureObject_t perm) {
 	int ix0, iy0, ix1, iy1;
 	float fx0, fy0, fx1, fy1;
 	float s, t, nx0, nx1, n0, n1;
@@ -149,4 +147,20 @@ __global__ void perlin2D_Kernel(cudaSurfaceObject_t dest, cudaTextureObject_t pe
 
 	// Write val to surface.
 	surf2Dwrite(val, dest, i * sizeof(float), j);
+}
+
+void PerlinLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+	// Setup dimensions of kernel launch. 
+	// threads_per_block can vary
+	dim3 block(threads_per_block, threads_per_block, 1);
+	dim3 grid((width - 1) / block.x + 1, (height - 1) / block.y + 1, 1);
+	perlin2D_Kernel<<<block, grid>>>(out, perm, width, height, origin);
+
+	// Check for succesfull kernel launch
+	cudaAssert(cudaGetLastError());
+
+	// Synchronize device
+	cudaAssert(cudaDeviceSynchronize());
+
+	// If this completes, kernel is done and "output" contains correct data.
 }

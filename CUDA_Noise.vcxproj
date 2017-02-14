@@ -161,12 +161,14 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="cuda\generators\billow.cu" />
     <CudaCompile Include="cuda\kernel.cu" />
     <CudaCompile Include="cuda\generators\perlin.cu" />
     <CudaCompile Include="cuda\generators\simplex.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp\modules\Base.h" />
+    <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
     <ClInclude Include="cpp\renderer\context.h" />
     <ClInclude Include="cpp\renderer\Quad.h" />
@@ -174,9 +176,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\stdafx.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\cuda_stdafx.cuh" />
+    <ClInclude Include="cuda\generators\billow.cuh" />
+    <ClInclude Include="cuda\generators\perlin.cuh" />
+    <ClInclude Include="cuda\generators\simplex.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\modules\Base.cpp" />
+    <ClCompile Include="cpp\modules\Billow.cpp" />
     <ClCompile Include="cpp\modules\Perlin.cpp" />
     <ClCompile Include="cpp\renderer\context.cpp" />
     <ClCompile Include="cpp\renderer\Shader.cpp" />

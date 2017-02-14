@@ -33,5 +33,5 @@
 // Set screen width and height
 static constexpr int SCR_WIDTH = 1440, SCR_HEIGHT = 720;
 
-// How long to run the simulation for
-static constexpr float SIMULATION_TIME = 30.0f;
+// Threads to use per cuda block. can change for tuning reasons.
+constexpr int threads_per_block = 128;
