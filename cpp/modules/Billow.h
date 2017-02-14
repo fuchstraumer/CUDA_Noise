@@ -1,7 +1,7 @@
 #pragma once
 #ifndef BILLOW_H
 #define BILLOW_H
-#include "Base.h"
+#include "Perlin.h"
 
 namespace noise {
 	namespace module {
@@ -16,7 +16,7 @@ namespace noise {
 		constexpr int BILLOW_MAX_OCTAVES = 24;
 
 
-		class Billow2D : public Module {
+		class Billow2D : public Perlin2D {
 		public:
 
 			// Width + height specify output texture size.

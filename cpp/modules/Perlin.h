@@ -1,71 +1,51 @@
 #pragma once
 #ifndef PERLIN_H
 #define PERLIN_H
-#include "cuda_stdafx.cuh"
+#include "stdafx.h"
 #include "Base.h"
-/*
 
-	Generates values using perlin noise. Ctor includes desired dimensions
-	of output texture.
-	
-	These classes must exist as wrappers over the CUDA kernels since we need
-	to allocate and create our constant texture objects, used as permutation
-	tables and the like. Without these, we have to use costly/slow array lookups.
+namespace noise::module {
+	/*
 
-*/
-namespace noise {
+	Base Module: Perlin noise
 
-	namespace module {
+	This is a base module, as it acts as the base noise generator
+	from which other modules will draw.
 
-		// Default parameters
-		constexpr float DEFAULT_PERLIN_FREQUENCY = 1.0f;
-		constexpr float DEFAULT_PERLIN_LACUNARITY = 2.0f;
-		constexpr int DEFAULT_PERLIN_OCTAVES = 6;
-		constexpr float DEFAULT_PERLIN_PERSISTENCE = 0.50f;
-		constexpr int DEFAULT_PERLIN_SEED = 0;
+	This is because we must generate two texture objects that we
+	will pass into the kernels. Like how the CUDA files rely on
+	the base Perlin.cu/cuh file, all the other noise modules
+	in this library rely on this module. It takes care of the common
+	tasks, like setting up these lookup objects and instantiating the
+	base class, but does not launch the kernel. This is left
+	to those derived classes. This class should throw errors about
+	instantiating an abstract class if one tries to use it directly.
 
-		// Maximum octave level to allow
-		constexpr int PERLIN_MAX_OCTAVES = 24;
+	Note: The base class is currently called Perlin2D, as I'd like to 
+	integrate higher-dimensionality noise down the road.
 
+	*/
 
-		class Perlin2D : public Module {
-		public:
+	class Perlin2D : public Module {
+	public:
+		
+		Perlin2D(int width, int height);
 
-			// Width + height specify output texture size.
-			// Seed defines a value to seed the generator with
-			// X & Y define the origin of the noise generator
-			Perlin2D(int width, int height, int x = 0, int y = 0, int seed = DEFAULT_PERLIN_SEED, float freq = DEFAULT_PERLIN_FREQUENCY, float lacun = DEFAULT_PERLIN_LACUNARITY,
-				int octaves = DEFAULT_PERLIN_OCTAVES, float persist = DEFAULT_PERLIN_PERSISTENCE);
+		// Methods are all virtual, still, since we haven't overriden them.
 
-			// Get source module count: must be 0, this is a generator and can't have preceding modules.
-			virtual int GetSourceModuleCount() const override;
+	protected:
 
-			// Launches the kernel and fills this object's surface object with the relevant data.
-			virtual void Generate() override;
+		// initial perm char table used to generate textures.
+		uint8_t perm[512];
 
-			// Origin of this noise generator. Keep the seed constant and change this for 
-			// continuous "tileable" noise
-			glm::vec2 Origin;
+		// Array for permutation and gradient lookups (textures)
+		cudaArray *permArray, *gradArray;
 
-			// Configuration attributes.
-			noiseCfg Attributes;
+		// Textures for permutation and gradient lookups
+		cudaTextureObject_t permTex, gradTex;
 
-		protected:
-
-			// Textures used for storing gradients and permutation table. (texture objects are always read-only)
-			cudaTextureObject_t permutation;
-		};
-
-		class Perlin3D {
-		public:
-
-		};
-
-		class Perlin4D {
-		public:
-
-		};
-	}
+	};
 }
+
 
 #endif // !PERLIN_H

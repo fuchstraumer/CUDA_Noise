@@ -20,23 +20,24 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <device_launch_parameters.h>
-#include <device_atomic_functions.h>
 #include <cuda_gl_interop.h>
-#include <cuda_surface_types.h>
 #include <vector_types.h>
+#include <vector_functions.h>
 #include <device_functions.h>
+
 
 // alias declaration so I can be lazier about using unsigned ints
 using uint = unsigned int;
 
 // Check CUDA version and decide if we'll enable half-precision
-#if CUDART_VERSION >= 7050
+// TODO: Disabled this until base version working. make sure to come back to it later.
+/*#if CUDART_VERSION >= 7050
 #define HALF_PRECISION_SUPPORT
 #endif
 
 #ifdef HALF_PRECISION_SUPPORT
 #include <cuda_fp16.h>
-#endif // HALF_PRECISION_SUPPORT
+#endif // HALF_PRECISION_SUPPORT*/
 
 
 #endif // !CUDA_STDAFX_H

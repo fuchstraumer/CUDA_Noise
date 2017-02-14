@@ -13,6 +13,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <string>
+#include <cstdint>
 
 // OpenGL includes
 

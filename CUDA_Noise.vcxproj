@@ -188,11 +188,16 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\vector_operators.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp\modules\Base.h" />
     <ClInclude Include="cpp\modules\Billow.h" />
+    <ClInclude Include="cpp\modules\Gradient.h" />
+    <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
+    <ClInclude Include="cpp\modules\Ridged.h" />
+    <ClInclude Include="cpp\modules\Select.h" />
     <ClInclude Include="cpp\renderer\context.h" />
     <ClInclude Include="cpp\renderer\Quad.h" />
     <ClInclude Include="cpp\renderer\Shader.h" />
@@ -200,13 +205,16 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\cuda_stdafx.cuh" />
     <ClInclude Include="cuda\generators\billow.cuh" />
+    <ClInclude Include="cuda\generators\DecarpientierSwiss.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
+    <ClInclude Include="cuda\vector_operators.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\Billow.cpp" />
+    <ClCompile Include="cpp\modules\FBM.cpp" />
     <ClCompile Include="cpp\modules\Perlin.cpp" />
     <ClCompile Include="cpp\renderer\context.cpp" />
     <ClCompile Include="cpp\renderer\Shader.cpp" />

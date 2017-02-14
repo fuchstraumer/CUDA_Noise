@@ -1,53 +1,38 @@
-#ifndef PERLIN_CUH
-#define PERLIN_CUH
+#ifndef FBM_CUH
+#define FBM_CUH
 #include "cuda_stdafx.cuh"
 #include "cuda_assert.h"
 
 typedef unsigned char uchar;
 
+/*
+
+	perlin.cuh - CUDA header for base perlin generator functions
+
+	Note that this noise is no longer octaved: this is not perlin noise.
+
+	Octaved noise is a variant of perlin noise, and we shouldn't refer to perlin (in its raw form)
+	anwwhere in this program, as its unlikely anyone would use raw noise. 
+
+	Instead, this header and the respective .cu file will be used by most of the other generators
+	as one of the base noise types.
+
+*/
+
 #ifndef HALF_PRECISION_SUPPORT
 
-// 32-bit device functions for generating perlin noise.
+// 32-bit device functions for generating FBM noise.
 
-__device__ float lerp(const float a, const float b, const float c);
+__device__ float perlin2d(cudaTextureObject_t perm, cudaTextureObject_t grad, float2 point, int seed);
 
-__device__ float ease(const float t);
-
-__device__ float grad2(uchar hash, float2 p);
-
-__device__ float grad3(uchar hash, float3 p);
-
-__device__ float grad4(uchar hash, float4 p);
-
-__device__ float perlin2d(float2 point, cudaTextureObject_t perm);
-
-__global__ void perlin2D_Kernel(cudaSurfaceObject_t dest, cudaTextureObject_t perm_table, int width, int height, float2 origin);
-
+__global__ void perlin2d_Kernel(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
 
 #endif // !HALF_PRECISION_SUPPORT
 
 #ifdef HALF_PRECISION_SUPPORT
 
-// 16-bit device functions for generating perlin noise.
+#endif // !HALF_PRECISION_SUPPORT
 
-// TODO: Half-precision version of the noise functions.
-
-__device__ half lerp(const half a, const half b, const half c);
-
-__device__ half ease(const half t);
-
-__device__ half grad2(uchar hash, half2 p);
-
-__device__ half perlin2d(half2 p, cudaTextureObject_t perm);
-
-__global__ void perlin2D_KernelHalf(cudaSurfaceObject_t dest, cudaTextureObject_t perm, int width, int height, float2 origin);
-
-// Can perform two operations at a time per thread! Could vastly increase speed,
-// and should still work for noise generation!
-
-#endif // HALF_PRECISION_SUPPORT
-
-// Kernel launching function. Uses configurator utility to set optimal block and grid size based on our kernel.
-void PerlinLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
+void PerlinLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
 
 #endif // !PERLIN_2D_CUH
