@@ -2,7 +2,7 @@
 #define FBM_CUH
 #include "cuda_stdafx.cuh"
 #include "cuda_assert.h"
-
+#include "vector_operators.cuh"
 typedef unsigned char uchar;
 
 /*
@@ -25,14 +25,11 @@ typedef unsigned char uchar;
 
 __device__ float perlin2d(cudaTextureObject_t perm, cudaTextureObject_t grad, float2 point, int seed);
 
-__global__ void perlin2d_Kernel(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
-
 #endif // !HALF_PRECISION_SUPPORT
 
 #ifdef HALF_PRECISION_SUPPORT
 
 #endif // !HALF_PRECISION_SUPPORT
 
-void PerlinLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
 
 #endif // !PERLIN_2D_CUH

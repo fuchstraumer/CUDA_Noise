@@ -17,55 +17,35 @@ __device__ float perlin2d(cudaTextureObject_t perm_tex, cudaTextureObject_t grad
 	// Get four randomly permutated indices from the noise lattice nearest "point"
 	// and offset them by the seed.
 	float4 perm = tex2D<float4>(perm_tex, i.x / 256, i.y / 256);
-	perm.x += seed;
-	perm.y += seed;
-	perm.z += seed;
-	perm.w += seed;
+	perm = perm + seed;
 
 	// Permute the fourst indices again and get the 2D gradient for each of
 	// the four new coord-seed pairs.
 	float4 g1, g2;
 	g1 = tex2D<float4>(grad_tex, perm.x, perm.y);
-	g1 *= make_float4(2.0f, 2.0f, 2.0f, 2.0f);
-	g1.x *= 2.0f;
-	g1.x -= 1.0f;
-	g1.y *= 2.0f;
-	g1.y -= 1.0f;
-	g1.z *= 2.0f;
-	g1.z -= 1.0f;
-	g1.w *= 2.0f;
-	g1.z -= 1.0f;
+	g1 = g1 * 2.0f;
+	g1 = g1 - 1.0f;
+	g2 = tex2D<float4>(grad_tex, perm.z, perm.w);
+	g2 = g2 * 2.0f;
+	g2 = g2 - 1.0f;
+
+	// Evaluate gradients at four lattice points.
+	float a, b, c, d;
+	a = dot(make_float2(g1.x, g1.y), f);
+	b = dot(make_float2(g2.x, g2.y), f + make_float2(-1.0f, 0.0f));
+	c = dot(make_float2(g1.z, g1.w), f + make_float2(0.0f, -1.0f));
+	d = dot(make_float2(g2.z, g2.w), f + make_float2(-1.0f, -1.0f));
+
+	// Blend gradients.
+	float4 grads = make_float4(a, b - a, c - 1, a - b - c + d);
+	float n = dot(grads, w4);
+
+	// Return value.
+	return n * 1.50f;
 }
-
-__global__ void perlin2d_Kernel(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int octaves) {
-
-}
-
 
 #else
 
 // TODO: Removed these until its re-implemented. Need to figure out how it works with textures.
 
 #endif // !HALF_PRECISION_SUPPORT
-
-void PerlinLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
-	// Use occupancy calc to find optimal sizes.
-
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, (void*)perlin2d_Kernel, 0, 0);
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
-	if (grid.x > static_cast<unsigned int>(minGridSize) || grid.y > static_cast<unsigned int>(minGridSize)) {
-		throw("Grid sizing error.");
-	}
-	// 32-bit kernel.
-	perlin2D_Kernel<<<block, grid>>>(out, perm, width, height, origin, freq, lacun, persist, octaves);
-
-	// Check for kernel launch errors
-	cudaAssert(cudaGetLastError());
-
-	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
-
-	// If this completes, kernel is done and "output" contains correct data.
-}

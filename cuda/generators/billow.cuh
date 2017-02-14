@@ -5,9 +5,9 @@
 #include "perlin.cuh"
 
 #ifndef HALF_PRECISION_SUPPORT
-__global__ void Billow2DKernel(cudaSurfaceObject_t out, cudaTextureObject_t perm, int width, int height, float2 origin, float freq, float lacun, float persist, int init_seed, int octaves);
+__global__ void Billow2DKernel(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
 
-void BillowLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, int width, int height, float2 origin, float freq, float lacun, float persist, int init_seed, int octaves);
+void BillowLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
 #endif // !HALF_PRECISION_SUPPORT
 
 #endif // !BILLOW_CUH
