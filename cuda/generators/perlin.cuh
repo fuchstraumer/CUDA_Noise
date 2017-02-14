@@ -6,10 +6,15 @@
 typedef unsigned char uchar;
 
 __device__ float lerp(const float a, const float b, const float c);
+
 __device__ float ease(const float t);
+
 __device__ float grad2(uchar hash, float2 p);
+
 __device__ float grad3(uchar hash, float3 p);
+
 __device__ float grad4(uchar hash, float4 p);
+
 __device__ float perlin2d(float2 point, cudaTextureObject_t perm);
 
 __global__ void perlin2D_Kernel(cudaSurfaceObject_t dest, cudaTextureObject_t perm_table, int width, int height, float2 origin);

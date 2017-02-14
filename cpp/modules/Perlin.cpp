@@ -17,8 +17,8 @@ namespace noise {
 			
 			// Setup perm table with unshuffled values.
 			for (size_t c = 0; c < 255; ++c) {
-				perm[c] = c;
-				perm[c + 256] = c;
+				perm[c] = static_cast<unsigned char>(c);
+				perm[c + 256] = static_cast<unsigned char>(c);
 			}
 
 			// Shuffle permutation table.

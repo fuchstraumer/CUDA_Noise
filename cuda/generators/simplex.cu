@@ -9,7 +9,7 @@ __device__ int fastfloor(float n) {
 }
 
 __device__ float2 mod289(float2 n) {
-	float x, y, z;
+	float x, y;
 	x = n.x - floor(n.x * (1.0f / 289.0f)) * 289.0f;
 	y = n.y - floor(n.y * (1.0f / 289.0f)) * 289.0f;
 	return make_float2(x, y);
