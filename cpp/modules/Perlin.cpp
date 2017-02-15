@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Perlin.h"
 
 namespace noise::module {
@@ -28,7 +29,7 @@ namespace noise::module {
 					uint8_t b = perm[(i + 1) & 255] + static_cast<uint8_t>(j);
 					// Write new pixel, by getting 8-bit values from perm and shifting them
 					// into the correct position.
-					*ptr++ = 
+					*ptr+= 
 						(perm[a] << 24) +
 						(perm[(a + 1) & 255] << 16) +
 						(perm[b] << 8) +
@@ -56,7 +57,7 @@ namespace noise::module {
 				for (int i = 0; i < 256; ++i) {
 					uint8_t px = perm[i];
 					uint8_t py = perm[j];
-					*ptr++ = 
+					*ptr+= 
 						(grad[((px & 7) << 1)] << 24) +
 						(grad[((px & 7) << 1)] << 16) +
 						(grad[((py & 7) << 1)] << 8) +

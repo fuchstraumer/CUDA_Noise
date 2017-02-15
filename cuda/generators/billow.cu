@@ -54,9 +54,6 @@ void BillowLauncher(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextu
 	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, (void*)Billow2DKernel, 0, 0);
 	dim3 block(blockSize, blockSize, 1);
 	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
-	if (grid.x > static_cast<unsigned int>(minGridSize) || grid.y > static_cast<unsigned int>(minGridSize)) {
-		throw("Grid sizing error.");
-	}
 	Billow2DKernel<<<block,grid>>>(out, perm, grad, width, height, origin, freq, lacun, persist, seed, octaves);
 
 	// Check for succesfull kernel launch

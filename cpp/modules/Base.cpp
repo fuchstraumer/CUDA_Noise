@@ -62,6 +62,10 @@ namespace noise {
 			sourceModules.push_back(std::shared_ptr<Module>(&other));
 		}
 
+		cudaSurfaceObject_t* Module::GetData() const{
+			return nullptr;
+		}
+
 		std::shared_ptr<Module> Module::GetModule(size_t idx) const {
 			// .at(idx) has bounds checking in debug modes, iirc.
 			return sourceModules.at(idx);

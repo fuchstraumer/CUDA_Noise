@@ -41,7 +41,7 @@ namespace noise {
 			virtual void Generate() = 0;
 
 			// Returns generated data.
-			virtual cudaSurfaceObject_t* GetData() const = 0;
+			virtual cudaSurfaceObject_t* GetData() const;
 
 			// Gets reference to module at given index in this modules "sourceModules" container
 			virtual std::shared_ptr<Module> GetModule(size_t idx) const;

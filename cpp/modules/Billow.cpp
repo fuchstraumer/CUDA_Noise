@@ -14,7 +14,9 @@ namespace noise {
 			return 0;
 		}
 
-		void Billow2D::Generate(){}
+		void Billow2D::Generate(){
+			BillowLauncher(output, permTex, gradTex, dims.x, dims.y, make_float2(Origin.x, Origin.y), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+		}
 
 	}
 }
