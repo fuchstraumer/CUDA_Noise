@@ -35,7 +35,7 @@ namespace noise {
 			struct cudaTextureDesc texTDescr;
 			memset(&texTDescr, 0, sizeof(texTDescr));
 			texTDescr.readMode = cudaReadModeElementType;
-
+			//texTDescr.normalizedCoords = 1;
 			// Setup texture object that will be used as input data from the previous module.
 			input = 0;
 			cudaCreateTextureObject(&input, &texDesc, &texTDescr, nullptr);
@@ -77,10 +77,9 @@ namespace noise {
 			result.resize(dims.x * dims.y);
 
 			cudaError_t err = cudaSuccess;
-
 			// Memcpy from device back to host
-			err = cudaMemcpyFromArray(&result[0], surfArray, 0, 0, sizeof(float) * result.size(), cudaMemcpyDeviceToHost);
-
+			err = cudaMemcpyFromArray(result.data(), surfArray, 0, 0, sizeof(float) * result.size(), cudaMemcpyDeviceToHost);
+			cudaAssert(err);
 			// Return result data.
 			return result;
 		}

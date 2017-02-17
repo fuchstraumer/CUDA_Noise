@@ -34,6 +34,12 @@ public:
 	// This means that each pixel has four 8-byte (unsigned char) elements.
 	void ConvertRawData();
 
+	// Sets rawData
+	void SetRawData(const std::vector<float>& raw);
+
+	// Gets rawData
+	std::vector<unsigned char> GetRawData() const;
+
 private:
 	// Holds raw data grabbed from one of the noise modules.
 	std::vector<float> rawData;

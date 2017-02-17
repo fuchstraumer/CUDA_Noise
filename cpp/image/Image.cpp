@@ -11,14 +11,21 @@ ImageWriter::ImageWriter(int _width, int _height) : width(_width), height(_heigh
 void ImageWriter::WritePNG(const char * filename, int compression_level) const{
 	if (compression_level == 0) {
 		// Saves uncompressed image using "pixelData" to "filename"
-		lodepng::encode(filename, &pixelData[0], width, height);
+		unsigned err;
+		err = lodepng::encode(filename, &pixelData[0], width, height);
+		if (!err) {
+			return;
+		}
+		else {
+			std::cout << "Error encoding image, code " << err << ": " << lodepng_error_text(err) << std::endl;
+		}
 	}
 	else {
 		// TODO: Implement compression. Need to study parameters of LodePNG more. See: https://raw.githubusercontent.com/lvandeve/lodepng/master/examples/example_optimize_png.cpp
 	}
 }
 
-void ImageWriter::ConvertRawData(){
+void ImageWriter::ConvertRawData() {
 	// raw data has a size that is found by taking width * height in the constructor.
 	// Pixel data is four times this: each single location has four seperate entries,
 	// one entry per color channel per pixel. So, that's 4 * (size of raw data).
@@ -26,12 +33,12 @@ void ImageWriter::ConvertRawData(){
 	// ^ note: using resize means this can be indexed like a normal C-style array.
 
 	/*
-	
+
 		Indexing into pixel data:
 
 		Getting the position of a pixel at coordinates (x,y) is done like so:
 		[4 * height * y + 4 * x] = index into 1D vector to given a 2D position.
-		
+
 		The position retrieved immediately above is the position of the first
 		color channel, however. So, this only gets us the red channel. Getting
 		all of the channels could be done like this:
@@ -45,6 +52,38 @@ void ImageWriter::ConvertRawData(){
 			b = pixelData[idx + 2] = (set value of blue channel)
 			a = pixelData[idx + 3] = (set value of alpha channel)
 	*/
+
+	// Scale raw data, mostly in 0.0f - 1.0f range, into unsigned char range.
+	auto scaleRaw = [](float val)->unsigned char {
+		val *= 255.0f;
+		if (val > 255.0f) {
+			val = 255.0f;
+		}
+		if (val < 0.0f) {
+			val = 0.0f;
+		}
+		unsigned char ret = static_cast<unsigned char>(val);
+		return ret;
+	};
+	std::vector<unsigned char> tmpBuffer;
+	tmpBuffer.resize(rawData.size());
+	std::transform(rawData.begin(), rawData.end(), tmpBuffer.begin(), scaleRaw);
+
+	// Copy values over to pixelData, for a grayscale image.
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			size_t idx = 4 * height * y + 4 * x;
+			pixelData[idx + 0] = tmpBuffer[height * y + x];
+			pixelData[idx + 1] = tmpBuffer[height * y + x];
+			pixelData[idx + 2] = tmpBuffer[height * y + x];
+			pixelData[idx + 3] = tmpBuffer[height * y + x];
+		}
+	}
+
+}
+
+void ImageWriter::SetRawData(const std::vector<float>& raw){
+	rawData = raw;
 }
 
 void ImageWriter::WriteBMP_Header(std::ofstream & output_stream) const{

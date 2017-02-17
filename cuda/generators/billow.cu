@@ -4,26 +4,27 @@
 __device__ float billow2D(float2 point, cudaTextureObject_t perm, cudaTextureObject_t grad, float freq, float lacun, float persist, int init_seed, int octaves) {
 	// Will be incremented upon.
 	float result = 0.0f;
-	float val = 0.0f;
-	float curPersistence = 1.0f;
+	float amplitude = 0.95f;
+	float val;
 	// Scale point by freq
-	point.x *= freq;
-	point.y *= freq;
+	point.x = point.x * freq;
+	point.y = point.y * freq;
 	// TODO: Seeding the function is currently pointless and doesn't actually do anything.
 	// Use loop for octav-ing
 	for (size_t i = 0; i < octaves; ++i) {
 		int seed = (init_seed + i) & 0xffffffff;
 		val = perlin2d(perm, grad, point, seed);
-		val = 2.0f * fabsf(val) - 1.0f;
-		result += val * curPersistence;
+		val = fabsf(val);
+		result += val * amplitude;
 		// Modify vars for next octave.
-		point.x *= lacun;
-		point.y *= lacun;
-		curPersistence *= persist;
+		freq *= lacun;
+		point.x *= freq;
+		point.y *= freq;
+		amplitude *= persist;
 	}
-
-	result += 0.50f;
-	return result;
+	float tmp = result / 100.0f;
+	// * // 
+	return tmp;
 }
 
 __global__ void Billow2DKernel(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {

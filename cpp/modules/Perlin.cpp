@@ -69,9 +69,9 @@ namespace noise::module {
 		cudaAssert(err);
 
 		// Copy to arrays. Can use "&vector[0]" to get pointer to vector's underling array, or just "vector.data()".
-		err = cudaMemcpyToArray(permArray, 0, 0, &permutation[0], sizeof(permutation), cudaMemcpyHostToDevice);
+		err = cudaMemcpyToArray(permArray, 0, 0, &permutation[0], permutation.size() * sizeof(unsigned char), cudaMemcpyHostToDevice);
 		cudaAssert(err);
-		err = cudaMemcpyToArray(permArray, 0, 0, &gradient[0], sizeof(gradient), cudaMemcpyHostToDevice);
+		err = cudaMemcpyToArray(gradArray, 0, 0, &gradient[0], gradient.size() * sizeof(unsigned char), cudaMemcpyHostToDevice);
 		cudaAssert(err);
 
 		// Setup resource descriptors, which tie the actual resources (arrays) to CUDA objects
@@ -99,12 +99,12 @@ namespace noise::module {
 
 		// Don't allow edge wrapping or looping, clamp to edges so out-of-range values
 		// become edge values.
-		permTDesc.addressMode[0] = cudaAddressModeClamp;
-		permTDesc.addressMode[1] = cudaAddressModeClamp;
-		permTDesc.addressMode[2] = cudaAddressModeClamp;
-		gradTDesc.addressMode[0] = cudaAddressModeClamp;
-		gradTDesc.addressMode[1] = cudaAddressModeClamp;
-		gradTDesc.addressMode[2] = cudaAddressModeClamp;
+		permTDesc.addressMode[0] = cudaAddressModeWrap;
+		permTDesc.addressMode[1] = cudaAddressModeWrap;
+		permTDesc.addressMode[2] = cudaAddressModeWrap;
+		gradTDesc.addressMode[0] = cudaAddressModeWrap;
+		gradTDesc.addressMode[1] = cudaAddressModeWrap;
+		gradTDesc.addressMode[2] = cudaAddressModeWrap;
 
 		// No filtering, this is important to set. Otherwise our values we want to be exact will be linearly interpolated.
 		permTDesc.filterMode = cudaFilterModePoint;
