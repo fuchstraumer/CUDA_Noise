@@ -19,7 +19,7 @@ __device__ float perlin2d(cudaTextureObject_t perm_tex, cudaTextureObject_t grad
 
 	// Get four randomly permutated indices from the noise lattice nearest "point"
 	// and offset them by the seed.
-	uchar4 tmp = tex2D<uchar4>(perm_tex, i.x / 256 + 0.50f, i.y / 256 + 0.50f);
+	uchar4 tmp = tex2D<uchar4>(perm_tex, i.x / 256, i.y / 256);
 	float4 perm = make_float4(tmp.x, tmp.y, tmp.z, tmp.w);
 	perm = perm + seed;
 

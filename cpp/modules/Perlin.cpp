@@ -99,12 +99,12 @@ namespace noise::module {
 
 		// Don't allow edge wrapping or looping, clamp to edges so out-of-range values
 		// become edge values.
-		permTDesc.addressMode[0] = cudaAddressModeWrap;
-		permTDesc.addressMode[1] = cudaAddressModeWrap;
-		permTDesc.addressMode[2] = cudaAddressModeWrap;
-		gradTDesc.addressMode[0] = cudaAddressModeWrap;
-		gradTDesc.addressMode[1] = cudaAddressModeWrap;
-		gradTDesc.addressMode[2] = cudaAddressModeWrap;
+		permTDesc.addressMode[0] = cudaAddressModeClamp;
+		permTDesc.addressMode[1] = cudaAddressModeClamp;
+		permTDesc.addressMode[2] = cudaAddressModeClamp;
+		gradTDesc.addressMode[0] = cudaAddressModeClamp;
+		gradTDesc.addressMode[1] = cudaAddressModeClamp;
+		gradTDesc.addressMode[2] = cudaAddressModeClamp;
 
 		// No filtering, this is important to set. Otherwise our values we want to be exact will be linearly interpolated.
 		permTDesc.filterMode = cudaFilterModePoint;
@@ -115,6 +115,9 @@ namespace noise::module {
 		// it like floating-point data.
 		permTDesc.readMode = cudaReadModeElementType;
 		gradTDesc.readMode = cudaReadModeElementType;
+
+		// Normalized coords for permTDesc
+		permTDesc.normalizedCoords = true;
 
 		// Create texture objects now
 		permTex = 0;
