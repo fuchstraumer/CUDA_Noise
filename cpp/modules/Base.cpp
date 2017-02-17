@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Base.h"
-
+#include "cuda_assert.h"
 namespace noise {
 	namespace module {
 
@@ -69,6 +69,20 @@ namespace noise {
 		std::shared_ptr<Module> Module::GetModule(size_t idx) const {
 			// .at(idx) has bounds checking in debug modes, iirc.
 			return sourceModules.at(idx);
+		}
+
+		std::vector<float> Module::GetGPUData() const{
+			// Setup result vector, allocate spacing so that memcpy succeeds.
+			std::vector<float> result;
+			result.resize(dims.x * dims.y);
+
+			cudaError_t err = cudaSuccess;
+
+			// Memcpy from device back to host
+			err = cudaMemcpyFromArray(&result[0], surfArray, 0, 0, sizeof(float) * result.size(), cudaMemcpyDeviceToHost);
+
+			// Return result data.
+			return result;
 		}
 
 

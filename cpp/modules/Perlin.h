@@ -36,7 +36,7 @@ namespace noise::module {
 	protected:
 
 		// initial perm char table used to generate textures.
-		uint8_t perm[512];
+		unsigned char perm[256];
 
 		// Array for permutation and gradient lookups (textures)
 		cudaArray *permArray, *gradArray;

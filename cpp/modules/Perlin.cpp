@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Perlin.h"
-
+#include "..\cuda\cuda_assert.h"
 namespace noise::module {
 
 	Perlin2D::Perlin2D(int width, int height) : Module(width, height) {
@@ -8,74 +8,74 @@ namespace noise::module {
 		// Setup perm table with unshuffled values.
 		for (size_t c = 0; c < 255; ++c) {
 			perm[c] = static_cast<unsigned char>(c);
-			perm[c + 256] = static_cast<unsigned char>(c);
 		}
 
 		// Shuffle permutation table.
-		std::shuffle(perm, perm + 512, std::default_random_engine());
+		std::shuffle(perm, perm + 256, std::default_random_engine());
 
 		// Lookup arrays: 8 bits per channel, or 32 bits per single value
-		uint32_t permutation[512], gradient[512];
+		
 
 		// I'm using new blocks here to define generating these textures, mostly because
 		// (in my opinion) it makes things seem a bit more organized and "clean"
 
 		// Generate permutation texture data.
-		{
-			uint32_t* ptr = permutation;
+		std::vector<unsigned char> permutation;
+		permutation.resize(256 * 256 * 4);
+		for (int i = 0; i < 256; ++i) {
 			for (int j = 0; j < 256; ++j) {
-				for (int i = 0; i < 256; ++i) {
-					uint8_t a = perm[i] + static_cast<uint8_t>(j);
-					uint8_t b = perm[(i + 1) & 255] + static_cast<uint8_t>(j);
-					// Write new pixel, by getting 8-bit values from perm and shifting them
-					// into the correct position.
-					*ptr+= 
-						(perm[a] << 24) +
-						(perm[(a + 1) & 255] << 16) +
-						(perm[b] << 8) +
-						(perm[(b + 1) & 255]);
-				}
+				unsigned char a = perm[i] + static_cast<unsigned char>(j);
+				unsigned char b = perm[(i + 1) & 255] + static_cast<unsigned char>(j);
+				permutation[4 * 256 * j + 4 * i] = perm[a];
+				permutation[4 * 256 * j + 4 * i + 1] = perm[(a + 1) & 255];
+				permutation[4 * 256 * j + 4 * i + 2] = perm[b];
+				permutation[4 * 256 * j + 4 * i + 3] = perm[(b + 1) & 255];
 			}
 		}
-		
+	
 		// Generate gradient texture data.
-		{
-			// No need to generate these like we did with "perm": these are just lookups
-			// for vector angles, and the angles never change (8 corners, iirc)
-			static constexpr uint8_t grad[16]{
-				245, 176,
-				176, 245,
-				79, 245,
-				10, 176,
-				10, 79,
-				79, 10,
-				176, 10,
-				245, 79 
-			};
-			uint32_t* ptr = gradient;
+		// No need to generate these like we did with "perm": these are just lookups
+		// for gradient vector angles
+		static constexpr unsigned char grad[16]{
+			245, 176,
+			176, 245,
+			79, 245,
+			10, 176,
+			10, 79,
+			79, 10,
+			176, 10,
+			245, 79
+		};
+
+		std::vector<unsigned char> gradient;
+		gradient.resize(256 * 256 * 4);
+		for (int i = 0; i < 256; ++i) {
 			for (int j = 0; j < 256; ++j) {
-				for (int i = 0; i < 256; ++i) {
-					uint8_t px = perm[i];
-					uint8_t py = perm[j];
-					*ptr+= 
-						(grad[((px & 7) << 1)] << 24) +
-						(grad[((px & 7) << 1)] << 16) +
-						(grad[((py & 7) << 1)] << 8) +
-						(grad[((py & 7) << 1) + 1]);
-				}
+				unsigned char px = perm[i];
+				unsigned char py = perm[j];
+				gradient[4 * 256 * j + 4 * i] = grad[(px & 7) << 1];
+				gradient[4 * 256 * j + 4 * i + 1] = grad[(px & 7) << 1];
+				gradient[4 * 256 * j + 4 * i + 2] = grad[(py & 7) << 1];
+				gradient[4 * 256 * j + 4 * i + 3] = grad[(py & 7) << 1];
 			}
 		}
 
 		// Channel format description: (8,8,8,8), unsigned char
 		cudaChannelFormatDesc cfDesc = cudaCreateChannelDesc(8, 8, 8, 8, cudaChannelFormatKindUnsigned);
 
+		cudaError_t err = cudaSuccess;
+
 		// Malloc for arrays
-		cudaMallocArray(&permArray, &cfDesc, 256, 256);
-		cudaMallocArray(&gradArray, &cfDesc, 256, 256);
+		err = cudaMallocArray(&permArray, &cfDesc, 256, 256);
+		cudaAssert(err);
+		err = cudaMallocArray(&gradArray, &cfDesc, 256, 256);
+		cudaAssert(err);
 
 		// Copy to arrays
-		cudaMemcpyToArray(permArray, 0, 0, &permutation, sizeof(permutation), cudaMemcpyHostToDevice);
-		cudaMemcpyToArray(permArray, 0, 0, &gradient, sizeof(gradient), cudaMemcpyHostToDevice);
+		err = cudaMemcpyToArray(permArray, 0, 0, &permutation[0], sizeof(permutation), cudaMemcpyHostToDevice);
+		cudaAssert(err);
+		err = cudaMemcpyToArray(permArray, 0, 0, &gradient[0], sizeof(gradient), cudaMemcpyHostToDevice);
+		cudaAssert(err);
 
 		// Setup resource descriptors
 		struct cudaResourceDesc permDesc;
@@ -113,9 +113,9 @@ namespace noise::module {
 
 		// Create texture objects now
 		permTex = 0;
-		cudaCreateTextureObject(&permTex, &permDesc, &permTDesc, nullptr);
+		cudaAssert(cudaCreateTextureObject(&permTex, &permDesc, &permTDesc, nullptr));
 		gradTex = 0;
-		cudaCreateTextureObject(&gradTex, &gradDesc, &gradTDesc, nullptr);
+		cudaAssert(cudaCreateTextureObject(&gradTex, &gradDesc, &gradTDesc, nullptr));
 
 		// We pass the above textures into our FBM/Billow/Ridged/Swiss kernels and only need texture lookups now!
 	}
