@@ -13,11 +13,7 @@ namespace noise::module {
 		// Shuffle permutation table.
 		std::shuffle(perm, perm + 256, std::default_random_engine());
 
-		// Lookup arrays: 8 bits per channel, or 32 bits per single value
-		
-
-		// I'm using new blocks here to define generating these textures, mostly because
-		// (in my opinion) it makes things seem a bit more organized and "clean"
+		// Lookup arrays: 8 bits per channel, or a regular 32 bit-depth image/texture.
 
 		// Generate permutation texture data.
 		std::vector<unsigned char> permutation;
@@ -65,19 +61,21 @@ namespace noise::module {
 
 		cudaError_t err = cudaSuccess;
 
-		// Malloc for arrays
+		// Malloc for arrays. Image format is read from cfDesc, and combined with the dimensions is used
+		// to correct allocate.
 		err = cudaMallocArray(&permArray, &cfDesc, 256, 256);
 		cudaAssert(err);
 		err = cudaMallocArray(&gradArray, &cfDesc, 256, 256);
 		cudaAssert(err);
 
-		// Copy to arrays
+		// Copy to arrays. Can use "&vector[0]" to get pointer to vector's underling array, or just "vector.data()".
 		err = cudaMemcpyToArray(permArray, 0, 0, &permutation[0], sizeof(permutation), cudaMemcpyHostToDevice);
 		cudaAssert(err);
 		err = cudaMemcpyToArray(permArray, 0, 0, &gradient[0], sizeof(gradient), cudaMemcpyHostToDevice);
 		cudaAssert(err);
 
-		// Setup resource descriptors
+		// Setup resource descriptors, which tie the actual resources (arrays) to CUDA objects
+		// used in the kernels/device code (surfaces, textures)
 		struct cudaResourceDesc permDesc;
 		struct cudaResourceDesc gradDesc;
 		memset(&permDesc, 0, sizeof(permDesc));
@@ -98,16 +96,23 @@ namespace noise::module {
 		memset(&gradTDesc, 0, sizeof(gradTDesc));
 
 		// Specify read type, filtering, border/wrapping
+
+		// Don't allow edge wrapping or looping, clamp to edges so out-of-range values
+		// become edge values.
 		permTDesc.addressMode[0] = cudaAddressModeClamp;
 		permTDesc.addressMode[1] = cudaAddressModeClamp;
 		permTDesc.addressMode[2] = cudaAddressModeClamp;
 		gradTDesc.addressMode[0] = cudaAddressModeClamp;
 		gradTDesc.addressMode[1] = cudaAddressModeClamp;
 		gradTDesc.addressMode[2] = cudaAddressModeClamp;
-		// No filtering, this is important to set.
+
+		// No filtering, this is important to set. Otherwise our values we want to be exact will be linearly interpolated.
 		permTDesc.filterMode = cudaFilterModePoint;
 		gradTDesc.filterMode = cudaFilterModePoint;
-		// Don't make the int data in this texture floating-point
+
+		// Don't make the int data in this texture floating-point. Only counts for the CUDA-exclusive elements of the code.
+		// Data is still 32 bits per pixel/element, and if we copy it back to the CPU there's nothing stopping us from treating
+		// it like floating-point data.
 		permTDesc.readMode = cudaReadModeElementType;
 		gradTDesc.readMode = cudaReadModeElementType;
 
@@ -118,6 +123,8 @@ namespace noise::module {
 		cudaAssert(cudaCreateTextureObject(&gradTex, &gradDesc, &gradTDesc, nullptr));
 
 		// We pass the above textures into our FBM/Billow/Ridged/Swiss kernels and only need texture lookups now!
+		// Cuts down size of device code and makes it easier to read, but also has HUGE speed benefits due to the 
+		// cache-friendly nature of textures (both in access times AND cache locality)!
 	}
 
 }
