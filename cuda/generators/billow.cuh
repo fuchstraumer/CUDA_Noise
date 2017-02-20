@@ -1,6 +1,6 @@
 #ifndef BILLOW_CUH
 #define BILLOW_CUH
-#include "..\cuda_stdafx.cuh"
+#include "common\CUDA_Include.h"
 #include "..\cuda_assert.h"
 #include "perlin.cuh"
 

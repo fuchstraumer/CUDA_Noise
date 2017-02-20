@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Billow.h"
 
 // Include cuda modules
@@ -7,7 +6,7 @@
 namespace noise {
 	namespace module {
 
-		Billow2D::Billow2D(int width, int height, int x, int y, int seed, float freq, float lacun, int octaves, float persist) : Perlin2D(width, height),
+		Billow2D::Billow2D(int width, int height, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Perlin2D(width, height),
 			Attributes(freq, lacun, persist, octaves, seed, BILLOW_MAX_OCTAVES), Origin(x, y) {}
 
 		int Billow2D::GetSourceModuleCount() const {
@@ -15,7 +14,7 @@ namespace noise {
 		}
 
 		void Billow2D::Generate(){
-			BillowLauncher(output, permTex, gradTex, dims.x, dims.y, make_float2(1.0f, 1.0f), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			BillowLauncher(output, permTex, gradTex, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 		}
 
 	}

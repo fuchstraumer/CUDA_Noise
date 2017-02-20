@@ -1,4 +1,3 @@
-#include "stdafx.h"
 // LodePNG is used to handle saving PNG images.
 #include "lodepng\lodepng.h"
 #include "Image.h"

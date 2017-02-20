@@ -1,6 +1,6 @@
 #ifndef DECARPIENTIER_SWISS_CUH
 #define DECARPIENTIER_SWISS_CUH
-#include "cuda_stdafx.cuh"
+#include "common\CUDA_Include.h"
 #include "perlin.cuh"
 
 #endif // !DECARPIENTIER_SWISS_CUH

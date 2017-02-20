@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FBM.h"
 #include "..\cuda\generators\perlin.cuh"
 #include "..\cuda\cuda_assert.h"

@@ -1,6 +1,6 @@
 #ifndef VECTOR_OPERATORS_CUH
 #define VECTOR_OPERATORS_CUH
-#include "cuda_stdafx.cuh"
+#include "common\CUDA_Include.h"
 
 // Float2 operators
 

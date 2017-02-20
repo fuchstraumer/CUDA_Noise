@@ -1,8 +1,8 @@
 #pragma once
 #ifndef BASE_H
 #define BASE_H
-#include "cuda_stdafx.cuh"
-#include <memory>
+#include "common\CommonInclude.h"
+#include "common\CUDA_Include.h"
 /*
 	
 	Defines a base module class.
@@ -55,7 +55,7 @@ namespace noise {
 		protected:
 
 			// Dimensions of textures.
-			glm::ivec2 dims;
+			std::pair<int, int> dims;
 
 			// Each module will write values into this
 			cudaSurfaceObject_t output;

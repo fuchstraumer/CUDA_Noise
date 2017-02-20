@@ -1,7 +1,8 @@
-#include "stdafx.h"
 #include "Base.h"
 #include "cuda_assert.h"
+
 namespace noise {
+
 	namespace module {
 
 		Module::Module(int width, int height) : dims(width, height) {
@@ -74,7 +75,7 @@ namespace noise {
 		std::vector<float> Module::GetGPUData() const{
 			// Setup result vector, allocate spacing so that memcpy succeeds.
 			std::vector<float> result;
-			result.resize(dims.x * dims.y);
+			result.resize(dims.first * dims.second);
 
 			cudaError_t err = cudaSuccess;
 			// Memcpy from device back to host

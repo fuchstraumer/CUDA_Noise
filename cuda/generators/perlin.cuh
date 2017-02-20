@@ -1,6 +1,6 @@
 #ifndef FBM_CUH
 #define FBM_CUH
-#include "cuda_stdafx.cuh"
+#include "common\CUDA_Include.h"
 #include "cuda_assert.h"
 #include "vector_operators.cuh"
 typedef unsigned char uchar;

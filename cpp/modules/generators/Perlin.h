@@ -1,8 +1,8 @@
 #pragma once
 #ifndef PERLIN_H
 #define PERLIN_H
-#include "stdafx.h"
-#include "Base.h"
+#include "common\CommonInclude.h"
+#include "..\Base.h"
 
 namespace noise::module {
 	/*

@@ -5,6 +5,7 @@
 
 namespace noise {
 	namespace module {
+
 		// Default parameters
 		constexpr float DEFAULT_BILLOW_FREQUENCY = 1.0f;
 		constexpr float DEFAULT_BILLOW_LACUNARITY = 2.0f;
@@ -22,7 +23,7 @@ namespace noise {
 			// Width + height specify output texture size.
 			// Seed defines a value to seed the generator with
 			// X & Y define the origin of the noise generator
-			Billow2D(int width, int height, int x = 0, int y = 0, int seed = DEFAULT_BILLOW_SEED, float freq = DEFAULT_BILLOW_FREQUENCY, float lacun = DEFAULT_BILLOW_LACUNARITY,
+			Billow2D(int width, int height, float x = 0.0f, float y = 0.0f, int seed = DEFAULT_BILLOW_SEED, float freq = DEFAULT_BILLOW_FREQUENCY, float lacun = DEFAULT_BILLOW_LACUNARITY,
 				int octaves = DEFAULT_BILLOW_OCTAVES, float persist = DEFAULT_BILLOW_PERSISTENCE);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.
@@ -33,7 +34,7 @@ namespace noise {
 
 			// Origin of this noise generator. Keep the seed constant and change this for 
 			// continuous "tileable" noise
-			glm::vec2 Origin;
+			std::pair<float, float> Origin;
 
 			// Configuration attributes.
 			noiseCfg Attributes;

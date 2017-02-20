@@ -44,7 +44,7 @@ namespace noise {
 
 			// Origin of this noise generator. Keep the seed constant and change this for 
 			// continuous "tileable" noise
-			glm::vec2 Origin;
+			std::pair<float, float> Origin;
 
 			// Configuration attributes.
 			noiseCfg Attributes;
