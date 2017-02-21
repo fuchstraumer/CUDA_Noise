@@ -21,17 +21,6 @@ namespace noise {
 
 		protected:
 
-			// Permutation lookup table that is generated
-			// and then passed to the CUDA API as a CUDA Array
-			unsigned char perm[512];
-
-			// Gradient vector lookup table, also passed to the
-			// API.
-			float gradientLUT[8][2] = {
-				{-1.0f,-1.0f },{ 1.0f, 0.0f },{-1.0f, 0.0f },{ 1.0f, 1.0f },
-				{-1.0f, 1.0f },{ 0.0f,-1.0f },{ 0.0f, 1.0f },{ 1.0f,-1.0f },
-			};
-
 			// CUDA array pointers
 			cudaArray *pArray, *gArray;
 

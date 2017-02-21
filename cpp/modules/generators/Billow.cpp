@@ -17,5 +17,15 @@ namespace noise {
 			BillowLauncher(output, permTex, gradTex, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 		}
 
+		Billow2DSimplex::Billow2DSimplex(int width, int height, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Simplex2D(width, height, seed),
+			Attributes(freq, lacun, persist, octaves, seed, BILLOW_MAX_OCTAVES), Origin(x, y) {}
+
+		int Billow2DSimplex::GetSourceModuleCount() const {
+			return 0;
+		}
+
+		void Billow2DSimplex::Generate() {
+			BillowSimplexLauncher(output, pTex, gTex, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+		}
 	}
 }

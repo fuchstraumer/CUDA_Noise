@@ -3,9 +3,6 @@
 #ifndef HALF_PRECISION_SUPPORT
 
 __device__ float perlin2d(cudaTextureObject_t perm_tex, cudaTextureObject_t grad_tex, float2 point, int seed) {
-	
-	point.x = point.x * 0.75f;
-	point.y = point.y * 0.75f;
 
 	// Calculate 2D integer coordinates and fractional component 
 	float2 i = make_float2(floorf(point.x), floorf(point.y));
