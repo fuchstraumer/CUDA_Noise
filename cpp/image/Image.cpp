@@ -75,7 +75,7 @@ void ImageWriter::ConvertRawData() {
 			pixelData[idx + 0] = tmpBuffer[height * y + x];
 			pixelData[idx + 1] = tmpBuffer[height * y + x];
 			pixelData[idx + 2] = tmpBuffer[height * y + x];
-			pixelData[idx + 3] = tmpBuffer[height * y + x];
+			pixelData[idx + 3] = 255;
 		}
 	}
 

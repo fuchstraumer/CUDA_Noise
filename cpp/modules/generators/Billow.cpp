@@ -6,7 +6,7 @@
 namespace noise {
 	namespace module {
 
-		Billow2D::Billow2D(int width, int height, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Perlin2D(width, height),
+		Billow2D::Billow2D(int width, int height, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Perlin2D(width, height, seed),
 			Attributes(freq, lacun, persist, octaves, seed, BILLOW_MAX_OCTAVES), Origin(x, y) {}
 
 		int Billow2D::GetSourceModuleCount() const {

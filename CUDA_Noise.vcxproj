@@ -121,6 +121,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\generators\FBM.h" />
     <ClInclude Include="cpp\modules\generators\Perlin.h" />
     <ClInclude Include="cpp\modules\generators\Ridged.h" />
+    <ClInclude Include="cpp\modules\generators\Simplex.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
@@ -142,6 +143,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\Perlin.cpp" />
+    <ClCompile Include="cpp\modules\generators\Simplex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
