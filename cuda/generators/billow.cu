@@ -22,7 +22,7 @@ __device__ float billow2D(float2 point, cudaTextureObject_t perm, cudaTextureObj
 		point.y *= freq;
 		amplitude *= persist;
 	}
-	float tmp = result / 10.0f;
+	float tmp = result / 100.0f;
 	// * // 
 	return tmp;
 }
