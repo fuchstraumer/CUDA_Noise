@@ -7,8 +7,8 @@
 __device__ float2 grad2(int hash, cudaTextureObject_t grad) {
 	int h = hash & 7;
 	float x, y;
-	x = tex2D<float>(grad, h + 0.50f, 1.50f);
-	y = tex2D<float>(grad, h + 0.50f, 0.50f);
+	x = tex2D<float>(grad, h, 0.0f);
+	y = tex2D<float>(grad, h, 1.0f);
 	return make_float2(x, y);
 }
 
@@ -31,7 +31,7 @@ __device__ float simplex2d(cudaTextureObject_t perm, cudaTextureObject_t grad, f
 	int jj = j;
 
 	// Unskew cell back to XY space
-	float t = i + j * 0.211324865f;
+	float t = __int2float_rn(i + j) * 0.211324865f;
 	float X0 = i - t;
 	float Y0 = j - t;
 	// XY distances from cell origin.
@@ -69,9 +69,9 @@ __device__ float simplex2d(cudaTextureObject_t perm, cudaTextureObject_t grad, f
 		g0 = make_float2(0.0f, 0.0f);
 	}
 	else {
-		unsigned char hash = tex1D<unsigned char>(perm, jj + 0.50f);
-		hash = tex1D<unsigned char>(perm, ii + hash + 0.50f);
-		g0 = grad2(hash, grad);
+		unsigned char h0 = tex1D<unsigned char>(perm, jj);
+		unsigned char h1 = tex1D<unsigned char>(perm, ii + h0);
+		g0 = grad2(h1, grad);
 		t20 = t0 * t0;
 		t40 = t20 * t20;
 		n0 = t40 * (g0.x * x0 + g0.y * y0);
@@ -85,8 +85,8 @@ __device__ float simplex2d(cudaTextureObject_t perm, cudaTextureObject_t grad, f
 		g1 = make_float2(0.0f, 0.0f);
 	}
 	else {
-		unsigned char h0 = tex1D<unsigned char>(perm, jj + j1 + 0.50f);
-		unsigned char h1 = tex1D<unsigned char>(perm, h0 + ii + i1 + 0.50f);
+		unsigned char h0 = tex1D<unsigned char>(perm, jj + j1);
+		unsigned char h1 = tex1D<unsigned char>(perm, h0 + ii + i1);
 		g1 = grad2(h1, grad);
 		t21 = t1 * t1;
 		t41 = t21 * t21;
@@ -101,8 +101,8 @@ __device__ float simplex2d(cudaTextureObject_t perm, cudaTextureObject_t grad, f
 		g2 = make_float2(0.0f, 0.0f);
 	}
 	else {
-		unsigned char h0 = tex1D<unsigned char>(perm, jj + 1 + 0.50f);
-		unsigned char h1 = tex1D<unsigned char>(perm, h0 + jj + 1 + 0.50f);
+		unsigned char h0 = tex1D<unsigned char>(perm, jj + 1);
+		unsigned char h1 = tex1D<unsigned char>(perm, h0 + jj + 1);
 		g2 = grad2(h1, grad);
 		t22 = t2 * t2;
 		t42 = t22 * t22;

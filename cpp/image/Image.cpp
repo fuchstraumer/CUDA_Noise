@@ -1,6 +1,7 @@
 // LodePNG is used to handle saving PNG images.
 #include "lodepng\lodepng.h"
 #include "Image.h"
+#include <algorithm>
 
 ImageWriter::ImageWriter(int _width, int _height) : width(_width), height(_height) {
 	// Setup destination for raw data.
@@ -53,7 +54,16 @@ void ImageWriter::ConvertRawData() {
 	*/
 
 	// Scale raw data, mostly in 0.0f - 1.0f range, into unsigned char range.
-	auto scaleRaw = [](float val)->unsigned char {
+	
+	std::vector<unsigned char> tmpBuffer;
+	tmpBuffer.resize(rawData.size());
+	auto min_max = std::minmax_element(rawData.begin(), rawData.end());
+	float max = *min_max.first;
+	float min = *min_max.second;
+
+	auto scaleRaw = [max, min](float val)->unsigned char {
+		val = (val - min) / (max - min);
+		// val += 0.50f;
 		val *= 255.0f;
 		if (val > 255.0f) {
 			val = 255.0f;
@@ -64,10 +74,7 @@ void ImageWriter::ConvertRawData() {
 		unsigned char ret = static_cast<unsigned char>(val);
 		return ret;
 	};
-	std::vector<unsigned char> tmpBuffer;
-	tmpBuffer.resize(rawData.size());
 	std::transform(rawData.begin(), rawData.end(), tmpBuffer.begin(), scaleRaw);
-
 	// Copy values over to pixelData, for a grayscale image.
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {

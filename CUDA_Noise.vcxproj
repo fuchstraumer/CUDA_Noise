@@ -66,6 +66,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_61,sm_61</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <GenerateLineInfo>true</GenerateLineInfo>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,6 +94,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <CodeGeneration>compute_61,sm_61</CodeGeneration>
+      <FastMath>true</FastMath>
+      <Optimization>O2</Optimization>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -130,6 +134,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\DecarpientierSwiss.cuh" />
+    <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />

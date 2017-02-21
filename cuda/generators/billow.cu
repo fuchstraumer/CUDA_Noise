@@ -5,7 +5,7 @@
 __device__ float billow2D(float2 point, cudaTextureObject_t perm, cudaTextureObject_t grad, float freq, float lacun, float persist, int init_seed, int octaves) {
 	// Will be incremented upon.
 	float result = 0.0f;
-	float amplitude = 0.95f;
+	float amplitude = 1.0f;
 	float val;
 	// Scale point by freq
 	point.x = point.x * freq;
@@ -13,7 +13,7 @@ __device__ float billow2D(float2 point, cudaTextureObject_t perm, cudaTextureObj
 	// TODO: Seeding the function is currently pointless and doesn't actually do anything.
 	// Use loop for octav-ing
 	for (size_t i = 0; i < octaves; ++i) {
-		int seed = (init_seed + i) & 0xffff;
+		int seed = (init_seed + i) & 0xffffffff;
 		val = perlin2d(perm, grad, point, seed);
 		val = fabsf(val);
 		result += val * amplitude;
@@ -37,7 +37,7 @@ __device__ float billow2D_S(float2 point, cudaTextureObject_t perm, cudaTextureO
 	point.y = point.y * freq;
 	// Use loop for fractal octave bit
 	for (size_t i = 0; i < octaves; ++i) {
-		int seed = (init_seed + i) & 0xffff;
+		int seed = (init_seed + i) & 0xffffffff;
 		val = simplex2d(perm, grad, point, seed);
 		val = fabsf(val);
 		result += val * amplitude;

@@ -9,14 +9,15 @@ noise::module::Simplex2D::Simplex2D(int width, int height, int seed) : Module(wi
 
 	// Gradient vector lookup table, also passed to the
 	// API.
-	float gradientLUT[8][2] = {
-		{ -1.0f,-1.0f },{ 1.0f, 0.0f },{ -1.0f, 0.0f },{ 1.0f, 1.0f },
-		{ -1.0f, 1.0f },{ 0.0f,-1.0f },{ 0.0f, 1.0f },{ 1.0f,-1.0f },
+	std::vector<float> gradientLUT = {
+		 -1.0f,-1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f,1.0f,
+		 -1.0f, 1.0f, 0.0f,-1.0f, 0.0f, 1.0f, 1.0f,-1.0f ,
 	};
 	
 	// Setup perm table with unshuffled values.
-	for (size_t c = 0; c < 255; ++c) {
+	for (size_t c = 0; c < 256; ++c) {
 		perm[c] = static_cast<unsigned char>(c);
+		perm[c + 255] = static_cast<unsigned char>(c);
 	}
 
 	// Shuffle permutation table. (first, generate and seed an RNG instance)
@@ -40,7 +41,7 @@ noise::module::Simplex2D::Simplex2D(int width, int height, int seed) : Module(wi
 	// Copy data from host to device arrays
 	err = cudaMemcpyToArray(pArray, 0, 0, &perm[0], sizeof(unsigned char) * perm.size(), cudaMemcpyHostToDevice);
 	cudaAssert(err);
-	err = cudaMemcpyToArray(gArray, 0, 0, &gradientLUT, sizeof(gradientLUT), cudaMemcpyHostToDevice);
+	err = cudaMemcpyToArray(gArray, 0, 0, &gradientLUT[0], sizeof(float) * gradientLUT.size(), cudaMemcpyHostToDevice);
 	cudaAssert(err);
 
 	// Create resource descriptions, binding the above arrays to them
