@@ -8,7 +8,7 @@
 	Used for including the required CUDA components in C++.
 	
 */
-
+#define CUDA_TIMING_TESTS
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>

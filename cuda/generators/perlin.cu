@@ -4,8 +4,8 @@
 
 __device__ float perlin2d(cudaTextureObject_t perm_tex, cudaTextureObject_t grad_tex, float2 point, int seed) {
 	
-	point.x = point.x * 0.01f;
-	point.y = point.y * 0.01f;
+	point.x = point.x * 0.75f;
+	point.y = point.y * 0.75f;
 
 	// Calculate 2D integer coordinates and fractional component 
 	float2 i = make_float2(floorf(point.x), floorf(point.y));
@@ -19,7 +19,7 @@ __device__ float perlin2d(cudaTextureObject_t perm_tex, cudaTextureObject_t grad
 
 	// Get four randomly permutated indices from the noise lattice nearest "point"
 	// and offset them by the seed.
-	uchar4 tmp = tex2D<uchar4>(perm_tex, i.x / 256, i.y / 256);
+	uchar4 tmp = tex2D<uchar4>(perm_tex, i.x + 0.50f, i.y + 0.50f);
 	float4 perm = make_float4(tmp.x, tmp.y, tmp.z, tmp.w);
 	perm = perm + seed;
 
@@ -47,7 +47,8 @@ __device__ float perlin2d(cudaTextureObject_t perm_tex, cudaTextureObject_t grad
 	float n = dot(gradientBlend, w4);
 
 	// Return value.
-	return n * 1.530734f;
+	return (n * 1.5f) / (2.5f);
+	//return n * 1.530734f;
 }
 
 #else

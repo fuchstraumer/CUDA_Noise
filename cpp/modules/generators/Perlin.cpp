@@ -5,7 +5,7 @@ namespace noise {
 
 	namespace module {
 
-		Perlin2D::Perlin2D(int width, int height) : Module(width, height) {
+		Perlin2D::Perlin2D(int width, int height, int seed) : Module(width, height) {
 
 			// Setup perm table with unshuffled values.
 			for (size_t c = 0; c < 255; ++c) {
@@ -13,7 +13,9 @@ namespace noise {
 			}
 
 			// Shuffle permutation table.
-			std::shuffle(perm, perm + 256, std::default_random_engine());
+			std::mt19937 rng;
+			rng.seed(seed);
+			std::shuffle(perm, perm + 256, rng);
 
 			// Lookup arrays: 8 bits per channel, or a regular 32 bit-depth image/texture.
 
@@ -101,12 +103,12 @@ namespace noise {
 
 			// Don't allow edge wrapping or looping, clamp to edges so out-of-range values
 			// become edge values.
-			permTDesc.addressMode[0] = cudaAddressModeClamp;
-			permTDesc.addressMode[1] = cudaAddressModeClamp;
-			permTDesc.addressMode[2] = cudaAddressModeClamp;
-			gradTDesc.addressMode[0] = cudaAddressModeClamp;
-			gradTDesc.addressMode[1] = cudaAddressModeClamp;
-			gradTDesc.addressMode[2] = cudaAddressModeClamp;
+			permTDesc.addressMode[0] = cudaAddressModeWrap;
+			permTDesc.addressMode[1] = cudaAddressModeWrap;
+			permTDesc.addressMode[2] = cudaAddressModeWrap;
+			gradTDesc.addressMode[0] = cudaAddressModeWrap;
+			gradTDesc.addressMode[1] = cudaAddressModeWrap;
+			gradTDesc.addressMode[2] = cudaAddressModeWrap;
 
 			// No filtering, this is important to set. Otherwise our values we want to be exact will be linearly interpolated.
 			permTDesc.filterMode = cudaFilterModePoint;
@@ -119,7 +121,8 @@ namespace noise {
 			gradTDesc.readMode = cudaReadModeElementType;
 
 			// Normalized coords for permTDesc
-			permTDesc.normalizedCoords = true;
+			permTDesc.normalizedCoords = false;
+			gradTDesc.normalizedCoords = false;
 
 			// Create texture objects now
 			permTex = 0;
@@ -130,6 +133,9 @@ namespace noise {
 			// We pass the above textures into our FBM/Billow/Ridged/Swiss kernels and only need texture lookups now!
 			// Cuts down size of device code and makes it easier to read, but also has HUGE speed benefits due to the 
 			// cache-friendly nature of textures (both in access times AND cache locality)!
+		}
+
+		Perlin2D::~Perlin2D(){
 		}
 
 	}

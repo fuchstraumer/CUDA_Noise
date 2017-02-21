@@ -10,4 +10,18 @@
 
 */
 
+// Noise types.
+
+namespace noise {
+	namespace module {
+
+		// Types of base noise available 
+		enum class NoiseType {
+			PERLIN,
+			SIMPLEX,
+		};
+
+	}
+}
+
 #endif // !CONSTANTS_H
