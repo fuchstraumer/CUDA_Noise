@@ -7,7 +7,7 @@
 #include "image\Image.h"
 int main() {
 
-	noise::module::Billow2D module(4096, 4096, 1.0f, 1.0f, 2, 0.07f, 2.0f, 2);
+	noise::module::Billow2DSimplex module(4096, 4096, 1.0f, 1.0f, 2, 0.07f, 2.0f, 2);
 	module.Generate();
 	std::vector<float> test_data;
 	test_data = module.GetGPUData();
