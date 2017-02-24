@@ -128,6 +128,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\generators\Simplex.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
+    <ClInclude Include="cpp\modules\modifiers\Add.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
     <ClInclude Include="cpp\modules\modifiers\Gradient.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
@@ -152,6 +153,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\Perlin.cpp" />
     <ClCompile Include="cpp\modules\generators\Simplex.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

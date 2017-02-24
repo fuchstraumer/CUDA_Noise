@@ -69,6 +69,20 @@ __global__ void Billow2DKernel(cudaSurfaceObject_t out, cudaTextureObject_t perm
 	surf2Dwrite(val, out, i * sizeof(float), j);
 }
 
+__global__ void AddKernel(cudaSurfaceObject_t out, cudaTextureObject_t in, float val) {
+	const int i = blockIdx.x * blockDim.x + threadIdx.x;
+	const int j = blockIdx.y * blockDim.y + threadIdx.y;
+
+	float previous_value;
+	previous_value = tex2D<float>(in, i, j);
+
+	float final_value;
+	final_value = previous_value + val;
+
+	surf2Dwrite(final_value, out, i * sizeof(float), j);
+
+}
+
 __global__ void Billow2DKernelSimplex(cudaSurfaceObject_t out, cudaTextureObject_t perm, cudaTextureObject_t grad, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves){
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
