@@ -123,6 +123,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
     <CudaCompile Include="cuda\modifiers\Add.cu" />
+    <CudaCompile Include="cuda\modifiers\curve.cu" />
     <CudaCompile Include="cuda\modifiers\Select.cu" />
     <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
     <CudaCompile Include="cuda\vector_operators.cu" />
@@ -140,6 +141,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
+    <ClInclude Include="cpp\modules\modifiers\Curve.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
@@ -152,6 +154,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
     <ClInclude Include="cuda\modifiers\Add.cuh" />
+    <ClInclude Include="cuda\modifiers\curve.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
     <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
     <ClInclude Include="cuda\vector_operators.cuh" />
@@ -165,6 +168,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
   </ItemGroup>

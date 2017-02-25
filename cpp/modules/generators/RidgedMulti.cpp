@@ -17,7 +17,6 @@ namespace noise {
 			Generated = true;
 		}
 
-
 	}
 
 }
