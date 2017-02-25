@@ -78,7 +78,7 @@ void ImageWriter::ConvertRawData() {
 	// Copy values over to pixelData, for a grayscale image.
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			size_t idx = 4 * height * y + 4 * x;
+			size_t idx = 4 * width * y + 4 * x;
 			pixelData[idx + 0] = tmpBuffer[height * y + x];
 			pixelData[idx + 1] = tmpBuffer[height * y + x];
 			pixelData[idx + 2] = tmpBuffer[height * y + x];

@@ -1,5 +1,11 @@
 #include "vector_operators.cuh"
 
+/*
+	
+	FLOAT2 OPERATORS
+
+*/
+
 __device__ float2 operator*(const float2& v0, const float2& v1) {
 	return make_float2(v0.x * v1.x, v0.y * v1.y);
 }
@@ -99,6 +105,118 @@ __device__ float2 operator-(const float2 & v, const int & i){
 	float f = __int2float_rn(i);
 	return v - f;
 }
+
+/*
+
+	FLOAT3 OPERATORS
+
+*/
+
+__device__ float3 operator*(const float3& v0, const float3& v1) {
+	return make_float3(v0.x * v1.x, v0.y * v1.y, v0.z * v1.z);
+}
+
+__device__ float3 operator*(const int4 & v0, const float3 & v1) {
+	return make_float3(__int2float_rn(v0.x) + v1.x, __int2float_rn(v0.y) + v1.y,
+		__int2float_rn(v0.z) + v1.z);
+}
+
+__device__ float3 operator*(const float& f, const float3& v) {
+	return make_float3(f * v.x, f * v.y, f * v.z);
+}
+
+__device__ float3 operator*(const float3& v, const float& f) {
+	return make_float3(v.x * f, v.y * f, v.z * f);
+}
+
+__device__ float3 operator*(const int & i, const float3 & v) {
+	return __int2float_rn(i) * v;
+}
+
+__device__ float3 operator*(const float3 & v, const int & i) {
+	return v * __int2float_rn(i);
+}
+
+__device__ float3 operator/(const float3 & v0, const float3 & v1) {
+	return make_float3(v0.x / v1.x, v0.y / v1.y, v0.z / v1.z);
+}
+
+__device__ float3 operator/(const int3 & v0, const float3 & v1) {
+	return make_float3(__int2float_rn(v0.x) / v1.x, __int2float_rn(v0.y) / v1.y,
+		__int2float_rn(v0.z) / v1.z);
+}
+
+__device__ float3 operator/(const float & f, const float3 & v) {
+	return make_float3(f / v.x, f / v.y, f / v.z);
+}
+
+__device__ float3 operator/(const float3& v, const float& f) {
+	return make_float3(v.x / f, v.y / f, v.z / f);
+}
+
+__device__ float3 operator/(const int & i, const float3 & v) {
+	return __int2float_rn(i) / v;
+}
+
+__device__ float3 operator/(const float3 & v, const int & i) {
+	return v / __int2float_rn(i);
+}
+
+__device__ float3 operator+(const float3 & v0, const float3 & v1) {
+	return make_float3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z);
+}
+
+__device__ float3 operator+(const int3 & v0, const float3 & v1) {
+	return make_float3(__int2float_rn(v0.x) + v1.x, __int2float_rn(v0.y) + v1.y,
+		__int2float_rn(v0.z) + v1.z);
+}
+
+__device__ float3 operator+(const float & f, const float3 & v) {
+	return make_float3(f + v.x, f + v.y, f + v.z);
+}
+
+__device__ float3 operator+(const float3& v, const float& f) {
+	return make_float3(f + v.x, f + v.y, f + v.z);
+}
+
+__device__ float3 operator+(const int & i, const float3 & v) {
+	return __int2float_rn(i) + v;
+}
+
+__device__ float3 operator+(const float3 & v, const int & i) {
+	return v + __int2float_rn(i);
+}
+
+__device__ float3 operator-(const float3 & v0, const float3 & v1) {
+	return make_float3(v0.x - v1.x, v0.y - v1.y, v0.z - v1.z);
+}
+
+__device__ float3 operator-(const int4 & v0, const float3 & v1) {
+	return make_float3(__int2float_rn(v0.x) - v1.x, __int2float_rn(v0.y) - v1.y,
+		__int2float_rn(v0.z) - v1.z);
+}
+
+__device__ float3 operator-(const float & f, const float3 & v) {
+	return make_float3(f - v.x, f - v.y, f - v.z);
+}
+
+__device__ float3 operator-(const float3& v, const float& f) {
+	return make_float3(v.x - f, v.y - f, v.z - f);
+}
+
+__device__ float3 operator-(const int & i, const float3 & v) {
+	return __int2float_rn(i) - v;
+}
+
+__device__ float3 operator-(const float3 & v, const int & i) {
+	return v - __int2float_rn(i);
+}
+
+/*
+
+	FLOAT4 OPERATORS
+
+*/
 
 __device__ float4 operator*(const float4& v0, const float4& v1) {
 	return make_float4(v0.x * v1.x, v0.y * v1.y, v0.z * v1.z, v0.w * v1.w);

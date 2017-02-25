@@ -1,5 +1,5 @@
-#ifndef FBM_CUH
-#define FBM_CUH
+#ifndef PERLIN_CUH
+#define PERLIN_CUH
 #include "common\CUDA_Include.h"
 #include "cuda_assert.h"
 #include "vector_operators.cuh"
@@ -19,17 +19,14 @@ typedef unsigned char uchar;
 
 */
 
-#ifndef HALF_PRECISION_SUPPORT
+__device__ float perlin2d_tex(cudaTextureObject_t perm, cudaTextureObject_t grad, float2 point, int seed);
 
-// 32-bit device functions for generating FBM noise.
+// From: https://github.com/covexp/cuda-noise/blob/master/cudaNoise/cudaNoise.cu
+__device__ float perlin2d(float2 position, float scale, int seed);
 
-__device__ float perlin2d(cudaTextureObject_t perm, cudaTextureObject_t grad, float2 point, int seed);
+// Actual noise function. Perlin2D just calls this with a randomly offset z coord.
+__device__ float perlin3d(float3 position, float scale, int seed);
 
-#endif // !HALF_PRECISION_SUPPORT
-
-#ifdef HALF_PRECISION_SUPPORT
-
-#endif // !HALF_PRECISION_SUPPORT
 
 
 #endif // !PERLIN_2D_CUH

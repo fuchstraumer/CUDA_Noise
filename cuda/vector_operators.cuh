@@ -55,6 +55,51 @@ __device__ float2 operator-(const int& i, const float2 &v);
 
 __device__ float2 operator-(const float2& v, const int& i);
 
+// Float3 operators.
+
+// Binary operators w/ other float3's
+
+__device__ float3 operator*(const float3& v0, const float3& v1);
+
+__device__ float3 operator/(const float3& v0, const float3& v1);
+
+__device__ float3 operator+(const float3& v0, const float3& v1);
+
+__device__ float3 operator-(const float3& v0, const float3& v1);
+
+// Binary operators with other scalar types
+
+__device__ float3 operator*(const float& f, const float3& v);
+
+__device__ float3 operator*(const float3& v, const float& f);
+
+__device__ float3 operator*(const int& i, const float3& v);
+
+__device__ float3 operator*(const float3& v, const int& i);
+
+__device__ float3 operator/(const float& f, const float3& v);
+
+__device__ float3 operator/(const float3& v, const float& f);
+
+__device__ float3 operator/(const int& i, const float3& v);
+
+__device__ float3 operator/(const float3& v, const int& i);
+
+__device__ float3 operator+(const float& f, const float3& v);
+
+__device__ float3 operator+(const float3& v, const float& f);
+
+__device__ float3 operator+(const int& i, const float3& v);
+
+__device__ float3 operator+(const float3& v, const int& i);
+
+__device__ float3 operator-(const float& f, const float3& v);
+
+__device__ float3 operator-(const float3& v, const float& f);
+
+__device__ float3 operator-(const int& i, const float3 &v);
+
+__device__ float3 operator-(const float3& v, const int& i);
 
 // Float4 operators
 

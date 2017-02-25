@@ -79,21 +79,18 @@ namespace noise {
 		// Config struct for noise generators.
 		struct noiseCfg {
 
+			// Seed for the noise generator
+			int Seed;
 			// Frequency of the noise
 			float Frequency;
 			// Lacunarity controls amplitude of the noise, effectively
 			float Lacunarity;
-			// Persistence controls how the amplitude of successive octaves decreases.
-			float Persistence;
 			// Controls how many octaves to use during octaved noise generation
 			int Octaves;
-			// Seed for the noise generator
-			int Seed;
-			// Sets limit on octaves.
-			int MaxOctaves;
-
-			noiseCfg(float f, float l, float p, int o, int s, int max_o) : Frequency(f), Lacunarity(l), 
-				Persistence(p), Octaves(o), Seed(s), MaxOctaves(max_o) {}
+			// Persistence controls how the amplitude of successive octaves decreases.
+			float Persistence;
+			
+			noiseCfg(int s, float f, float l, int o, float p) : Seed(s), Frequency(f), Lacunarity(l), Octaves(o), Persistence(p) {}
 
 			noiseCfg() = default;
 			~noiseCfg() = default;
