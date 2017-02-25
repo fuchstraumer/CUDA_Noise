@@ -96,14 +96,20 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <CodeGeneration>compute_61,sm_61</CodeGeneration>
       <FastMath>true</FastMath>
-      <Optimization>O2</Optimization>
+      <Optimization>O3</Optimization>
+      <GPUDebugInfo>false</GPUDebugInfo>
     </CudaCompile>
+    <CudaLink>
+      <Optimization>O3</Optimization>
+      <GPUDebugInfo>false</GPUDebugInfo>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="cuda\generators\billow.cu">
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\generators\FBM.cu" />
     <CudaCompile Include="cuda\generators\perlin.cu">
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
@@ -123,9 +129,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
-    <ClInclude Include="cpp\modules\generators\Perlin.h" />
     <ClInclude Include="cpp\modules\generators\Ridged.h" />
-    <ClInclude Include="cpp\modules\generators\Simplex.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
@@ -133,7 +137,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Select.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\generators\billow.cuh" />
-    <ClInclude Include="cuda\generators\DecarpientierSwiss.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
@@ -147,8 +150,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
-    <ClCompile Include="cpp\modules\generators\Perlin.cpp" />
-    <ClCompile Include="cpp\modules\generators\Simplex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

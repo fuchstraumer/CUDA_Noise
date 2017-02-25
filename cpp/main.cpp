@@ -1,13 +1,13 @@
 #include "common\CommonInclude.h"
 #include "common\CUDA_Include.h"
-
 // Include a module
 #include "modules\generators\Billow.h"
+#include "modules\generators\FBM.h"
 // Include image writing class.
 #include "image\Image.h"
 int main() {
 	static constexpr int img_size = 2048;
-	noise::module::Billow2D module(img_size, img_size, 1.0f, 1.0f, 28, 0.025f, 1.5f, 2, 0.5f);
+	noise::module::FBM2D module(img_size, img_size, 1.0f, 1.0f, 22312451, 0.15f, 1.5f, 6, 0.5f);
 	module.Generate();
 	std::vector<float> test_data;
 	test_data = module.GetGPUData();
