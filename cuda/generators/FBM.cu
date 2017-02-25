@@ -86,7 +86,7 @@ __device__ float FBM2d_Simplex(float2 point, float freq, float lacun, float pers
 	// Use loop for octav-ing
 	for (size_t i = 0; i < octaves; ++i) {
 		int seed = (init_seed + i) & 0xffffffff;
-		val = simplex2d(point);
+		val = simplex2d(point, freq);
 		result += val * amplitude;
 		// Modify vars for next octave.
 		freq *= lacun;

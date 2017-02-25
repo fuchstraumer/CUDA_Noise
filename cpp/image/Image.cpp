@@ -8,6 +8,13 @@ ImageWriter::ImageWriter(int _width, int _height) : width(_width), height(_heigh
 	rawData.resize(width * height);
 }
 
+void ImageWriter::FreeMemory(){
+	rawData.clear();
+	rawData.shrink_to_fit();
+	pixelData.clear();
+	pixelData.shrink_to_fit();
+}
+
 void ImageWriter::WritePNG(const char * filename, int compression_level) const{
 	if (compression_level == 0) {
 		// Saves uncompressed image using "pixelData" to "filename"
@@ -60,7 +67,7 @@ void ImageWriter::ConvertRawData() {
 	auto min_max = std::minmax_element(rawData.begin(), rawData.end());
 	float max = *min_max.first;
 	float min = *min_max.second;
-
+	std::cerr << "max: " << max << " min: " << min << std::endl;
 	auto scaleRaw = [max, min](float val)->unsigned char {
 		val = (val - min) / (max - min);
 		// val += 0.50f;

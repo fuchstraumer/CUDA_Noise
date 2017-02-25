@@ -1,6 +1,7 @@
 #pragma once
 #ifndef CUDA_INCLUDE_H
 #define CUDA_INCLUDE_H
+#include "CommonInclude.h"
 /*
 
 	CUDA_INCLUDE_H

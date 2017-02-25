@@ -1,5 +1,7 @@
 #include "Base.h"
 #include "cuda_assert.h"
+#include "../image/Image.h"
+
 
 namespace noise {
 
@@ -18,28 +20,15 @@ namespace noise {
 			// Resource description
 			struct cudaResourceDesc soDesc;
 			memset(&soDesc, 0, sizeof(soDesc));
-			struct cudaResourceDesc texDesc;
-			memset(&texDesc, 0, sizeof(texDesc));
 			
 			// Allocate for arrays.
-			cudaMallocArray(&texArray, &cfDescr, width, height);
+			// cudaMallocArray(&texArray, &cfDescr, width, height);
 			// Flags only needed for surface object, in order for surface object to work.
 			cudaMallocArray(&surfArray, &cfDescr, width, height, cudaArraySurfaceLoadStore);
 
 			// Now set resource description attributes.
 			soDesc.resType = cudaResourceTypeArray;
-			texDesc.resType = cudaResourceTypeArray;
 			soDesc.res.array.array = surfArray;
-			texDesc.res.array.array = texArray;
-
-			// Specify texture data and params (bad name, but we already used "texDesc")
-			struct cudaTextureDesc texTDescr;
-			memset(&texTDescr, 0, sizeof(texTDescr));
-			texTDescr.readMode = cudaReadModeElementType;
-			//texTDescr.normalizedCoords = 1;
-			// Setup texture object that will be used as input data from the previous module.
-			input = 0;
-			cudaCreateTextureObject(&input, &texDesc, &texTDescr, nullptr);
 
 			// Setup surface object that will be used as output data for this module to write to
 			output = 0;
@@ -50,10 +39,8 @@ namespace noise {
 		Module::~Module() {
 			// Destroy objects
 			cudaDestroySurfaceObject(output);
-			cudaDestroyTextureObject(input);
 			// Free arrays
 			cudaFreeArray(surfArray);
-			cudaFreeArray(texArray);
 		}
 
 		void Module::ConnectModule(Module &other) {
@@ -63,8 +50,8 @@ namespace noise {
 			sourceModules.push_back(std::shared_ptr<Module>(&other));
 		}
 
-		cudaSurfaceObject_t* Module::GetData() const{
-			return nullptr;
+		cudaSurfaceObject_t Module::GetData() const{
+			return output;
 		}
 
 		std::shared_ptr<Module> Module::GetModule(size_t idx) const {
@@ -84,6 +71,32 @@ namespace noise {
 			// Return result data.
 			return result;
 		}
+
+		std::vector<float> Module::GetGPUDataNormalized() const{
+			std::vector<float> tmpBuffer;
+			std::vector<float> raw = GetGPUData();
+			tmpBuffer.resize(raw.size());
+			auto min_max = std::minmax_element(raw.begin(), raw.end());
+			float max = *min_max.first;
+			float min = *min_max.second;
+			// std::cerr << "max: " << max << " min: " << min << std::endl;
+			auto scaleRaw = [max, min](float val)->float {
+				float result;
+				result = (val - min) / (max - min);
+				return result;
+			};
+			std::transform(raw.begin(), raw.end(), tmpBuffer.begin(), scaleRaw);
+			return tmpBuffer;
+		}
+
+		void Module::SaveToPNG(const char * name){
+			std::vector<float> rawData = GetGPUData();
+			ImageWriter out(dims.first, dims.second);
+			out.SetRawData(std::move(rawData));
+			out.ConvertRawData();
+			out.WritePNG(name);
+		}
+
 
 
 	}

@@ -14,6 +14,7 @@ namespace noise {
 
 		void Billow2D::Generate(){
 			BillowLauncher(output, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			Generated = true;
 		}
 
 		Billow2DSimplex::Billow2DSimplex(int width, int height, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height),
@@ -25,6 +26,7 @@ namespace noise {
 
 		void Billow2DSimplex::Generate() {
 			BillowSimplexLauncher(output, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			Generated = true;
 		}
 	}
 }

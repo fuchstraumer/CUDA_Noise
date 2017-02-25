@@ -1,8 +1,8 @@
 #pragma once
 #ifndef SELECT_H
 #define SELECT_H
-#include "stdafx.h"
-#include "Base.h"
+#include "common\CommonInclude.h"
+#include "..\Base.h"
 
 namespace noise {
 	namespace module {
@@ -31,6 +31,40 @@ namespace noise {
 
 			// The falloff value does not have to be set at all. The Modules MUST be set eventually, but don't need to be set upon initialization.
 			Select(int width, int height, float low_value, float high_value, float falloff = 0.15f, std::shared_ptr<Module> selector = nullptr, std::shared_ptr<Module> subject0 = nullptr, std::shared_ptr<Module> subject1 = nullptr);
+
+			~Select();
+
+			// Set subject module
+			void SetSubject(size_t idx, std::shared_ptr<Module> subject);
+
+			// Set selector module
+			void SetSelector(std::shared_ptr<Module> selector);
+
+			// SourceModule count = 3
+			virtual int GetSourceModuleCount() const override;
+
+			// Run kernel.
+			virtual void Generate() override;
+
+			// Set high/low values
+			void SetHighThreshold(float _high);
+			void SetLowThreshold(float _low);
+
+			// Get high/low values
+			float GetHighTreshold() const;
+			float GetLowThreshold() const;
+
+			// Set falloff
+			void SetFalloff(float _falloff);
+
+			// Get falloff
+			float GetFalloff() const;
+
+		private:
+
+			float highThreshold, lowThreshold;
+
+			float falloff;
 
 		};
 

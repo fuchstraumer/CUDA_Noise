@@ -22,11 +22,13 @@ __device__ float3 permute(float3 x) {
 	return mod289(_x);
 }
 
-__device__ float simplex2d(float2 pos) {
+__device__ float simplex2d(float2 pos, float freq) {
 	float4 C = make_float4(0.211324865405187f,  // (3.0-sqrt(3.0))/6.0
 						   0.366025403784439f,  // 0.5*(sqrt(3.0)-1.0)
 						  -0.577350269189626f,  // -1.0 + 2.0 * C.x
 						   0.024390243902439f); // 1.0 / 41.0)
+	pos.x *= freq;
+	pos.y *= freq;
 
 	float dp = dot(pos, make_float2(C.y, C.y));
 	int2 i = make_int2(floorf(pos.x + dp), floorf(pos.y + dp));
