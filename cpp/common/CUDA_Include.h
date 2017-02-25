@@ -16,5 +16,6 @@
 #include <vector_types.h>
 #include <vector_functions.h>
 #include <device_functions.h>
+#include "../cuda/cuda_assert.h"
 
 #endif // !CUDA_INCLUDE_H
