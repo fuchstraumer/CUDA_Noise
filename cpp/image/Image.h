@@ -20,6 +20,8 @@ public:
 	// Initializes image and allocates space in vector used to hold raw data.
 	ImageWriter(int width, int height);
 
+	void FreeMemory();
+
 	// Writes data contained in this image to file with given name.
 	void WriteBMP(const char* filename) const;
 

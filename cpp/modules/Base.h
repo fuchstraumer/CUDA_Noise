@@ -40,8 +40,8 @@ namespace noise {
 			// Generates data and stores it in this object
 			virtual void Generate() = 0;
 
-			// Returns generated data.
-			virtual cudaSurfaceObject_t* GetData() const;
+			// Returns Generated data.
+			virtual cudaSurfaceObject_t GetData() const;
 
 			// Gets reference to module at given index in this modules "sourceModules" container
 			virtual std::shared_ptr<Module> GetModule(size_t idx) const;
@@ -52,22 +52,27 @@ namespace noise {
 			// Get texture data from GPU and return it as a vector of floating point values.
 			virtual std::vector<float> GetGPUData() const;
 
+			// Get texture from GPU and return it as a normalized (0.0 - 1.0) vector floating point values
+			virtual std::vector<float> GetGPUDataNormalized() const;
+
+			// Save current module to an image with name "name"
+			virtual void SaveToPNG(const char* name);
+
+			// Tells us whether or not this module has already Generated data.
+			bool Generated;
+
+			// Each module will write values into this
+			cudaSurfaceObject_t output;
+
 		protected:
 
 			// Dimensions of textures.
 			std::pair<int, int> dims;
 
-			// Each module will write values into this
-			cudaSurfaceObject_t output;
-
-			// Each module can read values from this.
-			cudaTextureObject_t input;
-
 			// underlying CUDA arrays that will hold our data.
-			cudaArray *surfArray, *texArray;
+			cudaArray *surfArray;
 
-			// Tells us whether or not this module has already generated data.
-			bool generated;
+			
 
 			// Modules that precede this module, with the back 
 			// of the vector being the module immediately before 

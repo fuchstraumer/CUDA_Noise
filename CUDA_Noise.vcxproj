@@ -52,11 +52,13 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalOptions>/std:c++latest %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <StructMemberAlignment>4Bytes</StructMemberAlignment>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>cudart.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;"$(ProjectDir)ext\lib\LodePNG_GD.lib";OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
@@ -67,6 +69,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <CodeGeneration>compute_61,sm_61</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <GenerateLineInfo>true</GenerateLineInfo>
+      <MaxRegCount>0</MaxRegCount>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,6 +121,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\modifiers\Add.cu" />
+    <CudaCompile Include="cuda\modifiers\Select.cu" />
     <CudaCompile Include="cuda\vector_operators.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +137,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\generators\Ridged.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
+    <ClInclude Include="cpp\modules\modifiers\Add.h" />
+    <ClInclude Include="cpp\modules\modifiers\Select.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
     <ClInclude Include="cpp\modules\Ridged.h" />
     <ClInclude Include="cpp\modules\Select.h" />
@@ -140,6 +147,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
+    <ClInclude Include="cuda\modifiers\Add.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
     <ClInclude Include="cuda\vector_operators.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
@@ -150,6 +158,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

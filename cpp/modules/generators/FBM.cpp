@@ -16,6 +16,7 @@ namespace noise {
 
 		void FBM2D::Generate(){
 			FBM_Launcher(output, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			Generated = true;
 		}
 
 		// Pass width and height to base class ctor, initialize configuration struct, initialize origin (using initializer list)
@@ -29,6 +30,7 @@ namespace noise {
 
 		void FBM2DSimplex::Generate() {
 			FBM_Launcher_Simplex(output, dims.first, dims.second, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			Generated = true;
 		}
 	}
 }

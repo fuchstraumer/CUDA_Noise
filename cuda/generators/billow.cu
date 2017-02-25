@@ -63,9 +63,7 @@ void BillowLauncher(cudaSurfaceObject_t out, int width, int height, float2 origi
 #ifdef CUDA_TIMING_TESTS
 	cudaEventRecord(start);
 #endif // CUDA_TIMING_TESTS
-	int minGridSize, blockSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, (void*)Billow2DKernel, 0, 0);
-	dim3 threadsPerBlock(blockSize, blockSize);
+	dim3 threadsPerBlock(32, 32);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	Billow2DKernel<<<numBlocks,threadsPerBlock>>>(out, width, height, origin, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
@@ -101,7 +99,7 @@ __device__ float billow2D_S(float2 point, float freq, float lacun, float persist
 	point.y = point.y * freq;
 	// Use loop for fractal octave bit
 	for (size_t i = 0; i < octaves; ++i) {
-		val = simplex2d(point);
+		val = simplex2d(point, freq);
 		val = fabsf(val);
 		result += val * amplitude;
 		freq *= lacun;
@@ -134,6 +132,11 @@ __global__ void Billow2DKernelSimplex(cudaSurfaceObject_t out, int width, int he
 
 
 void BillowSimplexLauncher(cudaSurfaceObject_t out, int width, int height, float2 origin, float freq, float lacun, float persist, int seed, int octaves){
+	size_t heap, stack;
+	cudaDeviceGetLimit(&heap, cudaLimitMallocHeapSize);
+	cudaDeviceGetLimit(&stack, cudaLimitStackSize);
+	cudaDeviceSetLimit(cudaLimitMallocHeapSize, heap);
+	cudaDeviceSetLimit(cudaLimitStackSize, stack);
 #ifdef CUDA_TIMING_TESTS
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -143,15 +146,13 @@ void BillowSimplexLauncher(cudaSurfaceObject_t out, int width, int height, float
 #ifdef CUDA_TIMING_TESTS
 	cudaEventRecord(start);
 #endif // CUDA_TIMING_TESTS
-	dim3 threadsPerBlock(32, 32);
+	dim3 threadsPerBlock(16, 16);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	Billow2DKernelSimplex<<<numBlocks, threadsPerBlock>>>(out, width, height, origin, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
-	cudaAssert(cudaThreadSynchronize());
 	// Synchronize device
 	cudaAssert(cudaDeviceSynchronize());
-	
 #ifdef CUDA_TIMING_TESTS
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
