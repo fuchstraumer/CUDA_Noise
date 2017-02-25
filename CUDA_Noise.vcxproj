@@ -117,12 +117,14 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\generators\ridged_multi.cu" />
     <CudaCompile Include="cuda\generators\simplex.cu">
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
     <CudaCompile Include="cuda\modifiers\Add.cu" />
     <CudaCompile Include="cuda\modifiers\Select.cu" />
+    <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
     <CudaCompile Include="cuda\vector_operators.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -134,11 +136,12 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
-    <ClInclude Include="cpp\modules\generators\Ridged.h" />
+    <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
+    <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
     <ClInclude Include="cpp\modules\Ridged.h" />
     <ClInclude Include="cpp\modules\Select.h" />
@@ -146,9 +149,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
+    <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
     <ClInclude Include="cuda\modifiers\Add.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
+    <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
     <ClInclude Include="cuda\vector_operators.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
   </ItemGroup>
@@ -158,8 +163,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
+    <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

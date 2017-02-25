@@ -1,29 +1,30 @@
 #pragma once
-#ifndef BILLOW_H
-#define BILLOW_H
-#include "..\Base.h"
+#ifndef RIDGED_MULTI_H
+#define RIDGED_MULTI_H
+#include "common\CommonInclude.h"
+#include "../Base.h"
+
 namespace noise {
+
 	namespace module {
 
 		// Default parameters
-		constexpr float DEFAULT_BILLOW_FREQUENCY = 0.25f;
-		constexpr float DEFAULT_BILLOW_LACUNARITY = 2.0f;
-		constexpr int DEFAULT_BILLOW_OCTAVES = 6;
-		constexpr float DEFAULT_BILLOW_PERSISTENCE = 0.50f;
-		constexpr int DEFAULT_BILLOW_SEED = 0;
+		constexpr float DEFAULT_RIDGED_FREQUENCY = 1.0f;
+		constexpr float DEFAULT_RIDGED_LACUNARITY = 2.0f;
+		constexpr int DEFAULT_RIDGED_OCTAVES = 6;
+		constexpr float DEFAULT_RIDGED_PERSISTENCE = 0.50f;
+		constexpr int DEFAULT_RIDGED_SEED = 0;
 
 		// Maximum octave level to allow
-		constexpr int BILLOW_MAX_OCTAVES = 24;
+		constexpr int FBM_MAX_OCTAVES = 24;
 
-
-		class Billow2D : public Module{
+		class RidgedMulti : public Module {
 		public:
-
 			// Width + height specify output texture size.
 			// Seed defines a value to seed the generator with
 			// X & Y define the origin of the noise generator
-			Billow2D(int width, int height, noise_t noise_type = noise_t::PERLIN, float x = 0.0f, float y = 0.0f, int seed = DEFAULT_BILLOW_SEED, float freq = DEFAULT_BILLOW_FREQUENCY, float lacun = DEFAULT_BILLOW_LACUNARITY,
-				int octaves = DEFAULT_BILLOW_OCTAVES, float persist = DEFAULT_BILLOW_PERSISTENCE);
+			RidgedMulti(int width, int height, noise_t noise_type = noise_t::PERLIN, int x = 0, int y = 0, int seed = DEFAULT_RIDGED_SEED, float freq = DEFAULT_RIDGED_FREQUENCY, float lacun = DEFAULT_RIDGED_LACUNARITY,
+				int octaves = DEFAULT_RIDGED_OCTAVES, float persist = DEFAULT_RIDGED_PERSISTENCE);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.
 			virtual int GetSourceModuleCount() const override;
@@ -38,10 +39,11 @@ namespace noise {
 			// Configuration attributes.
 			noiseCfg Attributes;
 
+			// Type of noise to use.
 			noise_t NoiseType;
 		};
+
 	}
+
 }
-
-
-#endif // !BILLOW_H
+#endif // !RIDGED_MULTI_H
