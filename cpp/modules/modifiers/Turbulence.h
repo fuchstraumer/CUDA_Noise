@@ -1,7 +1,7 @@
 #pragma once
 #ifndef TURBULENCE_H
 #define TURBULENCE_H
-#include "common\CommonInclude.h"
+#include "common/CUDA_Include.h"
 #include "../Base.h"
 
 namespace noise {

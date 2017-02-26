@@ -8,6 +8,7 @@ namespace noise {
 	namespace module {
 
 		Module::Module(int width, int height) : dims(width, height) {
+			Generated = false;
 			// Setup cudaSurfaceObject_t and cudaTextureObject_t objects
 			// based on given dimensions.
 
@@ -24,23 +25,28 @@ namespace noise {
 			// Allocate for arrays.
 			// cudaMallocArray(&texArray, &cfDescr, width, height);
 			// Flags only needed for surface object, in order for surface object to work.
-			cudaMallocArray(&surfArray, &cfDescr, width, height, cudaArraySurfaceLoadStore);
+			cudaError_t err = cudaSuccess;
+			err = cudaMallocArray(&surfArray, &cfDescr, width, height, cudaArraySurfaceLoadStore);
+			cudaAssert(err);
 
 			// Now set resource description attributes.
 			soDesc.resType = cudaResourceTypeArray;
 			soDesc.res.array.array = surfArray;
 
 			// Setup surface object that will be used as output data for this module to write to
-			output = 0;
-			cudaCreateSurfaceObject(&output, &soDesc);
+			err = cudaCreateSurfaceObject(&output, &soDesc);
+			cudaAssert(err);
 
 		}
 
 		Module::~Module() {
-			// Destroy objects
-			cudaDestroySurfaceObject(output);
+			cudaError_t err = cudaSuccess;
 			// Free arrays
-			cudaFreeArray(surfArray);
+			err = cudaFreeArray(surfArray);
+			cudaAssert(err);
+			// Destroy objects
+			err = cudaDestroySurfaceObject(output);
+			cudaAssert(err);
 		}
 
 		void Module::ConnectModule(Module &other) {

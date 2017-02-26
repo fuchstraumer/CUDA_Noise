@@ -2,6 +2,7 @@
 #ifndef BILLOW_H
 #define BILLOW_H
 #include "..\Base.h"
+#include "common\CUDA_Include.h"
 namespace noise {
 	namespace module {
 

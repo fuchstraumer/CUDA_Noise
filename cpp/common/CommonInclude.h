@@ -29,17 +29,9 @@ enum noise_t {
 	SIMPLEX,
 };
 
-// Control point struct.Aligned so things transit to GPU nicely.
 typedef struct alignas(sizeof(float)) ControlPoint {
-
+	float InputVal, OutputVal;
 	ControlPoint(float in, float out) : InputVal(in), OutputVal(out) {}
-
-	// Input value, or "x"
-	float InputVal;
-
-	// Output value, or "y"
-	float OutputVal;
-
 } ControlPoint;
 
 #endif // !COMMON_INCLUDE_H

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef RIDGED_MULTI_H
 #define RIDGED_MULTI_H
-#include "common\CommonInclude.h"
+#include "common\CUDA_Include.h"
 #include "../Base.h"
 
 namespace noise {

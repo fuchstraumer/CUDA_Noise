@@ -1,7 +1,6 @@
 #pragma once
 #ifndef ADD_H
 #define ADD_H
-#include "common\CommonInclude.h"
 #include "common\CUDA_Include.h"
 #include "../Base.h"
 

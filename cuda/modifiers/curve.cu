@@ -68,6 +68,7 @@ __global__ void CurveKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 }
 
 void CurveLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, std::vector<ControlPoint>& control_points) {
+
 #ifdef CUDA_TIMING_TESTS
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);

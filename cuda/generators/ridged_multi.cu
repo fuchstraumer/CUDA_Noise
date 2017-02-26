@@ -9,7 +9,8 @@ __device__ float Ridged2D_Simplex(float2 point, float freq, float lacun, float p
 	point.y = point.y * freq;
 	// Use loop for fractal octave bit
 	for (size_t i = 0; i < octaves; ++i) {
-		val = simplex2d(point, freq);
+		int seed = (init_seed + i) & 0xffffffff;
+		val = simplex2d(point, seed);
 		val = fabsf(val);
 		result += val * amplitude;
 		freq *= lacun;

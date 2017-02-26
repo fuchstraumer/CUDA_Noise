@@ -1,7 +1,6 @@
 #pragma once
 #ifndef CURVE_H
 #define CURVE_H
-#include "common\CommonInclude.h"
 #include "common\CUDA_Include.h"
 #include "..\Base.h"
 /*

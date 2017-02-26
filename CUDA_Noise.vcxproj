@@ -68,7 +68,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_61,sm_61</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
-      <GenerateLineInfo>true</GenerateLineInfo>
+      <GenerateLineInfo>false</GenerateLineInfo>
       <MaxRegCount>0</MaxRegCount>
     </CudaCompile>
   </ItemDefinitionGroup>
@@ -132,6 +132,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\common\CommonInclude.h" />
     <ClInclude Include="cpp\common\Constants.h" />
     <ClInclude Include="cpp\common\CUDA_Include.h" />
+    <ClInclude Include="cpp\image\GradientImage.h" />
     <ClInclude Include="cpp\image\Image.h" />
     <ClInclude Include="cpp\modules\Base.h" />
     <ClInclude Include="cpp\modules\Billow.h" />
@@ -147,6 +148,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Perlin.h" />
     <ClInclude Include="cpp\modules\Ridged.h" />
     <ClInclude Include="cpp\modules\Select.h" />
+    <ClInclude Include="cpp\modules\utility\Cache.h" />
+    <ClInclude Include="cpp\modules\utility\Min.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
