@@ -24,14 +24,5 @@
 #include <cstdint>
 #include <memory>
 
-enum noise_t {
-	PERLIN,
-	SIMPLEX,
-};
-
-typedef struct alignas(sizeof(float)) ControlPoint {
-	float InputVal, OutputVal;
-	ControlPoint(float in, float out) : InputVal(in), OutputVal(out) {}
-} ControlPoint;
 
 #endif // !COMMON_INCLUDE_H

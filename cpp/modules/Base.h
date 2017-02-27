@@ -43,7 +43,7 @@ namespace noise {
 			virtual cudaSurfaceObject_t GetData() const;
 
 			// Gets reference to module at given index in this modules "sourceModules" container
-			virtual std::shared_ptr<Module> GetModule(size_t idx) const;
+			virtual Module* GetModule(size_t idx) const;
 
 			// Get number of source modules connected to this object.
 			virtual int GetSourceModuleCount() const = 0;
@@ -77,7 +77,7 @@ namespace noise {
 			// of the vector being the module immediately before 
 			// this one, and the front of the vector being the initial
 			// module.
-			std::vector<std::shared_ptr<Module>> sourceModules;
+			std::vector<Module*> sourceModules;
 		};
 
 		// Config struct for noise generators.

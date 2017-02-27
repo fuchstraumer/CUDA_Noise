@@ -19,4 +19,21 @@
 #include <device_functions.h>
 #include "../cuda/cuda_assert.h"
 
+
+enum noise_t {
+	PERLIN,
+	SIMPLEX,
+};
+
+enum noise_quality {
+	FAST,
+	STANDARD,
+	HIGH,
+};
+
+typedef struct alignas(sizeof(float)) ControlPoint {
+	float InputVal, OutputVal;
+	ControlPoint(float in, float out) : InputVal(in), OutputVal(out) {}
+} ControlPoint;
+
 #endif // !CUDA_INCLUDE_H

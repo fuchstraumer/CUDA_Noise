@@ -4,6 +4,6 @@
 #include "../cuda_assert.h"
 #include "../generators/FBM.cuh"
 
-void TurbulenceLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t input, int width, int height, noise_t noise_type, int roughness, int seed, float strength);
+void TurbulenceLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength);
 
 #endif // !TURBULENCE_CUH

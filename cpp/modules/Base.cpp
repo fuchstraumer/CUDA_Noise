@@ -53,14 +53,14 @@ namespace noise {
 			// Copy preceding source modules from "other"
 			sourceModules = other.sourceModules;
 			// Add other to the source modules.
-			sourceModules.push_back(std::shared_ptr<Module>(&other));
+			sourceModules.push_back(&other);
 		}
 
 		cudaSurfaceObject_t Module::GetData() const{
 			return output;
 		}
 
-		std::shared_ptr<Module> Module::GetModule(size_t idx) const {
+		Module* Module::GetModule(size_t idx) const {
 			// .at(idx) has bounds checking in debug modes, iirc.
 			return sourceModules.at(idx);
 		}

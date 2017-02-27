@@ -16,7 +16,7 @@ namespace noise {
 		constexpr int DEFAULT_RIDGED_SEED = 0;
 
 		// Maximum octave level to allow
-		constexpr int FBM_MAX_OCTAVES = 24;
+		constexpr int RIDGED_MAX_OCTAVES = 24;
 
 		class RidgedMulti : public Module {
 		public:

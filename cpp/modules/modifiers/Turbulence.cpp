@@ -1,10 +1,10 @@
 #include "Turbulence.h"
-#include "../cuda/modifiers/Turbulence.cuh"
+#include "../cuda/modifiers/turbulence.cuh"
 namespace noise {
 	
 	namespace module {
 
-		Turbulence::Turbulence(int width, int height, noise_t noise_type, std::shared_ptr<Module> prev, int _roughness, int _seed, float _strength) : Module(width, height), roughness(_roughness), seed(_seed), strength(_strength) {
+		Turbulence::Turbulence(int width, int height, noise_t noise_type, Module* prev, int _roughness, int _seed, float _strength) : Module(width, height), roughness(_roughness), seed(_seed), strength(_strength) {
 			sourceModules.push_back(prev);
 		}
 

@@ -2,22 +2,17 @@
 
 
 
-__device__ float billow2D_Simplex(float2 point, float freq, float lacun, float persist, int init_seed, int octaves) {
+__device__ float billow2D_Simplex(float2 point, float freq, float lacun, float persist, int octaves) {
 	float result = 0.0f;
 	float amplitude = 1.0f;
-	float val;
 	// Scale starting point by frequency.
 	point.x = point.x * freq;
 	point.y = point.y * freq;
 	// Use loop for fractal octave bit
 	for (size_t i = 0; i < octaves; ++i) {
-		int seed = (init_seed + i) & 0xffffffff;
-		val = simplex2d(point, seed);
-		val = fabsf(val);
-		result += val * amplitude;
-		freq *= lacun;
-		point.x *= freq;
-		point.y *= freq;
+		result += fabsf(simplex2d(point, nullptr)) * amplitude;
+		point.x *= lacun;
+		point.y *= lacun;
 		amplitude *= persist;
 	}
 	//result /= 100.0f;
@@ -28,7 +23,6 @@ __device__ float billow2D(float2 point, float freq, float lacun, float persist, 
 	// Will be incremented upon.
 	float result = 0.0f;
 	float amplitude = 1.0f;
-	float val;
 	// Scale point by freq
 	point.x = point.x * freq;
 	point.y = point.y * freq;
@@ -36,13 +30,10 @@ __device__ float billow2D(float2 point, float freq, float lacun, float persist, 
 	// Use loop for octav-ing
 	for (size_t i = 0; i < octaves; ++i) {
 		int seed = (init_seed + i) & 0xffffffff;
-		val = perlin2d(point, freq, seed);
-		val = fabsf(val);
-		result += val * amplitude;
+		result += fabsf(perlin2d(point, seed)) * amplitude;
 		// Modify vars for next octave.
-		freq *= lacun;
-		point.x *= freq;
-		point.y *= freq;
+		point.x *= lacun;
+		point.y *= lacun;
 		amplitude *= persist;
 	}
 	// float tmp = result / 100.0f;
@@ -56,26 +47,28 @@ __global__ void Billow2DKernel(cudaSurfaceObject_t out, int width, int height, n
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 
-	if (i >= width || j >= height) {
-		return;
+	if (i < width && j < height) {
+		float x, y;
+		x = i + origin.x;
+		y = j + origin.y;
+		float2 p = make_float2(x, y);
+		// Call billow function
+		float val;
+		switch (noise_type) {
+			case(noise_t::PERLIN): {
+				val = billow2D(p, freq, lacun, persist, seed, octaves);
+				break;
+			}
+			case(noise_t::SIMPLEX): {
+				val = billow2D_Simplex(p, freq, lacun, persist, octaves);
+				break;
+			}
+		}
+		// Write val to the surface
+		surf2Dwrite(val, out, i * sizeof(float), j);
 	}
 
-	float x, y;
-	x = i + origin.x;
-	y = j + origin.y;
-	float2 p = make_float2(x, y);
-	// Call billow function
-	float val;
-	switch (noise_type) {
-		case(noise_t::PERLIN): {
-			val = billow2D(p, freq, lacun, persist, seed, octaves);
-		}
-		case(noise_t::SIMPLEX): {
-			val = billow2D_Simplex(p, freq, lacun, persist, seed, octaves);
-		}
-	}
-	// Write val to the surface
-	surf2Dwrite(val, out, i * sizeof(float), j);
+	
 }
 
 
@@ -90,7 +83,7 @@ void BillowLauncher(cudaSurfaceObject_t out, int width, int height, noise_t nois
 	cudaEventRecord(start);
 #endif // CUDA_TIMING_TESTS
 
-	dim3 threadsPerBlock(32, 32);
+	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	Billow2DKernel<<<numBlocks,threadsPerBlock>>>(out, width, height, noise_type, origin, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
