@@ -300,6 +300,10 @@ __device__ float perlin2d(const float2 p, const int seed){
 	return perlin3d(make_float3(p.x, p.y, 0.0f), seed, noise_quality::HIGH);
 }
 
+__device__ float perlin2d_deriv(cudaSurfaceObject_t orig_values, const float2 p, const int seed, const noise_quality qual) {
+
+}
+
 __device__ float perlin3d(const float3 p, const int seed, noise_quality qual) {
 	/*
 		

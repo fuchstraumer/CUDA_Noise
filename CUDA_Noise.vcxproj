@@ -124,6 +124,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\generators\voronoi.cu" />
     <CudaCompile Include="cuda\modifiers\add.cu" />
     <CudaCompile Include="cuda\modifiers\curve.cu" />
     <CudaCompile Include="cuda\modifiers\select.cu" />
@@ -139,6 +140,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
     <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
+    <ClInclude Include="cpp\modules\generators\Voronoi.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
@@ -154,6 +156,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
+    <ClInclude Include="cuda\generators\voronoi.cuh" />
     <ClInclude Include="cuda\modifiers\add.cuh" />
     <ClInclude Include="cuda\modifiers\curve.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
@@ -167,6 +170,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
+    <ClCompile Include="cpp\modules\generators\Voronoi.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
