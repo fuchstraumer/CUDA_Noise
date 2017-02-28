@@ -15,17 +15,17 @@
   
  1. First, libnoise provided the inspiration for the module system.
  
- * http://libnoise.sourceforge.net/
+  * http://libnoise.sourceforge.net/
  
- * The Perlin CUDA code is directly taken from Libnoise - along with the logic, naming scheme, and layout of much of the rest of my code. Libnoise may be dated, but its still a remarkable project and I owe it a tremendous amount.
- 
+  * The Perlin CUDA code is directly taken from Libnoise - along with the logic, naming scheme, and layout of much of the rest of my code. Libnoise may be dated, but its still a remarkable project and I owe it a tremendous amount.
  
  2. Second, FastNoise and FastNoiseSIMD have provided inspiration for various optimized versions of the noise generators in particular. @Auburns has done some remarkable work. The contraints brought about by SIMD programming have many parallels in GPU programming, and as such his code continues to be something I play with as I seek to improve my own code
- * https://github.com/Auburns 
- 
+  
+  * https://github.com/Auburns 
  
  3. Third, Stefan Gustavson's simplex noise work and code is practically a reference implementation of simplex noise at this point - and the wealth of information he has provided and continus to provided has been of tremendous aid.
-  * http://weber.itn.liu.se/~stegu/
+    
+    * http://weber.itn.liu.se/~stegu/
   
 
 ---
