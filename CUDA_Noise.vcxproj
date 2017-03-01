@@ -121,7 +121,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\modifiers\abs.cu" />
     <CudaCompile Include="cuda\modifiers\Add.cu" />
+    <CudaCompile Include="cuda\modifiers\multiply.cu" />
+    <CudaCompile Include="cuda\modifiers\power.cu" />
     <CudaCompile Include="cuda\modifiers\Select.cu" />
     <CudaCompile Include="cuda\vector_operators.cu" />
   </ItemGroup>
@@ -147,7 +150,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
+    <ClInclude Include="cuda\modifiers\abs.cuh" />
     <ClInclude Include="cuda\modifiers\Add.cuh" />
+    <ClInclude Include="cuda\modifiers\multiply.cuh" />
+    <ClInclude Include="cuda\modifiers\power.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
     <ClInclude Include="cuda\vector_operators.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
