@@ -41,10 +41,7 @@ __global__ void Ridged2DKernel(cudaSurfaceObject_t out, int width, int height, n
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i < width && j < height) {
 		// Get offset pos.
-		float x, y;
-		x = i + origin.x;
-		y = j + origin.y;
-		float2 p = make_float2(x, y);
+		float2 p = make_float2(i + origin.x, j + origin.y);
 		// Call ridged function
 		float val;
 		switch (noise_type) {

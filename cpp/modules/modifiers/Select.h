@@ -32,8 +32,6 @@ namespace noise {
 			// The falloff value does not have to be set at all. The Modules MUST be set eventually, but don't need to be set upon initialization.
 			Select(int width, int height, float low_value, float high_value, float falloff = 0.15f, Module* selector = nullptr, Module* subject0 = nullptr, Module* subject1 = nullptr);
 
-			~Select();
-
 			// Set subject module
 			void SetSubject(size_t idx, Module* subject);
 
