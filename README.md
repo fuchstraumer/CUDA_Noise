@@ -38,14 +38,13 @@
 
 ### Example output:
   
-  * Select module w/ falloff:
+  * Decarpientier-Swiss module: (uses derivative at point to create more realistic "terrain")
+    ![Decarpientier-Swiss creates excellent mountainous terrain](/img/dc_swiss.png?raw=true)
   
-  * FBM module:
+  * Select module, selecting between two noise modules using another noise module:
+    ![Select module example](/img/downscaled_test.jpg?raw=true)
   
-  * Ridged-multi module:
-  
-  * Example of increasing octaves from 1 - 10
-  
+  The above select module generated in less than 100ms, with taking about 30ms per noise module and 5ms for the final select module. This was an image with dimensions of 16384x16384, so yes, its a bit fast!
 --- 
   
   
