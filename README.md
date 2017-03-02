@@ -43,8 +43,11 @@
   
   * Select module, selecting between two noise modules using another noise module:
     ![Select module example](/img/downscaled_test.jpg?raw=true)
-  
-  The above select module generated in less than 100ms, with taking about 30ms per noise module and 5ms for the final select module. This was an image with dimensions of 16384x16384, so yes, its a bit fast!
+
+
+The above select module generated in less than 100ms, with taking about 30ms per noise module and 5ms for the final select module. This was an image with dimensions of 16384x16384, so yes, its a bit fast!
+
+
 --- 
   
   
