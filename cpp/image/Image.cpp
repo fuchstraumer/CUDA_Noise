@@ -65,8 +65,8 @@ void ImageWriter::ConvertRawData() {
 	std::vector<unsigned char> tmpBuffer;
 	tmpBuffer.resize(rawData.size());
 	auto min_max = std::minmax_element(rawData.begin(), rawData.end());
-	float max = *min_max.first;
-	float min = *min_max.second;
+	float max = *min_max.second;
+	float min = *min_max.first;
 	std::cerr << "max: " << max << " min: " << min << std::endl;
 	auto scaleRaw = [max, min](float val)->unsigned char {
 		val = (val - min) / (max - min);
@@ -83,12 +83,12 @@ void ImageWriter::ConvertRawData() {
 	};
 	std::transform(rawData.begin(), rawData.end(), tmpBuffer.begin(), scaleRaw);
 	// Copy values over to pixelData, for a grayscale image.
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
+	for (size_t y = 0; y < height; ++y) {
+		for (size_t x = 0; x < width; ++x) {
 			size_t idx = 4 * width * y + 4 * x;
-			pixelData[idx + 0] = tmpBuffer[height * y + x];
-			pixelData[idx + 1] = tmpBuffer[height * y + x];
-			pixelData[idx + 2] = tmpBuffer[height * y + x];
+			pixelData[idx + 0] = tmpBuffer[width * y + x];
+			pixelData[idx + 1] = tmpBuffer[width * y + x];
+			pixelData[idx + 2] = tmpBuffer[width * y + x];
 			pixelData[idx + 3] = 255;
 		}
 	}

@@ -2,6 +2,7 @@
 #ifndef FBM_H
 #define FBM_H
 #include "..\Base.h"
+#include "common\CUDA_Include.h"
 /*
 
 	Generates values using FBM noise. Ctor includes desired dimensions
@@ -33,7 +34,7 @@ namespace noise {
 			// Width + height specify output texture size.
 			// Seed defines a value to seed the generator with
 			// X & Y define the origin of the noise generator
-			FBM2D(int width, int height, int x = 0, int y = 0, int seed = DEFAULT_FBM_SEED, float freq = DEFAULT_FBM_FREQUENCY, float lacun = DEFAULT_FBM_LACUNARITY,
+			FBM2D(int width, int height, noise_t noise_type = noise_t::PERLIN, int x = 0, int y = 0, int seed = DEFAULT_FBM_SEED, float freq = DEFAULT_FBM_FREQUENCY, float lacun = DEFAULT_FBM_LACUNARITY,
 				int octaves = DEFAULT_FBM_OCTAVES, float persist = DEFAULT_FBM_PERSISTENCE);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.
@@ -48,6 +49,9 @@ namespace noise {
 
 			// Configuration attributes.
 			noiseCfg Attributes;
+
+			// Type of noise to use.
+			noise_t NoiseType;
 		};
 
 		class FBM3D {
@@ -58,29 +62,6 @@ namespace noise {
 		class FBM4D {
 		public:
 
-		};
-
-		class FBM2DSimplex : public Module {
-		public:
-
-			// Width + height specify output texture size.
-			// Seed defines a value to seed the generator with
-			// X & Y define the origin of the noise generator
-			FBM2DSimplex(int width, int height, int x = 0, int y = 0, int seed = DEFAULT_FBM_SEED, float freq = DEFAULT_FBM_FREQUENCY, float lacun = DEFAULT_FBM_LACUNARITY,
-				int octaves = DEFAULT_FBM_OCTAVES, float persist = DEFAULT_FBM_PERSISTENCE);
-
-			// Get source module count: must be 0, this is a generator and can't have preceding modules.
-			virtual int GetSourceModuleCount() const override;
-
-			// Launches the kernel and fills this object's surface object with the relevant data.
-			virtual void Generate() override;
-
-			// Origin of this noise generator. Keep the seed constant and change this for 
-			// continuous "tileable" noise
-			std::pair<float, float> Origin;
-
-			// Configuration attributes.
-			noiseCfg Attributes;
 		};
 	}
 }

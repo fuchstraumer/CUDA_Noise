@@ -1,7 +1,6 @@
 #pragma once
 #ifndef ADD_H
 #define ADD_H
-#include "common\CommonInclude.h"
 #include "common\CUDA_Include.h"
 #include "../Base.h"
 
@@ -12,7 +11,7 @@ namespace noise {
 		class Add : public Module {
 		public:
 
-			Add(int width, int height, float add_value, std::shared_ptr<Module> source = nullptr);
+			Add(int width, int height, float add_value, Module* source = nullptr);
 
 			virtual void Generate() override;
 

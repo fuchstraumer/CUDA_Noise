@@ -24,9 +24,5 @@
 #include <cstdint>
 #include <memory>
 
-enum noise_t {
-	PERLIN,
-	SIMPLEX,
-};
 
 #endif // !COMMON_INCLUDE_H

@@ -30,15 +30,15 @@ namespace noise {
 		public:
 
 			// The falloff value does not have to be set at all. The Modules MUST be set eventually, but don't need to be set upon initialization.
-			Select(int width, int height, float low_value, float high_value, float falloff = 0.15f, std::shared_ptr<Module> selector = nullptr, std::shared_ptr<Module> subject0 = nullptr, std::shared_ptr<Module> subject1 = nullptr);
+			Select(int width, int height, float low_value, float high_value, float falloff = 0.15f, Module* selector = nullptr, Module* subject0 = nullptr, Module* subject1 = nullptr);
 
 			~Select();
 
 			// Set subject module
-			void SetSubject(size_t idx, std::shared_ptr<Module> subject);
+			void SetSubject(size_t idx, Module* subject);
 
 			// Set selector module
-			void SetSelector(std::shared_ptr<Module> selector);
+			void SetSelector(Module* selector);
 
 			// SourceModule count = 3
 			virtual int GetSourceModuleCount() const override;
