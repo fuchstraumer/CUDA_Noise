@@ -22,7 +22,7 @@ typedef unsigned char uchar;
 __device__ float perlin2d(const float2 position, const int seed);
 
 // Actual noise function. Perlin2D just calls this with a randomly offset z coord.
-__device__ float perlin3d(const float3 position, const int seed, const noise_quality qual);
+__device__ float perlin3d(const float px, const float py, const float pz, const int seed, const noise_quality qual);
 
 
 

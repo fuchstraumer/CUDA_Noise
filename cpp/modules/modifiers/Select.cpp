@@ -10,15 +10,6 @@ namespace noise {
 			sourceModules.push_back(subject1);
 		}
 
-		Select::~Select() {
-			sourceModules[0]->~Module();
-			sourceModules[1]->~Module();
-			sourceModules[2]->~Module();
-			// Delete cuda objects
-			cudaDestroySurfaceObject(output);
-			cudaFreeArray(surfArray);
-		}
-
 		void Select::SetSubject(size_t idx, Module* subject){
 			if (idx > 2 || idx < 1) {
 				std::cerr << "Index supplied to SetSubject method of a Select module must be 1 or 2 - First subject, or second subject." << std::endl;

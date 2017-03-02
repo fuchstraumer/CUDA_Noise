@@ -32,15 +32,19 @@ namespace noise {
 			// Now set resource description attributes.
 			soDesc.resType = cudaResourceTypeArray;
 			soDesc.res.array.array = surfArray;
-
 			// Setup surface object that will be used as output data for this module to write to
 			err = cudaCreateSurfaceObject(&output, &soDesc);
 			cudaAssert(err);
 
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
 		}
 
 		Module::~Module() {
 			cudaError_t err = cudaSuccess;
+			// Synchronize device to make sure its not doing anything with the elements we wish to destroy
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
 			// Free arrays
 			err = cudaFreeArray(surfArray);
 			cudaAssert(err);

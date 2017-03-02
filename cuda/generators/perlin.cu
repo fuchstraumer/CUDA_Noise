@@ -286,25 +286,22 @@ __device__ float grad3d(const float fx, const float fy, const float fz, const in
 
 	// Set up us another vector equal to the distance between the two vectors
 	// passed to this function.
-	float xvPoint = (fx - (float)ix);
-	float yvPoint = (fy - (float)iy);
-	float zvPoint = (fz - (float)iz);
 
 	// Now compute the dot product of the gradient vector with the distance
 	// vector.  The resulting value is gradient noise.  Apply a scaling value
 	// so that this noise value ranges from -1.0 to 1.0.
-	return ((xvGradient * xvPoint) + (yvGradient * yvPoint) + (zvGradient * zvPoint)) * 2.12f;
+	return ((xvGradient * (fx - (float)ix)) + (yvGradient * (fy - (float)iy)) + (zvGradient * (fz - (float)iz))) * 2.12f;
 }
 
 __device__ float perlin2d(const float2 p, const int seed){
-	return perlin3d(make_float3(p.x, p.y, 0.0f), seed, noise_quality::HIGH);
+	return perlin3d(p.x, p.y, 0.0f, seed, noise_quality::HIGH);
 }
 
 __device__ float perlin2d_deriv(cudaSurfaceObject_t orig_values, const float2 p, const int seed, const noise_quality qual) {
 
 }
 
-__device__ float perlin3d(const float3 p, const int seed, noise_quality qual) {
+__device__ float perlin3d(const float px, const float py, const float pz, const int seed, noise_quality qual) {
 	/*
 		
 		ORIGINAL IMPLEMENTATION FROM LIBNOISE: This has, however, been extensively 
@@ -328,44 +325,26 @@ __device__ float perlin3d(const float3 p, const int seed, noise_quality qual) {
 	
 	*/
 
-	float xs = 0.0f, ys = 0.0f, zs = 0.0f;
-	switch (qual) {
-	case noise_quality::FAST:
-		xs = (p.x - floorf(p.x));
-		ys = (p.y - floorf(p.y));
-		zs = (p.y - floorf(p.z));
-		break;
-	case noise_quality::STANDARD:
-		xs = sCurve3(p.x - floorf(p.x));
-		ys = sCurve3(p.y - floorf(p.y));
-		zs = sCurve3(p.z - floorf(p.z));
-		break;
-	case noise_quality::HIGH:
-		xs = sCurve5(p.x - floorf(p.x));
-		ys = sCurve5(p.y - floorf(p.y));
-		zs = sCurve5(p.z - floorf(p.z));
-		break;
-	}
 
 	// Now calculate the noise values at each vertex of the cube.  To generate
 	// the coherent-noise value at the input point, interpolate these eight
 	// noise values using the S-curve value as the interpolant (trilinear
 	// interpolation.)
 	float n0, n1, ix0, ix1, iy0, iy1;
-	n0 = grad3d(p.x, p.y, p.z, floorf(p.x), floorf(p.y), floorf(p.z), seed);
-	n1 = grad3d(p.x, p.y, p.z, floorf(p.x) + 1, floorf(p.y), floorf(p.z), seed);
-	ix0 = lerp(n0, n1, xs);
-	n0 = grad3d(p.x, p.y, p.z, floorf(p.x), floorf(p.y) + 1, floorf(p.z), seed);
-	n1 = grad3d(p.x, p.y, p.z, floorf(p.x) + 1, floorf(p.y) + 1, floorf(p.z), seed);
-	ix1 = lerp(n0, n1, xs);
-	iy0 = lerp(ix0, ix1, ys);
-	n0 = grad3d(p.x, p.y, p.z, floorf(p.x), floorf(p.y), floorf(p.z) + 1, seed);
-	n1 = grad3d(p.x, p.y, p.z, floorf(p.x) + 1, floorf(p.y), floorf(p.z) + 1, seed);
-	ix0 = lerp(n0, n1, xs);
-	n0 = grad3d(p.x, p.y, p.z, floorf(p.x), floorf(p.y) + 1, floorf(p.z) + 1, seed);
-	n1 = grad3d(p.x, p.y, p.z, floorf(p.x) + 1, floorf(p.y) + 1, floorf(p.z) + 1, seed);
-	ix1 = lerp(n0, n1, xs);
-	iy1 = lerp(ix0, ix1, ys);
+	n0 = grad3d(px, py, pz, floorf(px), floorf(py), floorf(pz), seed);
+	n1 = grad3d(px, py, pz, floorf(px) + 1, floorf(py), floorf(pz), seed);
+	ix0 = lerp(n0, n1, sCurve5(px - floorf(px)));
+	n0 = grad3d(px, py, pz, floorf(px), floorf(py) + 1, floorf(pz), seed);
+	n1 = grad3d(px, py, pz, floorf(px) + 1, floorf(py) + 1, floorf(pz), seed);
+	ix1 = lerp(n0, n1, sCurve5(px - floorf(px)));
+	iy0 = lerp(ix0, ix1, sCurve5(py - floorf(py)));
+	n0 = grad3d(px, py, pz, floorf(px), floorf(py), floorf(pz) + 1, seed);
+	n1 = grad3d(px, py, pz, floorf(px) + 1, floorf(py), floorf(pz) + 1, seed);
+	ix0 = lerp(n0, n1, sCurve5(px - floorf(px)));
+	n0 = grad3d(px, py, pz, floorf(px), floorf(py) + 1, floorf(pz) + 1, seed);
+	n1 = grad3d(px, py, pz, floorf(px) + 1, floorf(py) + 1, floorf(pz) + 1, seed);
+	ix1 = lerp(n0, n1, sCurve5(px - floorf(px)));
+	iy1 = lerp(ix0, ix1, sCurve5(py - floorf(py)));
 
-	return lerp(iy0, iy1, zs);
+	return lerp(iy0, iy1, sCurve5(pz - floorf(pz)));
 }

@@ -31,7 +31,7 @@ namespace noise {
 			Module(int width, int height);
 
 			// Destructor calls functions to clear CUDA objects/data
-			~Module();
+			virtual ~Module();
 
 			// Connects this module to another source module
 			virtual void ConnectModule(Module& other);
