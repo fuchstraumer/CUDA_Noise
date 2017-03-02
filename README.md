@@ -39,7 +39,7 @@
 ### Example output:
   
   * Decarpientier-Swiss module: (uses derivative at point to create more realistic "terrain")
-    ![Decarpientier-Swiss creates excellent mountainous terrain](/img/dc_swiss.png?raw=true)
+    ![Decarpientier-Swiss creates excellent mountainous terrain](/img/dc_swiss_perlin.png?raw=true)
   
   * Select module, selecting between two noise modules using another noise module:
     ![Select module example](/img/downscaled_test.jpg?raw=true)
