@@ -130,6 +130,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="cuda\modifiers\abs.cu" />
     <CudaCompile Include="cuda\modifiers\multiply.cu" />
     <CudaCompile Include="cuda\modifiers\power.cu" />
+    <CudaCompile Include="cuda\modifiers\Select.cu" />
+    <CudaCompile Include="cuda\vector_operators.cu" />
+    <CudaCompile Include="scalebias.cu" />
     <CudaCompile Include="cuda\generators\voronoi.cu" />
     <CudaCompile Include="cuda\modifiers\add.cu" />
     <CudaCompile Include="cuda\modifiers\curve.cu" />
@@ -173,6 +176,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\modifiers\select.cuh" />
     <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
+    <ClInclude Include="scalebias.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\image\Image.cpp" />
