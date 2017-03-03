@@ -4,7 +4,7 @@ namespace noise {
 
 	namespace module {
 
-		Add::Add(int width, int height, float add_value, std::shared_ptr<Module> source) : Module(width, height), addValue(add_value) {
+		Add::Add(int width, int height, float add_value, Module* source) : Module(width, height), addValue(add_value) {
 			sourceModules.push_back(source);
 		}
 

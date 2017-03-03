@@ -52,13 +52,11 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalOptions>/std:c++latest %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <StructMemberAlignment>4Bytes</StructMemberAlignment>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>cudart.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;"$(ProjectDir)ext\lib\LodePNG_GD.lib";OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
@@ -70,18 +68,23 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <GenerateLineInfo>true</GenerateLineInfo>
       <MaxRegCount>0</MaxRegCount>
+      <PtxAsOptionV>false</PtxAsOptionV>
+      <NvccCompilation>compile</NvccCompilation>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)cpp;$(ProjectDir)cuda;$(ProjectDir)ext\include;</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -99,8 +102,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <CodeGeneration>compute_61,sm_61</CodeGeneration>
       <FastMath>true</FastMath>
-      <Optimization>O3</Optimization>
+      <Optimization>InheritFromHost</Optimization>
       <GPUDebugInfo>false</GPUDebugInfo>
+      <HostDebugInfo>false</HostDebugInfo>
     </CudaCompile>
     <CudaLink>
       <Optimization>O3</Optimization>
@@ -117,17 +121,23 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\generators\perlin_tex.cu" />
+    <CudaCompile Include="cuda\generators\ridged_multi.cu" />
     <CudaCompile Include="cuda\generators\simplex.cu">
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
     <CudaCompile Include="cuda\modifiers\abs.cu" />
-    <CudaCompile Include="cuda\modifiers\Add.cu" />
     <CudaCompile Include="cuda\modifiers\multiply.cu" />
     <CudaCompile Include="cuda\modifiers\power.cu" />
     <CudaCompile Include="cuda\modifiers\Select.cu" />
     <CudaCompile Include="cuda\vector_operators.cu" />
     <CudaCompile Include="scalebias.cu" />
+    <CudaCompile Include="cuda\generators\voronoi.cu" />
+    <CudaCompile Include="cuda\modifiers\add.cu" />
+    <CudaCompile Include="cuda\modifiers\curve.cu" />
+    <CudaCompile Include="cuda\modifiers\select.cu" />
+    <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp\common\CommonInclude.h" />
@@ -138,11 +148,15 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
-    <ClInclude Include="cpp\modules\generators\Ridged.h" />
+    <ClInclude Include="cpp\modules\generators\PerlinTex.h" />
+    <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
+    <ClInclude Include="cpp\modules\generators\Voronoi.h" />
     <ClInclude Include="cpp\modules\Gradient.h" />
     <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
+    <ClInclude Include="cpp\modules\modifiers\Curve.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
+    <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
     <ClInclude Include="cpp\modules\Perlin.h" />
     <ClInclude Include="cpp\modules\Ridged.h" />
     <ClInclude Include="cpp\modules\Select.h" />
@@ -150,13 +164,17 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
+    <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
     <ClInclude Include="cuda\modifiers\abs.cuh" />
     <ClInclude Include="cuda\modifiers\Add.cuh" />
     <ClInclude Include="cuda\modifiers\multiply.cuh" />
     <ClInclude Include="cuda\modifiers\power.cuh" />
+    <ClInclude Include="cuda\generators\voronoi.cuh" />
+    <ClInclude Include="cuda\modifiers\add.cuh" />
+    <ClInclude Include="cuda\modifiers\curve.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
-    <ClInclude Include="cuda\vector_operators.cuh" />
+    <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
     <ClInclude Include="scalebias.cuh" />
   </ItemGroup>
@@ -166,8 +184,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
+    <ClCompile Include="cpp\modules\generators\PerlinTex.cpp" />
+    <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
+    <ClCompile Include="cpp\modules\generators\Voronoi.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

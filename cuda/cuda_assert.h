@@ -3,7 +3,6 @@
 #define CUDA_ASSERT_H
 #include "cuda_runtime.h"
 #include <stdio.h>
-
 #ifdef NDEBUG
 // Removes penalty of using this if not in debug mode.
 #define cudaAssert(expression) ((void)(0))

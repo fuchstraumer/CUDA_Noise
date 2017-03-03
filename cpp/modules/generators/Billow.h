@@ -2,6 +2,7 @@
 #ifndef BILLOW_H
 #define BILLOW_H
 #include "..\Base.h"
+#include "common\CUDA_Include.h"
 namespace noise {
 	namespace module {
 
@@ -22,7 +23,7 @@ namespace noise {
 			// Width + height specify output texture size.
 			// Seed defines a value to seed the generator with
 			// X & Y define the origin of the noise generator
-			Billow2D(int width, int height, float x = 0.0f, float y = 0.0f, int seed = DEFAULT_BILLOW_SEED, float freq = DEFAULT_BILLOW_FREQUENCY, float lacun = DEFAULT_BILLOW_LACUNARITY,
+			Billow2D(int width, int height, noise_t noise_type = noise_t::PERLIN, float x = 0.0f, float y = 0.0f, int seed = DEFAULT_BILLOW_SEED, float freq = DEFAULT_BILLOW_FREQUENCY, float lacun = DEFAULT_BILLOW_LACUNARITY,
 				int octaves = DEFAULT_BILLOW_OCTAVES, float persist = DEFAULT_BILLOW_PERSISTENCE);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.
@@ -37,24 +38,8 @@ namespace noise {
 
 			// Configuration attributes.
 			noiseCfg Attributes;
-		};
 
-
-		class Billow2DSimplex : public Module {
-		public:
-			Billow2DSimplex(int width, int height, float x = 0.0f, float y = 0.0f, int seed = DEFAULT_BILLOW_SEED, float freq = DEFAULT_BILLOW_FREQUENCY, float lacun = DEFAULT_BILLOW_LACUNARITY, int octaves = DEFAULT_BILLOW_OCTAVES, float persist = DEFAULT_BILLOW_PERSISTENCE);
-
-			// Get source module count, must be 0 for a generator module.
-			virtual int GetSourceModuleCount() const override;
-
-			// Launches the kernel and fills this object's surface object with data
-			virtual void Generate() override;
-
-			// origin of the noise generator.
-			std::pair<float, float> Origin;
-
-			// Configuration attributes.
-			noiseCfg Attributes;
+			noise_t NoiseType;
 		};
 	}
 }

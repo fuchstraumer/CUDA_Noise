@@ -4,29 +4,23 @@ namespace noise {
 
 	namespace module {
 
-		Select::Select(int width, int height, float low_value, float high_value, float _falloff, std::shared_ptr<Module> selector, std::shared_ptr<Module> subject0, std::shared_ptr<Module> subject1) : Module(width, height), lowThreshold(low_value), highThreshold(high_value), falloff(_falloff)  {
+		Select::Select(int width, int height, float low_value, float high_value, float _falloff, Module* selector, Module* subject0, Module* subject1) : Module(width, height), lowThreshold(low_value), highThreshold(high_value), falloff(_falloff)  {
 			sourceModules.push_back(selector);
 			sourceModules.push_back(subject0);
 			sourceModules.push_back(subject1);
 		}
 
-		Select::~Select() {
-			sourceModules[0]->~Module();
-			sourceModules[1]->~Module();
-			sourceModules[2]->~Module();
-			// Delete cuda objects
-			cudaDestroySurfaceObject(output);
-			cudaFreeArray(surfArray);
-		}
-
-		void Select::SetSubject(size_t idx, std::shared_ptr<Module> subject){
+		void Select::SetSubject(size_t idx, Module* subject){
 			if (idx > 2 || idx < 1) {
 				std::cerr << "Index supplied to SetSubject method of a Select module must be 1 or 2 - First subject, or second subject." << std::endl;
 				throw("Invalid index supplied");
 			}
+			else {
+				sourceModules[idx] = subject;
+			}
 		}
 
-		void Select::SetSelector(std::shared_ptr<Module> selector){
+		void Select::SetSelector(Module* selector){
 			sourceModules[0] = selector;
 		}
 

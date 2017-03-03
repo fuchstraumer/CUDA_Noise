@@ -8,6 +8,7 @@ namespace noise {
 	namespace module {
 
 		Module::Module(int width, int height) : dims(width, height) {
+			Generated = false;
 			// Setup cudaSurfaceObject_t and cudaTextureObject_t objects
 			// based on given dimensions.
 
@@ -24,37 +25,46 @@ namespace noise {
 			// Allocate for arrays.
 			// cudaMallocArray(&texArray, &cfDescr, width, height);
 			// Flags only needed for surface object, in order for surface object to work.
-			cudaMallocArray(&surfArray, &cfDescr, width, height, cudaArraySurfaceLoadStore);
+			cudaError_t err = cudaSuccess;
+			err = cudaMallocArray(&surfArray, &cfDescr, width, height, cudaArraySurfaceLoadStore);
+			cudaAssert(err);
 
 			// Now set resource description attributes.
 			soDesc.resType = cudaResourceTypeArray;
 			soDesc.res.array.array = surfArray;
-
 			// Setup surface object that will be used as output data for this module to write to
-			output = 0;
-			cudaCreateSurfaceObject(&output, &soDesc);
+			err = cudaCreateSurfaceObject(&output, &soDesc);
+			cudaAssert(err);
 
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
 		}
 
 		Module::~Module() {
-			// Destroy objects
-			cudaDestroySurfaceObject(output);
+			cudaError_t err = cudaSuccess;
+			// Synchronize device to make sure its not doing anything with the elements we wish to destroy
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
 			// Free arrays
-			cudaFreeArray(surfArray);
+			err = cudaFreeArray(surfArray);
+			cudaAssert(err);
+			// Destroy objects
+			err = cudaDestroySurfaceObject(output);
+			cudaAssert(err);
 		}
 
 		void Module::ConnectModule(Module &other) {
 			// Copy preceding source modules from "other"
 			sourceModules = other.sourceModules;
 			// Add other to the source modules.
-			sourceModules.push_back(std::shared_ptr<Module>(&other));
+			sourceModules.push_back(&other);
 		}
 
 		cudaSurfaceObject_t Module::GetData() const{
 			return output;
 		}
 
-		std::shared_ptr<Module> Module::GetModule(size_t idx) const {
+		Module* Module::GetModule(size_t idx) const {
 			// .at(idx) has bounds checking in debug modes, iirc.
 			return sourceModules.at(idx);
 		}
