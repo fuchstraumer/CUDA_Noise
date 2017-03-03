@@ -128,6 +128,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\modifiers\abs.cu" />
+    <CudaCompile Include="cuda\modifiers\multiply.cu" />
+    <CudaCompile Include="cuda\modifiers\power.cu" />
     <CudaCompile Include="cuda\generators\voronoi.cu" />
     <CudaCompile Include="cuda\modifiers\add.cu" />
     <CudaCompile Include="cuda\modifiers\curve.cu" />
@@ -164,7 +167,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\generators\simplex.cuh" />
-    <ClInclude Include="cuda\generators\perlin_tex.cuh" />
+    <ClInclude Include="cuda\modifiers\abs.cuh" />
+    <ClInclude Include="cuda\modifiers\Add.cuh" />
+    <ClInclude Include="cuda\modifiers\multiply.cuh" />
+    <ClInclude Include="cuda\modifiers\power.cuh" />
     <ClInclude Include="cuda\generators\voronoi.cuh" />
     <ClInclude Include="cuda\hash.cuh" />
     <ClInclude Include="cuda\modifiers\add.cuh" />
