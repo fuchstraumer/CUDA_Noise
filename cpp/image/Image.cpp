@@ -70,7 +70,7 @@ void ImageWriter::ConvertRawData() {
 	std::cerr << "max: " << max << " min: " << min << std::endl;
 	auto scaleRaw = [max, min](float val)->unsigned char {
 		val = (val - min) / (max - min);
-		// val += 0.50f;
+		val += 0.05f; // Bias things just a bit higher.
 		val *= 255.0f;
 		if (val > 255.0f) {
 			val = 255.0f;

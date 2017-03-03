@@ -276,13 +276,13 @@ __device__ float grad3d(const float fx, const float fy, const float fz, const in
 	// Randomly generate a gradient vector given the integer coordinates of the
 	// input value.  This implementation generates a random number and uses it
 	// as an index into a normalized-vector lookup table.
-	int vectorIndex = (1619 * ix + 31337 * iy + 6971 * iz + 1013 * seed) & 0xffffffff;
+	volatile int vectorIndex = (1619 * ix + 31337 * iy + 6971 * iz + 1013 * seed) & 0xffffffff;
 	vectorIndex ^= (vectorIndex >> 8);
 	vectorIndex &= 0xff;
 
-	float xvGradient = g_randomVectors[(vectorIndex << 2)];
-	float yvGradient = g_randomVectors[(vectorIndex << 2) + 1];
-	float zvGradient = g_randomVectors[(vectorIndex << 2) + 2];
+	volatile float xvGradient = g_randomVectors[(vectorIndex << 2)];
+	volatile float yvGradient = g_randomVectors[(vectorIndex << 2) + 1];
+	volatile float zvGradient = g_randomVectors[(vectorIndex << 2) + 2];
 
 	// Set up us another vector equal to the distance between the two vectors
 	// passed to this function.
@@ -297,8 +297,14 @@ __device__ float perlin2d(const float2 p, const int seed){
 	return perlin3d(p.x, p.y, 0.0f, seed, noise_quality::HIGH);
 }
 
-__device__ float perlin2d_deriv(cudaSurfaceObject_t orig_values, const float2 p, const int seed, const noise_quality qual) {
+__device__ float perlin2d_dx(const float2 p, const int seed) {
+	float dx = (perlin3d(p.x - 0.1f, p.y, 0.0f, seed, noise_quality::HIGH) - perlin3d(p.x + 0.1f, p.y, 0.0f, seed, noise_quality::HIGH)) / 0.1f;
+	return dx;
+}
 
+__device__ float perlin2d_dy(const float2 p, const int seed) {
+	float dy = (perlin3d(p.x, p.y - 0.1f, 0.0f, seed, noise_quality::HIGH) - perlin3d(p.x + 0.1f, p.y, 0.0f, seed, noise_quality::HIGH)) / 0.1f;
+	return dy;
 }
 
 __device__ float perlin3d(const float px, const float py, const float pz, const int seed, noise_quality qual) {

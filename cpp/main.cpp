@@ -5,15 +5,13 @@
 #include "modules\generators\RidgedMulti.h"
 #include "modules\generators\FBM.h"
 #include "modules\modifiers\Select.h"
-#include "modules\generators\PerlinTex.h"
+#include "modules\generators\DecarpientierSwiss.h"
 using namespace noise::module;
 
 int main() {
-	static int img_size = 4096;
-	RidgedMulti test0(img_size, img_size, noise_t::PERLIN, 0.0f, 0.0f, 34567, 0.001f, 1.6f, 12, 0.6f);
-	test0.Generate();
-	test0.SaveToPNG("perlin_regular.png");
-	PerlinTexBase texTest(img_size, img_size, make_float2(0.0f, 0.0f), 2131231);
-	texTest.Generate();
-	texTest.SaveToPNG("perlin_texture_LUT.png");
+	static int img_size = 8192;
+	int i = 0;
+	DecarpientierSwiss ptb(img_size, img_size, noise_t::PERLIN, 0.12232f, -1.232f, 32341, 0.001f, 1.85f, 10, 0.95f);
+	ptb.Generate();
+	ptb.SaveToPNG("dc_swiss_perlin.png");
 }
