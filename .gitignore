@@ -279,3 +279,4 @@ __pycache__/
 *.png
 *.7z
 test/
+*.nvact
