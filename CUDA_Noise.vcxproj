@@ -127,6 +127,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="cuda\modifiers\power.cu" />
     <CudaCompile Include="cuda\modifiers\Select.cu" />
     <CudaCompile Include="cuda\vector_operators.cu" />
+    <CudaCompile Include="scalebias.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp\common\CommonInclude.h" />
@@ -157,6 +158,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\modifiers\select.cuh" />
     <ClInclude Include="cuda\vector_operators.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
+    <ClInclude Include="scalebias.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\image\Image.cpp" />
