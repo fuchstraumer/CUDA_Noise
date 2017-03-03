@@ -1,4 +1,5 @@
 #include "PerlinTex.h"
+#include "../ext/include/lodepng/lodepng.h"
 #include "../cuda/generators/perlin_tex.cuh"
 namespace noise {
 
@@ -29,33 +30,55 @@ namespace noise {
 			245, 79
 		};
 
-		PerlinTexBase::PerlinTexBase(int width, int height, float2 origin, int seed) : Module(width, height){
+		PerlinTexBase::PerlinTexBase(int width, int height, float origin_x, float origin_y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height), Attributes(seed, freq, lacun, octaves, persist), Origin(origin_x, origin_y) {
 			
 			std::mt19937 rng;
 			rng.seed(seed);
 			std::shuffle(perm, perm + 256, rng);
 
 			// create permutation table
-			uint32_t* perm_table = new uint32_t[256 * 256];
-			uint32_t* ptr = perm_table;
-			for (int y = 0; y < 256; ++y) {
-				for (int x = 0; x < 256; ++x) {
-					unsigned char a = perm[x] + static_cast<unsigned char>(y);
-					unsigned char b = perm[(x + 1) & 255] + static_cast<unsigned char>(x);
-					*ptr++ = (perm[a] << 24) + (perm[(a + 1) & 255] << 16) + (perm[b] << 8) + (perm[(b + 1) & 255]);
+			std::vector<unsigned char> perm_vec;
+			perm_vec.resize(256 * 256 * 4);
+			for (int j = 0; j < 256; ++j) {
+				for (int i = 0; i < 256; ++i) {
+					unsigned char a = perm[i] + static_cast<unsigned char>(j);
+					unsigned char b = perm[(i + 1) & 255] + static_cast<unsigned char>(j);
+					perm_vec[4 * 256 * j + 4 * i] = perm[a];
+					perm_vec[4 * 256 * j + 4 * i + 1] = perm[(a + 1) & 255];
+					perm_vec[4 * 256 * j + 4 * i + 2] = perm[b];
+					perm_vec[4 * 256 * j + 4 * i + 3] = perm[(b + 1) & 255];
 				}
 			}
+			lodepng::encode("permutation.png", &perm_vec[0], 256, 256);
 
 			// create gradient table.
-			uint32_t* grad_table = new uint32_t[256 * 256];
-			ptr = grad_table;
-			for (int y = 0; y < 256; ++y) {
-				for (int x = 0; x < 256; ++x) {
+			/*std::vector<unsigned char> grad;
+			grad.resize(256 * 256 * 4);
+			uint32_t* Grad2DTable = new uint32_t[256 * 256];
+			uint32_t* ptr = Grad2DTable;
+			for (int y = 0; y < 256; ++y){
+				for (int x = 0; x < 256; ++x){
 					unsigned char px = perm[x];
 					unsigned char py = perm[y];
-					*ptr++ = (vector_table[((px & 7) << 1)] << 24) + (vector_table[((px & 7) << 1) + 1] << 16) + (vector_table[(py & 7) << 1] << 8) + (vector_table[((py & 7) << 1) + 1]);
+					*ptr++ = (vector_table[((px & 7) << 1)] << 24) +
+						(vector_table[((px & 7) << 1) + 1] << 16) +
+						(vector_table[((py & 7) << 1)] << 8) +
+						(vector_table[((py & 7) << 1) + 1]);
+				}
+			}*/
+			std::vector<unsigned char> gradientv;
+			gradientv.resize(256 * 256 * 4);
+			for (int j = 0; j < 256; ++j) {
+				for (int i = 0; i < 256; ++i) {
+					unsigned char px = perm[i];
+					unsigned char py = perm[j];
+					gradientv[4 * 256 * j + 4 * i] = vector_table[(px & 7) << 1];
+					gradientv[4 * 256 * j + 4 * i + 1] = vector_table[(px & 7) << 1];
+					gradientv[4 * 256 * j + 4 * i + 2] = vector_table[(py & 7) << 1];
+					gradientv[4 * 256 * j + 4 * i + 3] = vector_table[(py & 7) << 1];
 				}
 			}
+			lodepng::encode("grad.png", &gradientv[0], 256, 256);
 
 			// With these objects setup, time to pass them to the GPU/CUDA
 			// Channel format description: (8,8,8,8), unsigned char
@@ -71,9 +94,9 @@ namespace noise {
 			cudaAssert(err);
 
 			// Copy to arrays. Can use "&vector[0]" to get pointer to vector's underling array, or just "vector.data()".
-			err = cudaMemcpyToArray(permutationArray, 0, 0, perm_table, (256 * 256) * sizeof(unsigned char), cudaMemcpyHostToDevice);
+			err = cudaMemcpyToArray(permutationArray, 0, 0, &perm_vec[0], perm_vec.size() * sizeof(unsigned char), cudaMemcpyHostToDevice);
 			cudaAssert(err);
-			err = cudaMemcpyToArray(gradientArray, 0, 0, grad_table, (256 * 256) * sizeof(unsigned char), cudaMemcpyHostToDevice);
+			err = cudaMemcpyToArray(gradientArray, 0, 0, &gradientv[0], 256 * 256 * sizeof(unsigned char), cudaMemcpyHostToDevice);
 			cudaAssert(err);
 
 			// Setup resource descriptors, which tie the actual resources (arrays) to CUDA objects
@@ -101,12 +124,12 @@ namespace noise {
 
 			// Don't allow edge wrapping or looping, clamp to edges so out-of-range values
 			// become edge values.
-			permTDesc.addressMode[0] = cudaAddressModeWrap;
-			permTDesc.addressMode[1] = cudaAddressModeWrap;
-			permTDesc.addressMode[2] = cudaAddressModeWrap;
-			gradTDesc.addressMode[0] = cudaAddressModeWrap;
-			gradTDesc.addressMode[1] = cudaAddressModeWrap;
-			gradTDesc.addressMode[2] = cudaAddressModeWrap;
+			permTDesc.addressMode[0] = cudaAddressModeClamp;
+			permTDesc.addressMode[1] = cudaAddressModeClamp;
+			permTDesc.addressMode[2] = cudaAddressModeClamp;
+			gradTDesc.addressMode[0] = cudaAddressModeClamp;
+			gradTDesc.addressMode[1] = cudaAddressModeClamp;
+			gradTDesc.addressMode[2] = cudaAddressModeClamp;
 
 			// No filtering, this is important to set. Otherwise our values we want to be exact will be linearly interpolated.
 			permTDesc.filterMode = cudaFilterModePoint;
@@ -130,18 +153,18 @@ namespace noise {
 		}
 
 		void PerlinTexBase::Generate(){
-			texFBMLauncher(output, permutation, gradient, dims.first, dims.second, make_float2(0.0f, 0.0f), 1.0f, 1.6f, 0.9f, 22134123, 12);
+			texFBMLauncher(output, permutation, gradient, dims.first, dims.second, make_float2(0.12312f, -12.312312f), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 			cudaDeviceSynchronize();
 			cudaError_t err = cudaSuccess;
 			// Destroy LUTs
-			err = cudaDestroyTextureObject(permutation);
-			cudaAssert(err);
-			err = cudaDestroyTextureObject(gradient);
-			cudaAssert(err);
-			err = cudaFreeArray(permutationArray);
-			cudaAssert(err);
-			err = cudaFreeArray(gradientArray);
-			cudaAssert(err);
+			//err = cudaDestroyTextureObject(permutation);
+			//cudaAssert(err);
+			//err = cudaDestroyTextureObject(gradient);
+			//cudaAssert(err);
+			//err = cudaFreeArray(permutationArray);
+			//cudaAssert(err);
+			//err = cudaFreeArray(gradientArray);
+			//cudaAssert(err);
 		}
 
 		int PerlinTexBase::GetSourceModuleCount() const{

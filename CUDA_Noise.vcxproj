@@ -116,6 +116,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
     </CudaCompile>
+    <CudaCompile Include="cuda\generators\decarpientier_swiss.cu" />
     <CudaCompile Include="cuda\generators\FBM.cu" />
     <CudaCompile Include="cuda\generators\perlin.cu">
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
@@ -147,6 +148,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Base.h" />
     <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
+    <ClInclude Include="cpp\modules\generators\DecarpientierSwiss.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
     <ClInclude Include="cpp\modules\generators\PerlinTex.h" />
     <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
@@ -161,7 +163,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\Ridged.h" />
     <ClInclude Include="cpp\modules\Select.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
+    <ClInclude Include="cuda\cutil_math.cuh" />
     <ClInclude Include="cuda\generators\billow.cuh" />
+    <ClInclude Include="cuda\generators\decarpientier_swiss.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
     <ClInclude Include="cuda\generators\perlin.cuh" />
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
@@ -171,6 +175,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\modifiers\multiply.cuh" />
     <ClInclude Include="cuda\modifiers\power.cuh" />
     <ClInclude Include="cuda\generators\voronoi.cuh" />
+    <ClInclude Include="cuda\hash.cuh" />
     <ClInclude Include="cuda\modifiers\add.cuh" />
     <ClInclude Include="cuda\modifiers\curve.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
@@ -183,6 +188,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\main.cpp" />
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
+    <ClCompile Include="cpp\modules\generators\DecarpientierSwiss.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\PerlinTex.cpp" />
     <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
