@@ -37,7 +37,7 @@ __device__ float Ridged2D(float2 point, const float freq, const float lacun, con
 	return result;
 }
 
-__global__ void Ridged2DKernel(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+__global__ void Ridged2DKernel(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i < width && j < height) {
@@ -56,12 +56,12 @@ __global__ void Ridged2DKernel(cudaSurfaceObject_t out, int width, int height, n
 			}
 		}
 		// Write val to the surface
-		surf2Dwrite(val, out, i * sizeof(float), j);
+		out[(j * width) + i] = val;
 	}
 	
 }
 
-void RidgedMultiLauncher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+void RidgedMultiLauncher(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);

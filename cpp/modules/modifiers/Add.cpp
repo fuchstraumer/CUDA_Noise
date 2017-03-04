@@ -20,7 +20,7 @@ namespace cnoise {
 				}
 			}
 			
-			AddLauncher(output, sourceModules[0]->output, sourceModules[1]->output, dims.first, dims.second);
+			AddLauncher(Output, sourceModules[0]->Output, sourceModules[1]->Output, dims.first, dims.second);
 			Generated = true;
 		}
 

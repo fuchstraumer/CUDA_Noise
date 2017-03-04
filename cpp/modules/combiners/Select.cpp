@@ -38,7 +38,7 @@ namespace cnoise {
 				}
 			}
 
-			SelectLauncher(output, sourceModules[0]->output, sourceModules[1]->output, sourceModules[2]->output, dims.first, dims.second, highThreshold, lowThreshold, falloff);
+			SelectLauncher(Output, sourceModules[0]->Output, sourceModules[1]->Output, sourceModules[2]->Output, dims.first, dims.second, highThreshold, lowThreshold, falloff);
 			Generated = true;
 		}
 

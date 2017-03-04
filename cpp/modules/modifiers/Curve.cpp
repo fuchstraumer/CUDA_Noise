@@ -35,7 +35,7 @@ namespace cnoise {
 				sourceModules.front()->Generate();
 			}
 			
-			CurveLauncher(output, sourceModules.front()->output, dims.first, dims.second, controlPoints);
+			CurveLauncher(Output, sourceModules.front()->Output, dims.first, dims.second, controlPoints);
 			Generated = true;
 		}
 	}

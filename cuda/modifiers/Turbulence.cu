@@ -11,7 +11,7 @@
 
 */
 
-__global__ void TurbulenceKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength) {
+__global__ void TurbulenceKernel(float* out, float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength) {
 	// Get current pixel.
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
@@ -32,17 +32,15 @@ __global__ void TurbulenceKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in
 			}
 		}
 
-		// Get displace into proper range
-		
-
+		// Get offset value.
 		float offset_val = perlin2d(displace.x, displace.y, seed, nullptr);
-		// Write new offset value.
-		surf2Dwrite(offset_val, out, i * sizeof(float), j);
+		// Add it to previous value and store the result in the output array.
+		out[(j * width) + i] = input[(j * width) + i] + offset_val;
 	}
 
 }
 
-void TurbulenceLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength){
+void TurbulenceLauncher(float* out, float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;

@@ -56,7 +56,7 @@ __device__ float d_swiss_perlin(float px, float py, const float freq, const floa
 	return result;
 }
 
-__global__ void d_swiss_kernel(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+__global__ void d_swiss_kernel(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i < width && j < height) {
@@ -71,11 +71,11 @@ __global__ void d_swiss_kernel(cudaSurfaceObject_t out, int width, int height, n
 			break;
 		}
 		// Write val to the surface
-		surf2Dwrite(val, out, i * sizeof(float), j);
+		out[(j * width) + i] = val;
 	}
 }
 
-void DecarpientierSwissLauncher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+void DecarpientierSwissLauncher(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);

@@ -20,7 +20,7 @@ __device__ float cubicInterp(float n0, float n1, float n2, float n3, float a){
 	return p * a * a * a + q * a * a + r * a + s;
 }
 
-__global__ void CurveKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, ControlPoint* control_points, size_t num_pts) {
+__global__ void CurveKernel(float* output, float* input, const int width, const int height, ControlPoint* control_points, size_t num_pts) {
 	// Get current pos and return if out of bounds.
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
@@ -29,8 +29,7 @@ __global__ void CurveKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 	}
 
 	// Get previous value.
-	float prev;
-	surf2Dread(&prev, input, i * sizeof(float), j);
+	float prev = input[(j * width) + i];
 
 	// Get appropriate control point.
 	size_t idx;
@@ -50,8 +49,7 @@ __global__ void CurveKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 
 	// If we don't have enough control points, just write control point value to output
 	if (i1 = i2) {
-		float val = control_points[i1].OutputVal;
-		surf2Dwrite(val, output, i * sizeof(float), j);
+		output[(j * width) + i] = control_points[i1].OutputVal;
 		return;
 	}
 
@@ -61,13 +59,10 @@ __global__ void CurveKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 	float alpha = (prev - input0) / (input1 - input0);
 
 	// Perform the interpolation.
-	float result = cubicInterp(control_points[i0].OutputVal, control_points[i1].OutputVal, control_points[i2].OutputVal, control_points[i3].OutputVal, alpha);
-	
-	// Write result.
-	surf2Dwrite(result, output, i * sizeof(float), j);
+	output[(j * width) + i] = cubicInterp(control_points[i0].OutputVal, control_points[i1].OutputVal, control_points[i2].OutputVal, control_points[i3].OutputVal, alpha);
 }
 
-void CurveLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, std::vector<ControlPoint>& control_points) {
+void CurveLauncher(float* output, float* input, const int width, const int height, std::vector<ControlPoint>& control_points) {
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;

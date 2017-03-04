@@ -144,8 +144,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\modifiers\Abs.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
+    <ClInclude Include="cpp\modules\modifiers\Power.h" />
     <ClInclude Include="cpp\modules\modifiers\ScaleBias.h" />
-    <ClInclude Include="cpp\modules\modifiers\Select.h" />
+    <ClInclude Include="cpp\modules\combiners\Select.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\cutil_math.cuh" />
@@ -178,7 +179,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
     <ClCompile Include="cpp\modules\modifiers\ScaleBias.cpp" />
-    <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Select.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
