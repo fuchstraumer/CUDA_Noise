@@ -1,7 +1,6 @@
 #pragma once
 #ifndef ADD_H
 #define ADD_H
-#include "common\CUDA_Include.h"
 #include "../Base.h"
 
 namespace noise {
@@ -15,7 +14,7 @@ namespace noise {
 
 			virtual void Generate() override;
 
-			virtual int GetSourceModuleCount() const override;
+			virtual size_t GetSourceModuleCount() const override;
 
 			// Set value to add to source module
 			void SetAddValue(float val);

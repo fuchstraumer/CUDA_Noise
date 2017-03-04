@@ -1,7 +1,7 @@
 #pragma once
 #ifndef IMAGE_H
 #define IMAGE_H
-#include "common\CommonInclude.h"
+#include "../common/CommonInclude.h"
 
 /*
 
@@ -23,24 +23,19 @@ public:
 	void FreeMemory();
 
 	// Writes data contained in this image to file with given name.
-	void WriteBMP(const char* filename) const;
+	void WriteBMP(const char* filename);
 
 	// Writes data contained in this image to PNG. Compression level set by
 	// second parameter, but is optional. Defaults to uncompressed.
-	void WritePNG(const char* filename, int compression_level = 0) const;
+	void WritePNG(const char* filename, int compression_level = 0);
 
-	// Attaches a module to this object. Calls the module when WriteImage methods are called.
-	// TODO: Implement this.
-
-	// Converts raw image data in "rawData" to pixel data, with a bit depth of 32.
-	// This means that each pixel has four 8-byte (unsigned char) elements.
-	void ConvertRawData();
+	void WriteTER(const char * filename);
 
 	// Sets rawData
 	void SetRawData(const std::vector<float>& raw);
 
 	// Gets rawData
-	std::vector<unsigned char> GetRawData() const;
+	std::vector<float> GetRawData() const;
 
 private:
 	// Holds raw data grabbed from one of the noise modules.

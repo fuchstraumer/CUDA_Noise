@@ -278,3 +278,5 @@ __pycache__/
 # !tools/packages.config
 *.7z
 test/
+*.nvact
+*.ter

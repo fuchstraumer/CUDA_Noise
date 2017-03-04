@@ -118,70 +118,51 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
     <CudaCompile Include="cuda\generators\decarpientier_swiss.cu" />
     <CudaCompile Include="cuda\generators\FBM.cu" />
-    <CudaCompile Include="cuda\generators\perlin.cu">
-      <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
-      <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
-    </CudaCompile>
-    <CudaCompile Include="cuda\generators\perlin_tex.cu" />
+    <CudaCompile Include="cuda\generators\jordan.cu" />
     <CudaCompile Include="cuda\generators\ridged_multi.cu" />
-    <CudaCompile Include="cuda\generators\simplex.cu">
-      <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
-      <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
-    </CudaCompile>
     <CudaCompile Include="cuda\modifiers\abs.cu" />
     <CudaCompile Include="cuda\modifiers\multiply.cu" />
     <CudaCompile Include="cuda\modifiers\power.cu" />
-    <CudaCompile Include="cuda\modifiers\Select.cu" />
-    <CudaCompile Include="cuda\vector_operators.cu" />
-    <CudaCompile Include="scalebias.cu" />
     <CudaCompile Include="cuda\generators\voronoi.cu" />
     <CudaCompile Include="cuda\modifiers\add.cu" />
     <CudaCompile Include="cuda\modifiers\curve.cu" />
     <CudaCompile Include="cuda\modifiers\select.cu" />
     <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
+    <CudaCompile Include="cuda\noise_generators.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cpp\common\CommonInclude.h" />
-    <ClInclude Include="cpp\common\Constants.h" />
-    <ClInclude Include="cpp\common\CUDA_Include.h" />
+    <ClInclude Include="common\CommonInclude.h" />
+    <ClInclude Include="common\Constants.h" />
+    <ClInclude Include="common\CUDA_Include.h" />
     <ClInclude Include="cpp\image\Image.h" />
     <ClInclude Include="cpp\modules\Base.h" />
-    <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\DecarpientierSwiss.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
-    <ClInclude Include="cpp\modules\generators\PerlinTex.h" />
     <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
     <ClInclude Include="cpp\modules\generators\Voronoi.h" />
-    <ClInclude Include="cpp\modules\Gradient.h" />
-    <ClInclude Include="cpp\modules\FBM.h" />
+    <ClInclude Include="cpp\modules\modifiers\Abs.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
-    <ClInclude Include="cpp\modules\Perlin.h" />
-    <ClInclude Include="cpp\modules\Ridged.h" />
-    <ClInclude Include="cpp\modules\Select.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\cutil_math.cuh" />
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\decarpientier_swiss.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
-    <ClInclude Include="cuda\generators\perlin.cuh" />
+    <ClInclude Include="cuda\generators\jordan.cuh" />
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
-    <ClInclude Include="cuda\generators\simplex.cuh" />
     <ClInclude Include="cuda\modifiers\abs.cuh" />
-    <ClInclude Include="cuda\modifiers\Add.cuh" />
+    <ClInclude Include="cuda\modifiers\add.cuh" />
     <ClInclude Include="cuda\modifiers\multiply.cuh" />
     <ClInclude Include="cuda\modifiers\power.cuh" />
     <ClInclude Include="cuda\generators\voronoi.cuh" />
-    <ClInclude Include="cuda\hash.cuh" />
-    <ClInclude Include="cuda\modifiers\add.cuh" />
     <ClInclude Include="cuda\modifiers\curve.cuh" />
     <ClInclude Include="cuda\modifiers\select.cuh" />
     <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
+    <ClInclude Include="cuda\noise_generators.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
-    <ClInclude Include="scalebias.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\image\Image.cpp" />
@@ -190,7 +171,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\DecarpientierSwiss.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
-    <ClCompile Include="cpp\modules\generators\PerlinTex.cpp" />
     <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
     <ClCompile Include="cpp\modules\generators\Voronoi.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />

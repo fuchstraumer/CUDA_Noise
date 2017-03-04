@@ -67,7 +67,7 @@ namespace noise {
 			return falloff;
 		}
 
-		int Select::GetSourceModuleCount() const {
+		size_t Select::GetSourceModuleCount() const {
 			return 3;
 		}
 

@@ -1,5 +1,5 @@
 #include "Add.h"
-#include "../cuda/modifiers/Add.cuh"
+#include "../cuda/modifiers/add.cuh"
 namespace noise {
 
 	namespace module {
@@ -9,18 +9,24 @@ namespace noise {
 		}
 
 		void Add::Generate(){
-			if (!sourceModules.front()->Generated) {
-				sourceModules.front()->Generate();
+			// Check source modules container.
+			if (sourceModules.empty() || sourceModules.front() == nullptr) {
+				std::cerr << "Did you forget to attach a source module(s) to your add module?" << std::endl;
+				throw("No source module(s) for Add module, abort");
 			}
-			if (sourceModules.front() == nullptr) {
-				std::cerr << "Did you forget to attach a source module to your add module?" << std::endl;
-				throw("No source module for Add module, abort");
+
+			// Make sure all modules in source modules container are generated.
+			for (const auto& module : sourceModules) {
+				if (!module->Generated) {
+					module->Generate();
+				}
 			}
+			
 			AddLauncher(output, sourceModules[0]->output, dims.first, dims.second, addValue);
 		}
 
-		int Add::GetSourceModuleCount() const{
-			return 0;
+		size_t Add::GetSourceModuleCount() const{
+			return sourceModules.size();
 		}
 
 		void Add::SetAddValue(float val) {

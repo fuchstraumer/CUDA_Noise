@@ -68,28 +68,30 @@ __global__ void SelectKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t select
 
 void SelectLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t select_item, cudaSurfaceObject_t subject0, cudaSurfaceObject_t subject1, int width, int height, float upper_bound, float lower_bound, float falloff){
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
-	// Setup dimensions of kernel launch. 
-	dim3 threadsPerBlock(32, 32);
-	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
-	SelectKernel<<<numBlocks, threadsPerBlock>>>(out, select_item, subject0, subject1, width, height, upper_bound, lower_bound, falloff);
+	// Setup dimensions of kernel launch using occupancy calculator.
+	int blockSize, minGridSize;
+	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, SelectKernel, 0, 0);
+	dim3 block(blockSize, blockSize, 1);
+	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	SelectKernel<<<grid, block>>>(out, select_item, subject0, subject1, width, height, upper_bound, lower_bound, falloff);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device
 	cudaAssert(cudaDeviceSynchronize());
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
 	printf("Kernel execution time in ms: %f\n", elapsed);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 }
