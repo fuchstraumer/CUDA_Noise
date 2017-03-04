@@ -1,7 +1,6 @@
 #pragma once
 #ifndef TURBULENCE_H
 #define TURBULENCE_H
-#include "common/CUDA_Include.h"
 #include "../Base.h"
 
 namespace noise {
@@ -17,7 +16,7 @@ namespace noise {
 
 			Turbulence(int width, int height, noise_t noise_type, Module* prev = nullptr, int roughness = DEFAULT_TURBULENCE_ROUGHNESS, int seed = DEFAULT_TURBULENCE_SEED, float strength = DEFAULT_TURBULENCE_STRENGTH);
 
-			virtual int GetSourceModuleCount() const override;
+			virtual size_t GetSourceModuleCount() const override;
 
 			virtual void Generate() override;
 

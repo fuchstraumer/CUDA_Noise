@@ -1,6 +1,6 @@
 #include "ridged_multi.cuh"
 
-__device__ float Ridged2D_Simplex(float2 point, const float freq, const float lacun, const float persist, const int octaves) {
+__device__ float Ridged2D_Simplex(float2 point, const float freq, const float lacun, const float persist, const int init_seed, const int octaves) {
 	float result = 0.0f;
 	float amplitude = 1.0f;
 	// Scale starting point by frequency.
@@ -8,7 +8,8 @@ __device__ float Ridged2D_Simplex(float2 point, const float freq, const float la
 	point.y = point.y * freq;
 	// Use loop for fractal octave bit
 	for (size_t i = 0; i < octaves; ++i) {
-		result += (1.0f - fabsf(simplex2d(point, nullptr))) * amplitude;
+		int seed = (init_seed + i) & 0xffffffff;
+		result += (1.0f - fabsf(simplex2d(point.x, point.y, seed, nullptr))) * amplitude;
 		point.x *= lacun;
 		point.y *= lacun;
 		amplitude *= persist;
@@ -27,7 +28,7 @@ __device__ float Ridged2D(float2 point, const float freq, const float lacun, con
 	// Use loop for octav-ing
 	for (size_t i = 0; i < octaves; ++i) {
 		int seed = (init_seed + i) & 0xffffffff;
-		result += (1.0f - fabsf(perlin2d(point,seed)))* amplitude;
+		result += (1.0f - fabsf(perlin2d(point.x, point.y, seed, nullptr)))* amplitude;
 		// Modify vars for next octave.
 		point.x *= lacun;
 		point.y *= lacun;
@@ -50,7 +51,7 @@ __global__ void Ridged2DKernel(cudaSurfaceObject_t out, int width, int height, n
 				break;
 			}
 			case(noise_t::SIMPLEX): {
-				val = Ridged2D_Simplex(p, freq, lacun, persist, octaves);
+				val = Ridged2D_Simplex(p, freq, lacun, persist, seed, octaves);
 				break;
 			}
 		}
@@ -61,13 +62,15 @@ __global__ void Ridged2DKernel(cudaSurfaceObject_t out, int width, int height, n
 }
 
 void RidgedMultiLauncher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
+	cudaFuncAttributes attr;
+	cudaFuncGetAttributes(&attr, Ridged2DKernel);
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	Ridged2DKernel<<<numBlocks, threadsPerBlock>>>(out, width, height, noise_type, origin, freq, lacun, persist, seed, octaves);
@@ -76,13 +79,13 @@ void RidgedMultiLauncher(cudaSurfaceObject_t out, int width, int height, noise_t
 	// Synchronize device
 	cudaAssert(cudaDeviceSynchronize());
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
 	printf("Kernel execution time in ms: %f\n", elapsed);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 	// If this completes, kernel is done and "output" contains correct data.
 }

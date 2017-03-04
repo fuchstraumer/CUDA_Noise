@@ -1,8 +1,8 @@
 #pragma once
 #ifndef FBM_H
 #define FBM_H
-#include "..\Base.h"
-#include "common\CUDA_Include.h"
+#include "../Base.h"
+#include "../common/CUDA_Include.h"
 /*
 
 	Generates values using FBM noise. Ctor includes desired dimensions
@@ -38,7 +38,7 @@ namespace noise {
 				int octaves = DEFAULT_FBM_OCTAVES, float persist = DEFAULT_FBM_PERSISTENCE);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.
-			virtual int GetSourceModuleCount() const override;
+			virtual size_t GetSourceModuleCount() const override;
 
 			// Launches the kernel and fills this object's surface object with the relevant data.
 			virtual void Generate() override;

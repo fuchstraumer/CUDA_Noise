@@ -69,12 +69,12 @@ __global__ void CurveKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 
 void CurveLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, std::vector<ControlPoint>& control_points) {
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 	// Setup structs on GPU
 	ControlPoint *device_point_array;
@@ -83,12 +83,13 @@ void CurveLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const 
 	// Copy structs to GPU
 	cudaMemcpy(device_point_array, &control_points[0], control_points.size() * sizeof(ControlPoint), cudaMemcpyHostToDevice);
 
-	// Setup dimensions of kernel launch. 
-	dim3 threadsPerBlock(32, 32);
-	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
-	
+	// Setup dimensions of kernel launch using occupancy calculator.
+	int blockSize, minGridSize;
+	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, CurveKernel, 0, 0); //???
+	dim3 block(blockSize, blockSize, 1);
+	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
 	// Launch kernel.
-	CurveKernel<<<numBlocks, threadsPerBlock>>>(output, input, width, height, device_point_array, control_points.size());
+	CurveKernel<<<grid, block>>>(output, input, width, height, device_point_array, control_points.size());
 
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
@@ -98,13 +99,13 @@ void CurveLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const 
 	// Free control points array
 	cudaFree(device_point_array);
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
 	printf("Kernel execution time in ms: %f\n", elapsed);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 
 }

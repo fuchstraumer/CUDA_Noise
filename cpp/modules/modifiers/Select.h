@@ -1,7 +1,6 @@
 #pragma once
 #ifndef SELECT_H
 #define SELECT_H
-#include "common\CommonInclude.h"
 #include "..\Base.h"
 
 namespace noise {
@@ -39,7 +38,7 @@ namespace noise {
 			void SetSelector(Module* selector);
 
 			// SourceModule count = 3
-			virtual int GetSourceModuleCount() const override;
+			virtual size_t GetSourceModuleCount() const override;
 
 			// Run kernel.
 			virtual void Generate() override;

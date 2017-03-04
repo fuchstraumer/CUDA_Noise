@@ -1,7 +1,7 @@
 #pragma once
 #ifndef BASE_H
 #define BASE_H
-#include "common\CUDA_Include.h"
+#include "../common/CUDA_Include.h"
 /*
 	
 	Defines a base module class.
@@ -46,7 +46,7 @@ namespace noise {
 			virtual Module* GetModule(size_t idx) const;
 
 			// Get number of source modules connected to this object.
-			virtual int GetSourceModuleCount() const = 0;
+			virtual size_t GetSourceModuleCount() const = 0;
 
 			// Get texture data from GPU and return it as a vector of floating point values.
 			virtual std::vector<float> GetGPUData() const;
@@ -56,6 +56,8 @@ namespace noise {
 
 			// Save current module to an image with name "name"
 			virtual void SaveToPNG(const char* name);
+
+			void SaveToTER(const char * name);
 
 			// Tells us whether or not this module has already Generated data.
 			bool Generated;
@@ -70,8 +72,6 @@ namespace noise {
 
 			// underlying CUDA arrays that will hold our data.
 			cudaArray *surfArray;
-
-			
 
 			// Modules that precede this module, with the back 
 			// of the vector being the module immediately before 

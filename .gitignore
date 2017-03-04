@@ -280,3 +280,4 @@ __pycache__/
 *.7z
 test/
 *.nvact
+*.ter

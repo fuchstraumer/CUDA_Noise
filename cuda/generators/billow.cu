@@ -2,7 +2,7 @@
 
 
 
-__device__ float billow2D_Simplex(float2 point, float freq, float lacun, float persist, int octaves) {
+__device__ float billow2D_Simplex(float2 point, float freq, float lacun, float persist, int init_seed, int octaves) {
 	float result = 0.0f;
 	float amplitude = 1.0f;
 	// Scale starting point by frequency.
@@ -10,7 +10,8 @@ __device__ float billow2D_Simplex(float2 point, float freq, float lacun, float p
 	point.y = point.y * freq;
 	// Use loop for fractal octave bit
 	for (size_t i = 0; i < octaves; ++i) {
-		result += fabsf(simplex2d(point, nullptr)) * amplitude;
+		int seed = (init_seed + i) & 0xffffffff;
+		result += fabsf(simplex2d(point.x, point.y, seed, nullptr)) * amplitude;
 		point.x *= lacun;
 		point.y *= lacun;
 		amplitude *= persist;
@@ -30,7 +31,7 @@ __device__ float billow2D(float2 point, float freq, float lacun, float persist, 
 	// Use loop for octav-ing
 	for (size_t i = 0; i < octaves; ++i) {
 		int seed = (init_seed + i) & 0xffffffff;
-		result += fabsf(perlin2d(point, seed)) * amplitude;
+		result += fabsf(perlin2d(point.x, point.y, seed, nullptr)) * amplitude;
 		// Modify vars for next octave.
 		point.x *= lacun;
 		point.y *= lacun;
@@ -60,7 +61,7 @@ __global__ void Billow2DKernel(cudaSurfaceObject_t out, int width, int height, n
 				break;
 			}
 			case(noise_t::SIMPLEX): {
-				val = billow2D_Simplex(p, freq, lacun, persist, octaves);
+				val = billow2D_Simplex(p, freq, lacun, persist, seed, octaves);
 				break;
 			}
 		}
@@ -76,12 +77,12 @@ __global__ void Billow2DKernel(cudaSurfaceObject_t out, int width, int height, n
 
 void BillowLauncher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
@@ -91,13 +92,13 @@ void BillowLauncher(cudaSurfaceObject_t out, int width, int height, noise_t nois
 	// Synchronize device
 	cudaAssert(cudaDeviceSynchronize());
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
 	printf("Kernel execution time in ms: %f\n", elapsed);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 	// If this completes, kernel is done and "output" contains correct data.
 }

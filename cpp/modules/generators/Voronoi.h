@@ -1,7 +1,6 @@
 #pragma once
 #ifndef VORONOI_H
 #define VORONOI_H
-#include "common\CUDA_Include.h"
 #include "../Base.h"
 
 
@@ -22,7 +21,7 @@ namespace noise {
 			Voronoi(int width, int height, voronoi_distance_t cell_dist_func = voronoi_distance_t::EUCLIDEAN, voronoi_return_t return_t = voronoi_return_t::DISTANCE, float freq = DEFAULT_VORONOI_FREQUENCY, float displ = DEFAULT_VORONOI_DISPLACEMENT, int seed = DEFAULT_VORONOI_SEED);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.
-			virtual int GetSourceModuleCount() const override;
+			virtual size_t GetSourceModuleCount() const override;
 
 			// Launches the kernel and fills this object's surface object with the relevant data.
 			virtual void Generate() override;

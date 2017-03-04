@@ -10,7 +10,7 @@ namespace noise {
 			Attributes(seed, freq, lacun, octaves, persist), Origin(x,y), NoiseType(noise_type) {}
 
 		// TODO: Implement these. Just here so compiler shuts up.
-		int FBM2D::GetSourceModuleCount() const{
+		size_t FBM2D::GetSourceModuleCount() const{
 			return 0;
 		}
 

@@ -102,11 +102,16 @@ namespace noise {
 		void Module::SaveToPNG(const char * name){
 			std::vector<float> rawData = GetGPUData();
 			ImageWriter out(dims.first, dims.second);
-			out.SetRawData(std::move(rawData));
-			out.ConvertRawData();
+			out.SetRawData(rawData);
 			out.WritePNG(name);
 		}
 
+		void Module::SaveToTER(const char * name) {
+			std::vector<float> rawData = GetGPUData();
+			ImageWriter out(dims.first, dims.second);
+			out.SetRawData(rawData);
+			out.WriteTER(name);
+		}
 
 
 	}

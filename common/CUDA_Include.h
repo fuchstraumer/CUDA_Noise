@@ -9,7 +9,7 @@
 	Used for including the required CUDA components in C++.
 	
 */
-#define CUDA_TIMING_TESTS
+#define CUDA_KERNEL_TIMING
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
@@ -19,6 +19,8 @@
 #include <device_functions.h>
 #include "../cuda/cuda_assert.h"
 
+typedef unsigned int uint;
+typedef unsigned char uchar;
 
 enum noise_t {
 	PERLIN,

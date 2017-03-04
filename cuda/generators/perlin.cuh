@@ -1,8 +1,6 @@
 #ifndef PERLIN_CUH
 #define PERLIN_CUH
-#include "common\CUDA_Include.h"
-#include "cuda_assert.h"
-typedef unsigned char uchar;
+#include "../common/CUDA_Include.h"
 
 /*
 

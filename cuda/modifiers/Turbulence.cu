@@ -21,13 +21,13 @@ __global__ void TurbulenceKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in
 		float2 displace;
 		switch (noise_type) {
 			case(noise_t::PERLIN): {
-				displace.x = i + perlin2d(make_float2(i + (12414.0f / 65536.0f), j + (65124.0f / 65536.0f)), seed) * strength;
-				displace.y = j + perlin2d(make_float2(i + (26519.0f / 65536.0f), j + (18128.0f / 65536.0f)), seed) * strength;
+				displace.x = i + perlin2d(i + (12414.0f / 65536.0f), j + (65124.0f / 65536.0f), seed, nullptr) * strength;
+				displace.y = j + perlin2d(i + (26519.0f / 65536.0f), j + (18128.0f / 65536.0f), seed, nullptr) * strength;
 				break;
 			}
 			case(noise_t::SIMPLEX): {
-				displace.x = i + simplex2d(make_float2(i, j), nullptr) * strength;
-				displace.y = j + simplex2d(make_float2(i, j), nullptr) * strength;
+				displace.x = i + simplex2d(i, j, seed, nullptr) * strength;
+				displace.y = j + simplex2d(i, j, seed, nullptr) * strength;
 				break;
 			}
 		}
@@ -35,7 +35,7 @@ __global__ void TurbulenceKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in
 		// Get displace into proper range
 		
 
-		float offset_val = perlin2d(displace, seed);
+		float offset_val = perlin2d(displace.x, displace.y, seed, nullptr);
 		// Write new offset value.
 		surf2Dwrite(offset_val, out, i * sizeof(float), j);
 	}
@@ -44,29 +44,28 @@ __global__ void TurbulenceKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in
 
 void TurbulenceLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength){
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	TurbulenceKernel<<<numBlocks, threadsPerBlock>>>(out, input, width, height, noise_type, roughness, seed, strength);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
-	cudaAssert(cudaThreadSynchronize());
 	// Synchronize device
 	cudaAssert(cudaDeviceSynchronize());
 
-#ifdef CUDA_TIMING_TESTS
+#ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
 	printf("Kernel execution time in ms: %f\n", elapsed);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
 	// If this completes, kernel is done and "output" contains correct data.
 }

@@ -8,7 +8,7 @@ namespace noise {
 			sourceModules.push_back(prev);
 		}
 
-		int Turbulence::GetSourceModuleCount() const{
+		size_t Turbulence::GetSourceModuleCount() const{
 			return 1;
 		}
 

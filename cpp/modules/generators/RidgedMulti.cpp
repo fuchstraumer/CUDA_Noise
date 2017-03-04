@@ -8,7 +8,7 @@ namespace noise {
 		RidgedMulti::RidgedMulti(int width, int height, noise_t noise_type, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height),
 			Attributes(seed, freq, lacun, octaves, persist), Origin(x, y), NoiseType(noise_type) {}
 
-		int RidgedMulti::GetSourceModuleCount() const {
+		size_t RidgedMulti::GetSourceModuleCount() const {
 			return 0;
 		}
 

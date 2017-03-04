@@ -13,44 +13,40 @@ __global__ void powerKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 	float final_value;
 	final_value = prev;
 
-	for (int ii = 0; ii < p; ++ii)
-	{
+	for (int ii = 0; ii < p; ++ii){
 		final_value = final_value * prev;
-
 	}
 
-
-
-	surf2Dwrite(final_value, out, i * sizeof(float), j);
+	surf2Dwrite(final_value, output, i * sizeof(float), j);
 
 }
 
 void powerLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, int p) {
-#ifdef CUDA_TIMING_TESTS
+
+#ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 
-	// Setup dimensions of kernel launch. 
-	dim3 threadsPerBlock(32, 32);
-	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
-
-
-	powerKernel << <block, grid >> >(out, in, width, height, p); //Call Kernel
-
-
-	// Check for succesfull kernel launch
+	// Setup dimensions of kernel launch using occupancy calculator.
+	int blockSize, minGridSize;
+	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, powerKernel, 0, 0); 
+	dim3 block(blockSize, blockSize, 1);
+	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	powerKernel<<<grid, block >>>(output, input, width, height, p); //Call Kernel
+	// Check for successful kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device
 	cudaAssert(cudaDeviceSynchronize());
-#ifdef CUDA_TIMING_TESTS
+
+#ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
 	printf("Kernel execution time in ms: %f\n", elapsed);
-#endif // CUDA_TIMING_TESTS
+#endif // CUDA_KERNEL_TIMING
 	// If this completes, kernel is done and "output" contains correct data.
 }

@@ -1,9 +1,7 @@
 #ifndef FBM_CUH
 #define FBM_CUH
-#include "common\CUDA_Include.h"
-#include "perlin.cuh"
-#include "simplex.cuh"
-#include "..\cuda_assert.h"
+#include "../common/CUDA_Include.h"
+#include "../noise_generators.cuh"
 
 __device__ float FBM2d_Simplex(float2 point, float freq, float lacun, float persist, int init_seed, float octaves);
 
