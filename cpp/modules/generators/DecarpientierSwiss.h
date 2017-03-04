@@ -3,9 +3,9 @@
 #define DECARPIENTIER_SWISS_H
 #include "../Base.h"
 
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace generators {
 
 		// Default parameters
 		constexpr float DEFAULT_DC_SWISS_FREQUENCY = 0.25f;

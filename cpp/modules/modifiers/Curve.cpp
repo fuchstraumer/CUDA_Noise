@@ -1,7 +1,8 @@
 #include "Curve.h"
 #include "../cuda/modifiers/curve.cuh"
-namespace noise {
-	namespace module {
+namespace cnoise {
+
+	namespace modifiers {
 
 		Curve::Curve(int width, int height) : Module(width, height) {}
 
@@ -29,9 +30,11 @@ namespace noise {
 				std::cerr << "Did you forget to attach a module for curving to this curve module?" << std::endl;
 				throw("NOISE::MODULES::MODIFIER::CURVE:L32: No source module connected.");
 			}
+			
 			if (!sourceModules.front()->Generated) {
 				sourceModules.front()->Generate();
 			}
+			
 			CurveLauncher(output, sourceModules.front()->output, dims.first, dims.second, controlPoints);
 			Generated = true;
 		}

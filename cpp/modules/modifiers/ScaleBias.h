@@ -1,0 +1,36 @@
+#pragma once
+#ifndef SCALE_BIAS_H
+#define SCALE_BIAS_H
+#include "../Base.h"
+
+namespace cnoise {
+
+	namespace modifiers {
+
+		class ScaleBias : public Module {
+		public:
+
+			ScaleBias(const size_t width, const size_t height, const float scale, const float bias);
+
+			void SetBias(const float bias);
+
+			void SetScale(const float scale);
+
+			float GetBias() const;
+
+			float GetScale() const;
+
+			virtual size_t GetSourceModuleCount() const override;
+
+			void Generate() override;
+
+		private:
+
+			float bias, scale;
+
+		};
+
+	}
+
+}
+#endif // !SCALE_BIAS_H

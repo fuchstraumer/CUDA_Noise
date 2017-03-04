@@ -1,4 +1,5 @@
 #include "abs.cuh"
+#include "..\..\cpp\modules\modifiers\Abs.h"
 
 __global__ void absKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;

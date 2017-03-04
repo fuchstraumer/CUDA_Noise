@@ -6,7 +6,7 @@
 #include "modules\generators\FBM.h"
 #include "modules\modifiers\Select.h"
 #include "modules\generators\DecarpientierSwiss.h"
-using namespace noise::module;
+using namespace cnoise::generators;
 
 int main() {
 	static int img_size = 8192;

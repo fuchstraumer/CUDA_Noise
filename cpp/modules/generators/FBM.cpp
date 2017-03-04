@@ -1,9 +1,9 @@
 #include "FBM.h"
 #include "..\cuda\generators\FBM.cuh"
 #include "..\cuda\cuda_assert.h"
-namespace noise {
+namespace cnoise {
 	
-	namespace module {
+	namespace generators {
 
 		// Pass width and height to base class ctor, initialize configuration struct, initialize origin (using initializer list)
 		FBM2D::FBM2D(int width, int height, noise_t noise_type, int x, int y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height), 

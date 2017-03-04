@@ -14,9 +14,7 @@
 	commands to create the final object.
 
 */
-namespace noise {
-
-	namespace module {
+namespace cnoise {
 
 		class Module {
 			// Delete copy ctor and operator
@@ -33,8 +31,13 @@ namespace noise {
 			// Destructor calls functions to clear CUDA objects/data
 			virtual ~Module();
 
+			// Conversion
+			
+			
 			// Connects this module to another source module
+			virtual void ConnectModule(Module* other);
 			virtual void ConnectModule(Module& other);
+			virtual void ConnectModule(std::shared_ptr<Module>& other);
 
 			// Generates data and stores it in this object
 			virtual void Generate() = 0;
@@ -43,7 +46,7 @@ namespace noise {
 			virtual cudaSurfaceObject_t GetData() const;
 
 			// Gets reference to module at given index in this modules "sourceModules" container
-			virtual Module* GetModule(size_t idx) const;
+			virtual Module& GetModule(size_t idx) const;
 
 			// Get number of source modules connected to this object.
 			virtual size_t GetSourceModuleCount() const = 0;
@@ -77,31 +80,33 @@ namespace noise {
 			// of the vector being the module immediately before 
 			// this one, and the front of the vector being the initial
 			// module.
-			std::vector<Module*> sourceModules;
+			std::vector<std::shared_ptr<Module>> sourceModules;
 		};
 
-		// Config struct for noise generators.
-		struct noiseCfg {
+		namespace generators {
 
-			// Seed for the noise generator
-			int Seed;
-			// Frequency of the noise
-			float Frequency;
-			// Lacunarity controls amplitude of the noise, effectively
-			float Lacunarity;
-			// Controls how many octaves to use during octaved noise generation
-			int Octaves;
-			// Persistence controls how the amplitude of successive octaves decreases.
-			float Persistence;
-			
-			noiseCfg(int s, float f, float l, int o, float p) : Seed(s), Frequency(f), Lacunarity(l), Octaves(o), Persistence(p) {}
+			// Config struct for noise generators.
+			struct noiseCfg {
 
-			noiseCfg() = default;
-			~noiseCfg() = default;
+				// Seed for the noise generator
+				int Seed;
+				// Frequency of the noise
+				float Frequency;
+				// Lacunarity controls amplitude of the noise, effectively
+				float Lacunarity;
+				// Controls how many octaves to use during octaved noise generation
+				int Octaves;
+				// Persistence controls how the amplitude of successive octaves decreases.
+				float Persistence;
 
-		};
+				noiseCfg(int s, float f, float l, int o, float p) : Seed(s), Frequency(f), Lacunarity(l), Octaves(o), Persistence(p) {}
 
-	}
+				noiseCfg() = default;
+				~noiseCfg() = default;
+
+			};
+
+		}
 }
 
 

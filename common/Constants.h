@@ -12,14 +12,10 @@
 
 // Noise types.
 
-namespace noise {
-	namespace module {
+namespace cnoise {
+	namespace generators {
 
-		// Types of base noise available 
-		enum class NoiseType {
-			PERLIN,
-			SIMPLEX,
-		};
+		
 
 	}
 }

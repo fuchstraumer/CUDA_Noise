@@ -13,9 +13,9 @@
 	tables and the like. Without these, we have to use costly/slow array lookups.
 
 */
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace generators {
 
 		// Default parameters
 		constexpr float DEFAULT_FBM_FREQUENCY = 1.0f;
