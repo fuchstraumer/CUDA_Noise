@@ -3,9 +3,9 @@
 #define TURBULENCE_H
 #include "../Base.h"
 
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace modifiers {
 
 		constexpr int DEFAULT_TURBULENCE_ROUGHNESS = 3;
 		constexpr int DEFAULT_TURBULENCE_SEED = 0;

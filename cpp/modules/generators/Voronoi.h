@@ -4,9 +4,9 @@
 #include "../Base.h"
 
 
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace generators {
 
 
 		constexpr float DEFAULT_VORONOI_DISPLACEMENT = 1.0f;

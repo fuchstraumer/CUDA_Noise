@@ -3,7 +3,7 @@
 #include "../image/Image.h"
 
 
-namespace noise {
+namespace cnoise {
 
 	namespace module {
 
@@ -53,20 +53,31 @@ namespace noise {
 			cudaAssert(err);
 		}
 
-		void Module::ConnectModule(Module &other) {
-			// Copy preceding source modules from "other"
-			sourceModules = other.sourceModules;
-			// Add other to the source modules.
-			sourceModules.push_back(&other);
+		void Module::ConnectModule(Module* other) {
+			if (sourceModules.size() < GetSourceModuleCount() - 1) {
+				sourceModules.push_back(std::shared_ptr<Module>(other));
+			}
+		}
+
+		void Module::ConnectModule(std::shared_ptr<Module>& other) {
+			if (sourceModules.size() < GetSourceModuleCount() - 1) {
+				sourceModules.push_back(other);
+			}
+		}
+
+		void Module::ConnectModule(Module& other) {
+			if (sourceModules.size() < GetSourceModuleCount() - 1) {
+				sourceModules.push_back(std::shared_ptr<Module>(&other));
+			}
 		}
 
 		cudaSurfaceObject_t Module::GetData() const{
 			return output;
 		}
 
-		Module* Module::GetModule(size_t idx) const {
+		Module& Module::GetModule(size_t idx) const {
 			// .at(idx) has bounds checking in debug modes, iirc.
-			return sourceModules.at(idx);
+			return *sourceModules.at(idx);
 		}
 
 		std::vector<float> Module::GetGPUData() const{

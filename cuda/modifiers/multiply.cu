@@ -15,8 +15,6 @@ __global__ void multiplyKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t i
 	float final_value;
 	final_value = prev * factor;
 
-
-
 	surf2Dwrite(final_value, output, i * sizeof(float), j);
 
 }

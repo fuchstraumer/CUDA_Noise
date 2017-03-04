@@ -14,41 +14,48 @@
 
 */
 
-class ImageWriter {
-public:
+namespace cnoise {
 
-	// Initializes image and allocates space in vector used to hold raw data.
-	ImageWriter(int width, int height);
+	namespace img {
 
-	void FreeMemory();
+		class ImageWriter {
+		public:
 
-	// Writes data contained in this image to file with given name.
-	void WriteBMP(const char* filename);
+			// Initializes image and allocates space in vector used to hold raw data.
+			ImageWriter(int width, int height);
 
-	// Writes data contained in this image to PNG. Compression level set by
-	// second parameter, but is optional. Defaults to uncompressed.
-	void WritePNG(const char* filename, int compression_level = 0);
+			void FreeMemory();
 
-	void WriteTER(const char * filename);
+			// Writes data contained in this image to file with given name.
+			void WriteBMP(const char* filename);
 
-	// Sets rawData
-	void SetRawData(const std::vector<float>& raw);
+			// Writes data contained in this image to PNG. Compression level set by
+			// second parameter, but is optional. Defaults to uncompressed.
+			void WritePNG(const char* filename, int compression_level = 0);
 
-	// Gets rawData
-	std::vector<float> GetRawData() const;
+			void WriteTER(const char * filename);
 
-private:
-	// Holds raw data grabbed from one of the noise modules.
-	std::vector<float> rawData;
+			// Sets rawData
+			void SetRawData(const std::vector<float>& raw);
 
-	// Holds pixel data converted from rawData.
-	std::vector<unsigned char> pixelData;
+			// Gets rawData
+			std::vector<float> GetRawData() const;
 
-	// Dimensions of this image
-	int width, height;
+		private:
+			// Holds raw data grabbed from one of the noise modules.
+			std::vector<float> rawData;
 
-	// Writes BMP header.
-	void WriteBMP_Header(std::ofstream& output_stream) const;
-};
+			// Holds pixel data converted from rawData.
+			std::vector<unsigned char> pixelData;
+
+			// Dimensions of this image
+			int width, height;
+
+			// Writes BMP header.
+			void WriteBMP_Header(std::ofstream& output_stream) const;
+		};
+
+	}
+}
 
 #endif // !IMAGE_H

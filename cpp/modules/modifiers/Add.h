@@ -3,9 +3,9 @@
 #define ADD_H
 #include "../Base.h"
 
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace modifiers {
 
 		class Add : public Module {
 		public:
@@ -16,15 +16,8 @@ namespace noise {
 
 			virtual size_t GetSourceModuleCount() const override;
 
-			// Set value to add to source module
-			void SetAddValue(float val);
-
-			// Get add value
-			float GetAddValue() const;
-
 		private: 
 
-			float addValue;
 		};
 
 	}

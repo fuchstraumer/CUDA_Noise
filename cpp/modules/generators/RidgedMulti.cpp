@@ -1,8 +1,8 @@
 #include "RidgedMulti.h"
 #include "../cuda/generators/ridged_multi.cuh"
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace generators {
 
 
 		RidgedMulti::RidgedMulti(int width, int height, noise_t noise_type, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height),

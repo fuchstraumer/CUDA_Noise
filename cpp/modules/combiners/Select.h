@@ -3,8 +3,9 @@
 #define SELECT_H
 #include "..\Base.h"
 
-namespace noise {
-	namespace module {
+namespace cnoise {
+
+	namespace combiners {
 
 		/*
 

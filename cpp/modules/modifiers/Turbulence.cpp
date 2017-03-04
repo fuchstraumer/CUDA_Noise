@@ -1,11 +1,11 @@
 #include "Turbulence.h"
 #include "../cuda/modifiers/turbulence.cuh"
-namespace noise {
+namespace cnoise {
 	
-	namespace module {
+	namespace modifiers {
 
 		Turbulence::Turbulence(int width, int height, noise_t noise_type, Module* prev, int _roughness, int _seed, float _strength) : Module(width, height), roughness(_roughness), seed(_seed), strength(_strength) {
-			sourceModules.push_back(prev);
+			ConnectModule(prev);
 		}
 
 		size_t Turbulence::GetSourceModuleCount() const{

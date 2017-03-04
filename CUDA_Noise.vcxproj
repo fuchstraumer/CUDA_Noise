@@ -144,6 +144,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\modifiers\Abs.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
+    <ClInclude Include="cpp\modules\modifiers\ScaleBias.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
@@ -173,8 +174,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
     <ClCompile Include="cpp\modules\generators\Voronoi.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Abs.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\ScaleBias.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
   </ItemGroup>

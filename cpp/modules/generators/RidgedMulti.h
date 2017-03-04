@@ -3,9 +3,9 @@
 #define RIDGED_MULTI_H
 #include "../Base.h"
 
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace generators {
 
 		// Default parameters
 		constexpr float DEFAULT_RIDGED_FREQUENCY = 1.0f;

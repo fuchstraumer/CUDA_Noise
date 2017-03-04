@@ -16,9 +16,9 @@
 
 */
 
-namespace noise {
+namespace cnoise {
 
-	namespace module {
+	namespace modifiers {
 
 		class Curve : public Module {
 		public:
