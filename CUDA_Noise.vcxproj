@@ -135,6 +135,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="cuda\modifiers\terrace.cu" />
     <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
     <CudaCompile Include="cuda\noise_generators.cu" />
+    <CudaCompile Include="cuda\utility\checkerboard.cu" />
     <CudaCompile Include="cuda\utility\normalize.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
     <ClInclude Include="cpp\modules\Modules.h" />
     <ClInclude Include="cpp\modules\utility\Cache.h" />
+    <ClInclude Include="cpp\modules\utility\Checkerboard.h" />
     <ClInclude Include="cpp\modules\utility\Constant.h" />
     <ClInclude Include="cpp\modules\utility\Normalize.h" />
     <ClInclude Include="cpp\modules\utility\Utility.h" />
@@ -185,6 +187,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\modifiers\multiply.cuh" />
     <ClInclude Include="cuda\modifiers\scalebias.cuh" />
     <ClInclude Include="cuda\modifiers\terrace.cuh" />
+    <ClInclude Include="cuda\utility\checkerboard.cuh" />
     <ClInclude Include="cuda\utility\normalize.cuh" />
     <ClInclude Include="cuda\combiners\power.cuh" />
     <ClInclude Include="cuda\generators\voronoi.cuh" />
@@ -216,6 +219,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\modifiers\Terrace.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
     <ClCompile Include="cpp\modules\utility\Cache.cpp" />
+    <ClCompile Include="cpp\modules\utility\Checkerboard.cpp" />
     <ClCompile Include="cpp\modules\utility\Constant.cpp" />
     <ClCompile Include="cpp\modules\utility\Normalize.cpp" />
   </ItemGroup>

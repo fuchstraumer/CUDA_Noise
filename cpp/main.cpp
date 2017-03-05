@@ -10,8 +10,8 @@ inline void PrintMemInfo() {
 
 int main() {
 
-	constexpr int img_size_x = 8192;
-	constexpr int img_size_y = 8192;
+	constexpr int img_size_x = 512;
+	constexpr int img_size_y = 512;
 	constexpr float sea_level = 0.10f;
 	constexpr float continent_freq = 0.00025f;
 	constexpr float continent_lacun = 2.10f;
@@ -21,6 +21,10 @@ int main() {
 		Group 1: Continent definition.
 	
 	*/
+
+	Checkerboard check(img_size_x, img_size_y);
+	check.Generate();
+	check.SaveToPNG("checkerboard.png");
 
 	// Base continent module.
 	FBM2D baseContinentDefinition_pe0(img_size_x, img_size_y, noise_t::PERLIN, 0.0f, 0.0f, 123132, continent_freq, continent_lacun, 10, 0.60f);
