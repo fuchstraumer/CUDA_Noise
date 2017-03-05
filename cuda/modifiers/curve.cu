@@ -79,10 +79,10 @@ void CurveLauncher(float* output, float* input, const int width, const int heigh
 	cudaMemcpy(device_point_array, &control_points[0], control_points.size() * sizeof(ControlPoint), cudaMemcpyHostToDevice);
 
 	// Setup dimensions of kernel launch using occupancy calculator.
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, CurveKernel, 0, 0); //???
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	//int blockSize, minGridSize;
+	//cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, CurveKernel, 0, 0); //???
+	dim3 block(8, 8, 1);
+	dim3 grid((width - 1) / block.x + 1, (height - 1) / block.y + 1, 1);
 	// Launch kernel.
 	CurveKernel<<<grid, block>>>(output, input, width, height, device_point_array, control_points.size());
 

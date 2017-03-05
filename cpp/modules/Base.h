@@ -20,7 +20,8 @@ namespace cnoise {
 			// Delete copy ctor and operator
 			Module(const Module& other) = delete;
 			Module& operator=(const Module& other) = delete;
-			// Implement move ctor and operator once this class is more fully implemented. (how to move CUDA data?)
+			Module(Module&& other) = delete;
+			Module& operator=(Module&& other) = delete;
 		public:
 
 			// Each module must have a width and height, as this specifies the size of 
@@ -36,8 +37,6 @@ namespace cnoise {
 			
 			// Connects this module to another source module
 			virtual void ConnectModule(Module* other);
-			virtual void ConnectModule(Module& other);
-			virtual void ConnectModule(std::shared_ptr<Module>& other);
 
 			// Generates data and stores it in this object
 			virtual void Generate() = 0;
@@ -66,22 +65,16 @@ namespace cnoise {
 			// Allocated with managed memory.
 			float* Output;
 
-			// CPU cache, grabs memory from managed pool that is output.
-			float* cpu_cache;
-
 		protected:
 
 			// Dimensions of textures.
 			std::pair<int, int> dims;
 
-			// underlying CUDA arrays that will hold our data.
-			cudaArray *surfArray;
-
 			// Modules that precede this module, with the back 
 			// of the vector being the module immediately before 
 			// this one, and the front of the vector being the initial
 			// module.
-			std::vector<std::shared_ptr<Module>> sourceModules;
+			std::vector<Module*> sourceModules;
 		};
 
 		namespace generators {

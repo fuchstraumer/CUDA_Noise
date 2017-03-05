@@ -100,7 +100,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
-      <CodeGeneration>compute_61,sm_61</CodeGeneration>
+      <CodeGeneration>compute_60,sm_60</CodeGeneration>
       <FastMath>true</FastMath>
       <Optimization>InheritFromHost</Optimization>
       <GPUDebugInfo>false</GPUDebugInfo>
@@ -142,13 +142,16 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="common\Constants.h" />
     <ClInclude Include="common\CUDA_Include.h" />
     <ClInclude Include="cpp\image\Image.h" />
+    <ClInclude Include="cpp\models\Sphere.h" />
     <ClInclude Include="cpp\modules\Base.h" />
     <ClInclude Include="cpp\modules\combiners\Blend.h" />
+    <ClInclude Include="cpp\modules\combiners\Combiners.h" />
     <ClInclude Include="cpp\modules\combiners\Max.h" />
     <ClInclude Include="cpp\modules\combiners\Min.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\DecarpientierSwiss.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
+    <ClInclude Include="cpp\modules\generators\Generators.h" />
     <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
     <ClInclude Include="cpp\modules\generators\Voronoi.h" />
     <ClInclude Include="cpp\modules\modifiers\Abs.h" />
@@ -156,12 +159,16 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\modules\modifiers\Clamp.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
     <ClInclude Include="cpp\modules\combiners\Power.h" />
+    <ClInclude Include="cpp\modules\modifiers\Modifiers.h" />
     <ClInclude Include="cpp\modules\modifiers\ScaleBias.h" />
     <ClInclude Include="cpp\modules\combiners\Select.h" />
     <ClInclude Include="cpp\modules\modifiers\Terrace.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
+    <ClInclude Include="cpp\modules\Modules.h" />
     <ClInclude Include="cpp\modules\utility\Cache.h" />
+    <ClInclude Include="cpp\modules\utility\Constant.h" />
     <ClInclude Include="cpp\modules\utility\Normalize.h" />
+    <ClInclude Include="cpp\modules\utility\Utility.h" />
     <ClInclude Include="cuda\combiners\blend.cuh" />
     <ClInclude Include="cuda\combiners\max.cuh" />
     <ClInclude Include="cuda\combiners\min.cuh" />
@@ -208,6 +215,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\modules\combiners\Select.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Terrace.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
+    <ClCompile Include="cpp\modules\utility\Cache.cpp" />
+    <ClCompile Include="cpp\modules\utility\Constant.cpp" />
     <ClCompile Include="cpp\modules\utility\Normalize.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

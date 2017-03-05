@@ -12,8 +12,17 @@ namespace cnoise {
 			controlPoints.push_back(ControlPoint(input_val, output_val));
 		}
 
+		size_t Curve::GetSourceModuleCount() const {
+			return 1;
+		}
+
 		std::vector<ControlPoint> Curve::GetControlPoints() const{
 			return controlPoints;
+		}
+
+		void Curve::SetControlPoints(const std::vector<ControlPoint>& pts){
+			controlPoints.clear();
+			controlPoints = pts;
 		}
 
 		void Curve::ClearControlPoints(){

@@ -20,10 +20,8 @@ void MinLauncher(float* output, const float* in0, const float* in1, const int wi
 #endif // CUDA_KERNEL_TIMING
 
 	// Setup dimensions of kernel launch using occupancy calculator.
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, MinKernel, 0, 0);
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	dim3 block(32, 32, 1);
+	dim3 grid(width / block.x, height / block.y, 1);
 	MinKernel<<<grid, block>>>(output, in0, in1, width, height);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());

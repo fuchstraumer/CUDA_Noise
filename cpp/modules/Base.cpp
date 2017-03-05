@@ -4,8 +4,8 @@
 
 
 namespace cnoise {
-
-		Module::Module(int width, int height) : dims(width, height) {
+	
+	Module::Module(int width, int height) : dims(width, height) {
 			Generated = false;
 			// Allocate using managed memory, so that CPU/GPU can share a single pointer.
 			// Be sure to call cudaDeviceSynchronize() before accessing Output.
@@ -29,20 +29,8 @@ namespace cnoise {
 		}
 
 		void Module::ConnectModule(Module* other) {
-			if (sourceModules.size() < GetSourceModuleCount() - 1) {
-				sourceModules.push_back(std::shared_ptr<Module>(other));
-			}
-		}
-
-		void Module::ConnectModule(std::shared_ptr<Module>& other) {
-			if (sourceModules.size() < GetSourceModuleCount() - 1) {
+			if (sourceModules.size() < GetSourceModuleCount()) {
 				sourceModules.push_back(other);
-			}
-		}
-
-		void Module::ConnectModule(Module& other) {
-			if (sourceModules.size() < GetSourceModuleCount() - 1) {
-				sourceModules.push_back(std::shared_ptr<Module>(&other));
 			}
 		}
 

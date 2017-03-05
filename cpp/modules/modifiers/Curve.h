@@ -32,8 +32,13 @@ namespace cnoise {
 			// Adds a control point
 			void AddControlPoint(float input_val, float output_val);
 
+			virtual size_t GetSourceModuleCount() const override;
+
 			// Get control points (non-mutable)
 			std::vector<ControlPoint> GetControlPoints() const;
+
+			// Set control points
+			void SetControlPoints(const std::vector<ControlPoint>& pts);
 
 			// Clear control points
 			void ClearControlPoints();

@@ -2,6 +2,7 @@
 #include "../cuda/modifiers/abs.cuh"
 
 cnoise::modifiers::Abs::Abs(const size_t width, const size_t height, Module * previous) : Module(width, height) {
+	sourceModules.push_back(previous);
 }
 
 size_t cnoise::modifiers::Abs::GetSourceModuleCount() const{

@@ -33,10 +33,8 @@ void ClampLauncher(float* output, float* input, const int width, const int heigh
 #endif // CUDA_KERNEL_TIMING
 
 	// Setup dimensions of kernel launch using occupancy calculator.
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, ClampKernel, 0, 0);
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	dim3 block(32, 32, 1);
+	dim3 grid(width / block.x , height / block.y, 1);
 	ClampKernel<<<grid, block>>>(output, input, width, height, lower_value, upper_value);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());

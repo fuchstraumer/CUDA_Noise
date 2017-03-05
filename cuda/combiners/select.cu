@@ -75,10 +75,8 @@ void SelectLauncher(float* out, float* select_item, float* subject0, float* subj
 #endif // CUDA_KERNEL_TIMING
 
 	// Setup dimensions of kernel launch using occupancy calculator.
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, SelectKernel, 0, 0);
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	dim3 block(32, 32, 1);
+	dim3 grid(width / block.x, height / block.y, 1);
 	SelectKernel<<<grid, block>>>(out, select_item, subject0, subject1, width, height, upper_bound, lower_bound, falloff);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());

@@ -4,7 +4,7 @@ namespace cnoise {
 	
 	namespace modifiers {
 
-		Turbulence::Turbulence(int width, int height, noise_t noise_type, Module* prev, int _roughness, int _seed, float _strength) : Module(width, height), roughness(_roughness), seed(_seed), strength(_strength) {
+		Turbulence::Turbulence(int width, int height, noise_t noise_type, Module* prev, int _roughness, int _seed, float _strength, float freq) : Module(width, height), roughness(_roughness), seed(_seed), strength(_strength), frequency(freq) {
 			ConnectModule(prev);
 		}
 
@@ -20,7 +20,7 @@ namespace cnoise {
 			if (!sourceModules.front()->Generated) {
 				sourceModules.front()->Generate();
 			}
-			TurbulenceLauncher(Output, sourceModules.front()->Output, dims.first, dims.second, noiseType, roughness, seed, strength);
+			TurbulenceLauncher(Output, sourceModules.front()->Output, dims.first, dims.second, noiseType, roughness, seed, strength, frequency);
 			Generated = true;
 		}
 
@@ -54,6 +54,14 @@ namespace cnoise {
 
 		int Turbulence::GetRoughness() const {
 			return roughness;
+		}
+
+		float Turbulence::GetFrequency() const{
+			return frequency;
+		}
+
+		void Turbulence::SetFrequency(const float _freq){
+			frequency = _freq;
 		}
 
 	}

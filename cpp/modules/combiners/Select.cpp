@@ -5,9 +5,10 @@ namespace cnoise {
 	namespace combiners {
 
 		Select::Select(int width, int height, float low_value, float high_value, float _falloff, Module* selector, Module* subject0, Module* subject1) : Module(width, height), lowThreshold(low_value), highThreshold(high_value), falloff(_falloff)  {
-			sourceModules[0] = std::shared_ptr<Module>(selector);
-			sourceModules[1] = std::shared_ptr<Module>(subject0);
-			sourceModules[2] = std::shared_ptr<Module>(subject1);
+			sourceModules.resize(3);
+			sourceModules[0] = selector;
+			sourceModules[1] = subject0;
+			sourceModules[2] = subject1;
 		}
 
 		void Select::SetSubject(size_t idx, Module* subject){
@@ -16,12 +17,12 @@ namespace cnoise {
 				throw("Invalid index supplied");
 			}
 			else {
-				sourceModules[idx] = std::shared_ptr<Module>(subject);
+				sourceModules[idx] = subject;
 			}
 		}
 
 		void Select::SetSelector(Module* selector){
-			sourceModules[0] = std::shared_ptr<Module>(selector);
+			sourceModules[0] = selector;
 		}
 
 		void Select::Generate() {

@@ -1,5 +1,5 @@
 #include "Turbulence.cuh"
-
+#include "../generators/FBM.cuh"
 /*
 	
 	Turbulence process:
@@ -11,36 +11,40 @@
 
 */
 
-__global__ void TurbulenceKernel(float* out, float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength) {
+__global__ void TurbulenceKernel(float* out, const float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength, const float freq) {
 	// Get current pixel.
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	// Return if out of bounds.
-	if (i < width && j < height) {
-		// Position that will be displaced
-		float2 displace;
-		switch (noise_type) {
-			case(noise_t::PERLIN): {
-				displace.x = i + perlin2d(i + (12414.0f / 65536.0f), j + (65124.0f / 65536.0f), seed, nullptr) * strength;
-				displace.y = j + perlin2d(i + (26519.0f / 65536.0f), j + (18128.0f / 65536.0f), seed, nullptr) * strength;
-				break;
-			}
-			case(noise_t::SIMPLEX): {
-				displace.x = i + simplex2d(i, j, seed, nullptr) * strength;
-				displace.y = j + simplex2d(i, j, seed, nullptr) * strength;
-				break;
-			}
-		}
-
-		// Get offset value.
-		float offset_val = perlin2d(displace.x, displace.y, seed, nullptr);
-		// Add it to previous value and store the result in the output array.
-		out[(j * width) + i] = input[(j * width) + i] + offset_val;
+	if (i >= width || j >= height) {
+		return;
 	}
-
+	// Position that will be displaced
+	int2 displace;
+	displace.x = i;
+	displace.y = j;
+	float x_distort, y_distort;
+	if (noise_type == noise_t::PERLIN) {
+		x_distort = FBM2d(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
+		y_distort = FBM2d(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
+	}
+	else {
+		x_distort = FBM2d_Simplex(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
+		y_distort = FBM2d_Simplex(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
+	}
+	
+	displace.x += x_distort;
+	displace.y += y_distort;
+	displace.x %= width;
+	displace.y %= height;
+	displace.x = clamp(displace.x, 0, width - 1);
+	displace.y = clamp(displace.y, 0, height - 1);
+	// Get offset value.
+	// Add it to previous value and store the result in the output array.
+	out[(j * width) + i] = input[(displace.y * width) + displace.x];
 }
 
-void TurbulenceLauncher(float* out, float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength){
+void TurbulenceLauncher(float* out, const float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength, const float freq){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -51,7 +55,7 @@ void TurbulenceLauncher(float* out, float* input, const int width, const int hei
 
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
-	TurbulenceKernel<<<numBlocks, threadsPerBlock>>>(out, input, width, height, noise_type, roughness, seed, strength);
+	TurbulenceKernel<<<numBlocks, threadsPerBlock>>>(out, input, width, height, noise_type, roughness, seed, strength, freq);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device

@@ -274,6 +274,7 @@ __device__ __constant__ int grad_2d_lut[256][2] =
 	{ -1,0 }
 };
 
+
 inline __device__ uint fnv_32_a_buf(const void* buf, const uint len) {
 	uint hval = FNV_32_INIT;
 	uint *bp = (uint*)buf;
@@ -315,7 +316,7 @@ __device__ float sCurve5(const float a) {
 }
 
 __device__ float perlin2d(const float px, const float py, const int seed, float2 * deriv){
-	int ix0, iy0;
+	volatile int ix0, iy0;
 	ix0 = floorf(px);
 	iy0 = floorf(py);
 
@@ -326,7 +327,7 @@ __device__ float perlin2d(const float px, const float py, const int seed, float2
 	fy0 = sCurve5(y0);
 
 	// Get four hashes
-	uint h0, h1, h2, h3;
+	volatile uint h0, h1, h2, h3;
 	h0 = hash_2d(ix0, iy0, seed);
 	h1 = hash_2d(ix0, iy0 + 1, seed);
 	h2 = hash_2d(ix0 + 1, iy0, seed);
@@ -458,4 +459,21 @@ __device__ float simplex2d(const float px, const float py, const int seed, float
 	}
 
 	return 40.0f * (n0 + n1 + n2);
+}
+
+__device__ float simplex3d(const float px, const float py, const float pz, const int seed, float3 * deriv){
+	static float F3 = 0.333333333f;
+	static float G3 = 0.166666667f;
+
+	// Skew input space about and find our simplex cell and simplex coordinates in ijk space
+	float3 s = make_float3(px, py, pz) + ((px + py + pz) * F3);
+	int3 i_s = make_int3(floorf(s.x), floorf(s.y), floorf(s.z));
+
+	// First positional coordinate
+	float3 p0;
+	p0.x = px - (i_s.x - ((i_s.x + i_s.y + i_s.z) * G3));
+	p0.y = py - (i_s.y - ((i_s.x + i_s.y + i_s.z) * G3));
+	p0.z = pz - (i_s.z - ((i_s.x + i_s.y + i_s.z) * G3));
+
+	return 0.0f;
 }

@@ -21,10 +21,8 @@ void scalebiasLauncher(float* output, float* input, const int width, const int h
 #endif // CUDA_KERNEL_TIMING
 
 	// Setup dimensions of kernel launch using occupancy calculator.
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, scalebiasKernel, 0, 0);
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	dim3 block(32, 32, 1);
+	dim3 grid((width - 1) / block.x + 1, (height - 1) / block.y + 1, 1);
 	scalebiasKernel<<<grid, block>>>(output, input, width, height, scale, bias);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());

@@ -6,7 +6,7 @@ namespace cnoise {
 	namespace generators {
 
 		// Pass width and height to base class ctor, initialize configuration struct, initialize origin (using initializer list)
-		FBM2D::FBM2D(int width, int height, noise_t noise_type, int x, int y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height), 
+		FBM2D::FBM2D(int width, int height, noise_t noise_type, float x, float y, int seed, float freq, float lacun, int octaves, float persist) : Module(width, height), 
 			Attributes(seed, freq, lacun, octaves, persist), Origin(x,y), NoiseType(noise_type) {}
 
 		// TODO: Implement these. Just here so compiler shuts up.

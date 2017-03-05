@@ -34,7 +34,7 @@ namespace cnoise {
 			// Width + height specify output texture size.
 			// Seed defines a value to seed the generator with
 			// X & Y define the origin of the noise generator
-			FBM2D(int width, int height, noise_t noise_type = noise_t::PERLIN, int x = 0, int y = 0, int seed = DEFAULT_FBM_SEED, float freq = DEFAULT_FBM_FREQUENCY, float lacun = DEFAULT_FBM_LACUNARITY,
+			FBM2D(int width, int height, noise_t noise_type = noise_t::PERLIN, float x = 0.0f, float y = 0.0f, int seed = DEFAULT_FBM_SEED, float freq = DEFAULT_FBM_FREQUENCY, float lacun = DEFAULT_FBM_LACUNARITY,
 				int octaves = DEFAULT_FBM_OCTAVES, float persist = DEFAULT_FBM_PERSISTENCE);
 
 			// Get source module count: must be 0, this is a generator and can't have preceding modules.

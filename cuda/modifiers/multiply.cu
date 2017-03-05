@@ -1,4 +1,4 @@
-#include "power.cuh"
+#include "multiply.cuh"
 
 
 __global__ void multiplyKernel(float* output, float* input, const int width, const int height, const float factor) {

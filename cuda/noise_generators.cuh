@@ -23,17 +23,8 @@
 
 __device__ float perlin2d(const float px, const float py, const int seed, float2* deriv = nullptr);
 
-// Helper functions for fetching cheap (lazy, really) finite-difference derivative in 2D
-// Spacing decides amount we space our sampling by.
-__device__ float2 perlin2d_deriv(const float px, const float py, const float spacing = 0.10f);
-
 __device__ float perlin3d(const float px, const float py, const float pz, const int seed, float3* deriv = nullptr);
 
-// Helper functions for fetching cheap (lazy, really) finite-difference derivative in 3D
-// Spacing decides amount we space our sampling by.
-__device__ float3 perlin3d_deriv(const float px, const float py, const float pz, const float spacing = 0.10f);
-
-// Don't need helper for deriving simplex, its actually a real derivative and not an approximation.
 __device__ float simplex2d(const float px, const float py, const int seed, float2* deriv = nullptr);
 
 __device__ float simplex3d(const float px, const float py, const float pz, const int seed, float3* deriv = nullptr);

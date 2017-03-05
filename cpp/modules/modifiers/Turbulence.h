@@ -10,11 +10,12 @@ namespace cnoise {
 		constexpr int DEFAULT_TURBULENCE_ROUGHNESS = 3;
 		constexpr int DEFAULT_TURBULENCE_SEED = 0;
 		constexpr float DEFAULT_TURBULENCE_STRENGTH = 3.0f;
+		constexpr float DEFAULT_TURBULENCE_FREQUENCY = 0.05f;
 
 		class Turbulence : public Module {
 		public:
 
-			Turbulence(int width, int height, noise_t noise_type, Module* prev = nullptr, int roughness = DEFAULT_TURBULENCE_ROUGHNESS, int seed = DEFAULT_TURBULENCE_SEED, float strength = DEFAULT_TURBULENCE_STRENGTH);
+			Turbulence(int width, int height, noise_t noise_type, Module* prev = nullptr, int roughness = DEFAULT_TURBULENCE_ROUGHNESS, int seed = DEFAULT_TURBULENCE_SEED, float strength = DEFAULT_TURBULENCE_STRENGTH, float freq = DEFAULT_TURBULENCE_FREQUENCY);
 
 			virtual size_t GetSourceModuleCount() const override;
 
@@ -36,9 +37,15 @@ namespace cnoise {
 
 			int GetRoughness() const;
 
+			float GetFrequency() const;
+
+			void SetFrequency(const float _freq);
+
 		private:
 
 			float strength;
+
+			float frequency;
 
 			int seed;
 
