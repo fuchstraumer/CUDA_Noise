@@ -25,7 +25,7 @@ void MaxLauncher(float *output, const float *in0, const float *in1, const int wi
 	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, MaxKernel, 0, 0);
 	dim3 block(blockSize, blockSize, 1);
 	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
-	MaxKernel<<<grid, block>>>(output, input0, input1, width, height);
+	MaxKernel<<<grid, block>>>(output, in0, in1, width, height);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device
