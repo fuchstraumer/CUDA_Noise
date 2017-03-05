@@ -20,28 +20,16 @@ __global__ void TurbulenceKernel(float* out, const float* input, const int width
 		return;
 	}
 	// Position that will be displaced
-	int2 displace;
-	displace.x = i;
-	displace.y = j;
-	float x_distort, y_distort;
+	float distort;
 	if (noise_type == noise_t::PERLIN) {
-		x_distort = FBM2d(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
-		y_distort = FBM2d(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
+		distort = FBM2d(make_float2(i, j), freq, 2.20f, 0.90f, seed, roughness) * strength;
 	}
 	else {
-		x_distort = FBM2d_Simplex(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
-		y_distort = FBM2d_Simplex(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
+		distort = FBM2d_Simplex(make_float2(i, j), freq, 1.50f, 0.60f, seed, roughness) * strength;
 	}
-	
-	displace.x += x_distort;
-	displace.y += y_distort;
-	displace.x %= width;
-	displace.y %= height;
-	displace.x = clamp(displace.x, 0, width - 1);
-	displace.y = clamp(displace.y, 0, height - 1);
 	// Get offset value.
 	// Add it to previous value and store the result in the output array.
-	out[(j * width) + i] = input[(displace.y * width) + displace.x];
+	out[(j * width) + i] = input[(j * width) + i] + distort;
 }
 
 void TurbulenceLauncher(float* out, const float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength, const float freq){

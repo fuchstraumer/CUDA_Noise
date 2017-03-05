@@ -13,7 +13,7 @@ int main() {
 	constexpr int img_size_x = 8192;
 	constexpr int img_size_y = 8192;
 	constexpr float sea_level = 0.10f;
-	constexpr float continent_freq = 0.00025f / 8;
+	constexpr float continent_freq = 0.00025f;
 	constexpr float continent_lacun = 2.10f;
 
 	/*
@@ -59,9 +59,9 @@ int main() {
 	baseContinentDef_cl.SaveToPNG("terrain.png");
 	cudaDeviceSynchronize();
 
-	Turbulence baseContinentDef_tu0(img_size_x, img_size_y, noise_t::PERLIN, &baseContinentDef_cl, 13, 1341324, 1.0f / continent_freq, continent_freq * 15.0f);
-	baseContinentDef_tu0.Generate();
-	cudaDeviceSynchronize();
-	baseContinentDef_tu0.SaveToPNG("turbulence.png");
+	Turbulence baseContinentDef_tu0(img_size_x, img_size_y, noise_t::PERLIN, &baseContinentDef_cl, 13, 1341324, 0.2f, continent_freq * 15.0f);
+	//baseContinentDef_tu0.Generate();
+	//cudaDeviceSynchronize();
+	//baseContinentDef_tu0.SaveToPNG("turbulence.png");
 
 }

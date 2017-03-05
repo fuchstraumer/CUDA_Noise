@@ -2,9 +2,8 @@
 #include "lodepng\lodepng.h"
 #include "Image.h"
 #include <algorithm>
-#include <pmmintrin.h>
-#include <emmintrin.h>
 #include <xmmintrin.h>
+
 namespace cnoise {
 
 	namespace img {
@@ -32,25 +31,49 @@ namespace cnoise {
 		}
 
 		template<typename T>
-		inline auto convertRawData(const std::vector<float>& raw_data)->std::vector<T> {
-			// We need to scale the data to fit in the range of the desired return type.
-			T t_min, t_max;
-			t_min = std::numeric_limits<T>::min();
-			t_max = std::numeric_limits<T>::max();
-			// Declare result vector so we can use std::transform shortly.
+		inline std::vector<T> convertRawData(const std::vector<float>& raw_data) {
+
+			// Get min of return datatype
+			__m128 t_min = _mm_set1_ps(static_cast<float>(std::numeric_limits<T>::min()));
+
+			// Like with the min/max of our set, we don't use max of T alone and instead can evaluate
+			// the expression its used with here (finding range of data type), instead of during every iteration
+			__m128 t_ratio = _mm_sub_ps(_mm_set1_ps(static_cast<float>(std::numeric_limits<T>::max())), t_min);
+
+			// Declare result vector and use resize so we can use memory offsets/addresses to store data in it.
 			std::vector<T> result;
-			result.reserve(raw_data.size());
+			result.resize(raw_data.size());
+
 			// Get min/max values from raw data
 			auto min_max = std::minmax_element(raw_data.begin(), raw_data.end());
-			float max = *min_max.second;
-			float min = *min_max.first;
-			// Conversion lambda expression
-			auto convert = [min, max, t_min, t_max](const float& val)->T {
-				float result = ((val - min) / (min - max) * static_cast<float>(t_max - t_min)) + t_min;
-				return result;
-			};
-			// Convert data
-			std::transform(raw_data.begin(), raw_data.end(), std::back_inserter(result), convert);
+
+			// Mininum value is subtracted from each element.
+			__m128 min_register = _mm_set1_ps(*min_max.first);
+
+			// Max value is only use in divisor, with min, so precalculate divisor instead of doing this step each time.
+			__m128 ratio_register = _mm_sub_ps(min_register, _mm_set1_ps(*min_max.second));
+
+			// Iterate through result in steps of 4
+			for (size_t i = 0; i < result.size(); ++i) {
+				// Load 4 elements from raw_data - ps1 means unaligned load.
+				__m128 step_register = _mm_load_ps1(&raw_data[i]);
+
+				// get elements in "reg" into 0.0 - 1.0 scale.
+				step_register = _mm_sub_ps(reg, min);
+				step_register = _mm_div_ps(reg, ratio);
+
+				// Multiply step_register by t_ratio, to scale value by range of new datatype.
+				step_register = _mm_mul_ps(step_register, t_ratio);
+
+				// Add t_min to step_register, getting data fully into range of T
+				step_register = _mm_add_ps(step_register, t_min);
+
+				// Store data in result.
+				_mm_store1_ps(&result[i], reg);
+			}
+
+			// Return result, which can be (fairly) safely cast to the desired output type T. 
+			// At the least, the range of the data should better fit in the range offered by T.
 			return result;
 		}
 
@@ -107,7 +130,7 @@ namespace cnoise {
 			scaled_data.resize(rawData.size());
 			__m128 scale, min, ratio;
 			// Register used to scale up/down
-			scale = _mm_set1_ps(255);
+			scale = _mm_set1_ps(255.0f);
 			auto min_max = std::minmax_element(rawData.begin(), rawData.end());
 			// register holding min element
 			min = _mm_set1_ps(*min_max.first);
