@@ -1,5 +1,5 @@
 #include "Select.h"
-#include "..\cuda\modifiers\select.cuh"
+#include "..\cuda\combiners\select.cuh"
 namespace cnoise {
 
 	namespace combiners {

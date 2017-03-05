@@ -1,4 +1,5 @@
 #include "power.cuh"
+#include "..\..\cpp\modules\combiners\Power.h"
 
 
 __global__ void powerKernel(float* output, float* input0, float* input1, const int width, const int height) {
@@ -44,3 +45,5 @@ void powerLauncher(float* output, float* input0, float* input1, const int width,
 #endif // CUDA_KERNEL_TIMING
 	// If this completes, kernel is done and "output" contains correct data.
 }
+
+
