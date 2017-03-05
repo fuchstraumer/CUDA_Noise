@@ -2,6 +2,9 @@
 #include "lodepng\lodepng.h"
 #include "Image.h"
 #include <algorithm>
+#include <pmmintrin.h>
+#include <emmintrin.h>
+#include <xmmintrin.h>
 namespace cnoise {
 
 	namespace img {
@@ -98,15 +101,38 @@ namespace cnoise {
 		}
 
 		void ImageWriter::WritePNG(const char * filename, int compression_level) {
-			std::vector<unsigned char> tmpBuffer = convertRawData<unsigned char>(rawData);
+			// We store values here
+			std::vector<float> scaled_data;
 			// Copy values over to pixelData, for a grayscale image.
-			pixelData.resize(4 * tmpBuffer.size());
+			scaled_data.resize(rawData.size());
+			__m128 scale, min, ratio;
+			// Register used to scale up/down
+			scale = _mm_set1_ps(255);
+			auto min_max = std::minmax_element(rawData.begin(), rawData.end());
+			// register holding min element
+			min = _mm_set1_ps(*min_max.first);
+			// register used as divisor
+			ratio = _mm_sub_ps(min, _mm_set1_ps(*min_max.second));
+			
+			for (size_t i = 0; i < rawData.size(); i += 4) {
+				__m128 reg; // Will hold floats in this register.
+				reg = _mm_load_ps1(&rawData[i]);
+				// get "reg" into 0.0 - 1.0 scale.
+				reg = _mm_sub_ps(reg, min);
+				reg = _mm_div_ps(reg, ratio);
+				// Multiply reg by scale.
+				reg = _mm_mul_ps(reg, scale);
+				// Store data in tmpBuffer.
+				_mm_store1_ps(&scaled_data[i], reg);
+			}
+
+			pixelData.resize(scaled_data.size() * 4);
 			for (size_t y = 0; y < height; ++y) {
 				for (size_t x = 0; x < width; ++x) {
 					size_t idx = 4 * width * y + 4 * x;
-					pixelData[idx + 0] = tmpBuffer[width * y + x];
-					pixelData[idx + 1] = tmpBuffer[width * y + x];
-					pixelData[idx + 2] = tmpBuffer[width * y + x];
+					pixelData[idx + 0] = scaled_data[width * y + x];
+					pixelData[idx + 1] = scaled_data[width * y + x];
+					pixelData[idx + 2] = scaled_data[width * y + x];
 					pixelData[idx + 3] = 255;
 				}
 			}

@@ -43,7 +43,7 @@ namespace cnoise {
 			virtual void Generate() = 0;
 
 			// Returns Generated data.
-			virtual cudaSurfaceObject_t GetData() const;
+			virtual std::vector<float> GetData() const;
 
 			// Gets reference to module at given index in this modules "sourceModules" container
 			virtual Module& GetModule(size_t idx) const;
@@ -51,11 +51,8 @@ namespace cnoise {
 			// Get number of source modules connected to this object.
 			virtual size_t GetSourceModuleCount() const = 0;
 
-			// Get texture data from GPU and return it as a vector of floating point values.
-			virtual std::vector<float> GetGPUData() const;
-
 			// Get texture from GPU and return it as a normalized (0.0 - 1.0) vector floating point values
-			virtual std::vector<float> GetGPUDataNormalized() const;
+			virtual std::vector<float> GetDataNormalized(float upper_bound, float lower_bound) const;
 
 			// Save current module to an image with name "name"
 			virtual void SaveToPNG(const char* name);
@@ -65,8 +62,12 @@ namespace cnoise {
 			// Tells us whether or not this module has already Generated data.
 			bool Generated;
 
-			// Each module will write values into this
-			cudaSurfaceObject_t output;
+			// Each module will write self values into this, and allow other modules to read from this.
+			// Allocated with managed memory.
+			float* Output;
+
+			// CPU cache, grabs memory from managed pool that is output.
+			float* cpu_cache;
 
 		protected:
 

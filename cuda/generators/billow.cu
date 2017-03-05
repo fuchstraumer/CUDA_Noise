@@ -1,7 +1,5 @@
 #include "billow.cuh"
 
-
-
 __device__ float billow2D_Simplex(float2 point, float freq, float lacun, float persist, int init_seed, int octaves) {
 	float result = 0.0f;
 	float amplitude = 1.0f;
@@ -44,7 +42,7 @@ __device__ float billow2D(float2 point, float freq, float lacun, float persist, 
 
 
 
-__global__ void Billow2DKernel(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+__global__ void Billow2DKernel(float* output, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -66,16 +64,13 @@ __global__ void Billow2DKernel(cudaSurfaceObject_t out, int width, int height, n
 			}
 		}
 		// Write val to the surface
-		surf2Dwrite(val, out, i * sizeof(float), j);
+		output[(j * width) + i] = val;
 	}
 
 	
 }
 
-
-
-
-void BillowLauncher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+void BillowLauncher(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;

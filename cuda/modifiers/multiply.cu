@@ -1,25 +1,16 @@
 #include "power.cuh"
 
 
-__global__ void multiplyKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, float factor) {
+__global__ void multiplyKernel(float* output, float* input, const int width, const int height, const float factor) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
-
 	if (i >= width || j >= height) {
 		return;
 	}
-
-	float prev;
-	surf2Dread(&prev, input, i * sizeof(float), j);
-
-	float final_value;
-	final_value = prev * factor;
-
-	surf2Dwrite(final_value, output, i * sizeof(float), j);
-
+	output[(j * width) + i] = input[(j * width) + i] * factor;
 }
 
-void multiplyLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height, float factor) {
+void multiplyLauncher(float* output, float* input, const int width, const int height, float factor) {
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);

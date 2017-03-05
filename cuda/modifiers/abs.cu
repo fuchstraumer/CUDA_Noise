@@ -1,34 +1,18 @@
 #include "abs.cuh"
 #include "..\..\cpp\modules\modifiers\Abs.h"
 
-__global__ void absKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height) {
+__global__ void absKernel(float* output, float* input, const int width, const int height) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i >= width || j >= height) {
 		return;
 	}
 
-	float prev;
-	surf2Dread(&prev, input, i * sizeof(float), j);
-
-	float final_value;
-
-	if (prev <= 0)
-	{
-		final_value = -prev;
-	}
-
-	else
-	{
-		final_value = prev;
-	}
-	
-
-	surf2Dwrite(final_value, output, i * sizeof(float), j);
-
+	float prev = input[(width * j) + i];
+	output[(j * width) + i] = (prev <= 0.0f) ? -prev : prev;
 }
 
-void absLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height) {
+void absLauncher(float* output, float* input, const int width, const int height) {
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;

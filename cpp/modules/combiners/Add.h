@@ -5,7 +5,7 @@
 
 namespace cnoise {
 
-	namespace modifiers {
+	namespace combiners {
 
 		class Add : public Module {
 		public:

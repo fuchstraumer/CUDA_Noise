@@ -112,6 +112,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="cuda\combiners\blend.cu" />
+    <CudaCompile Include="cuda\combiners\max.cu" />
+    <CudaCompile Include="cuda\combiners\min.cu" />
     <CudaCompile Include="cuda\generators\billow.cu">
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateRelocatableDeviceCode>
       <GenerateRelocatableDeviceCode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateRelocatableDeviceCode>
@@ -121,14 +124,18 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="cuda\generators\jordan.cu" />
     <CudaCompile Include="cuda\generators\ridged_multi.cu" />
     <CudaCompile Include="cuda\modifiers\abs.cu" />
+    <CudaCompile Include="cuda\modifiers\clamp.cu" />
     <CudaCompile Include="cuda\modifiers\multiply.cu" />
-    <CudaCompile Include="cuda\modifiers\power.cu" />
+    <CudaCompile Include="cuda\combiners\power.cu" />
     <CudaCompile Include="cuda\generators\voronoi.cu" />
-    <CudaCompile Include="cuda\modifiers\add.cu" />
+    <CudaCompile Include="cuda\combiners\add.cu" />
     <CudaCompile Include="cuda\modifiers\curve.cu" />
-    <CudaCompile Include="cuda\modifiers\select.cu" />
+    <CudaCompile Include="cuda\modifiers\scalebias.cu" />
+    <CudaCompile Include="cuda\combiners\select.cu" />
+    <CudaCompile Include="cuda\modifiers\terrace.cu" />
     <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
     <CudaCompile Include="cuda\noise_generators.cu" />
+    <CudaCompile Include="cuda\utility\normalize.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\CommonInclude.h" />
@@ -136,17 +143,28 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="common\CUDA_Include.h" />
     <ClInclude Include="cpp\image\Image.h" />
     <ClInclude Include="cpp\modules\Base.h" />
+    <ClInclude Include="cpp\modules\combiners\Blend.h" />
+    <ClInclude Include="cpp\modules\combiners\Max.h" />
+    <ClInclude Include="cpp\modules\combiners\Min.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\DecarpientierSwiss.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
     <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
     <ClInclude Include="cpp\modules\generators\Voronoi.h" />
     <ClInclude Include="cpp\modules\modifiers\Abs.h" />
-    <ClInclude Include="cpp\modules\modifiers\Add.h" />
+    <ClInclude Include="cpp\modules\combiners\Add.h" />
+    <ClInclude Include="cpp\modules\modifiers\Clamp.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
+    <ClInclude Include="cpp\modules\combiners\Power.h" />
     <ClInclude Include="cpp\modules\modifiers\ScaleBias.h" />
-    <ClInclude Include="cpp\modules\modifiers\Select.h" />
+    <ClInclude Include="cpp\modules\combiners\Select.h" />
+    <ClInclude Include="cpp\modules\modifiers\Terrace.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
+    <ClInclude Include="cpp\modules\utility\Cache.h" />
+    <ClInclude Include="cpp\modules\utility\Normalize.h" />
+    <ClInclude Include="cuda\combiners\blend.cuh" />
+    <ClInclude Include="cuda\combiners\max.cuh" />
+    <ClInclude Include="cuda\combiners\min.cuh" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\cutil_math.cuh" />
     <ClInclude Include="cuda\generators\billow.cuh" />
@@ -155,12 +173,16 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\jordan.cuh" />
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\modifiers\abs.cuh" />
-    <ClInclude Include="cuda\modifiers\add.cuh" />
+    <ClInclude Include="cuda\combiners\add.cuh" />
+    <ClInclude Include="cuda\modifiers\clamp.cuh" />
     <ClInclude Include="cuda\modifiers\multiply.cuh" />
-    <ClInclude Include="cuda\modifiers\power.cuh" />
+    <ClInclude Include="cuda\modifiers\scalebias.cuh" />
+    <ClInclude Include="cuda\modifiers\terrace.cuh" />
+    <ClInclude Include="cuda\utility\normalize.cuh" />
+    <ClInclude Include="cuda\combiners\power.cuh" />
     <ClInclude Include="cuda\generators\voronoi.cuh" />
     <ClInclude Include="cuda\modifiers\curve.cuh" />
-    <ClInclude Include="cuda\modifiers\select.cuh" />
+    <ClInclude Include="cuda\combiners\select.cuh" />
     <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
     <ClInclude Include="cuda\noise_generators.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
@@ -169,17 +191,24 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="cpp\image\Image.cpp" />
     <ClCompile Include="cpp\main.cpp" />
     <ClCompile Include="cpp\modules\Base.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Blend.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Max.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Min.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Power.cpp" />
     <ClCompile Include="cpp\modules\generators\Billow.cpp" />
     <ClCompile Include="cpp\modules\generators\DecarpientierSwiss.cpp" />
     <ClCompile Include="cpp\modules\generators\FBM.cpp" />
     <ClCompile Include="cpp\modules\generators\RidgedMulti.cpp" />
     <ClCompile Include="cpp\modules\generators\Voronoi.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Abs.cpp" />
-    <ClCompile Include="cpp\modules\modifiers\Add.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Add.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Clamp.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Curve.cpp" />
     <ClCompile Include="cpp\modules\modifiers\ScaleBias.cpp" />
-    <ClCompile Include="cpp\modules\modifiers\Select.cpp" />
+    <ClCompile Include="cpp\modules\combiners\Select.cpp" />
+    <ClCompile Include="cpp\modules\modifiers\Terrace.cpp" />
     <ClCompile Include="cpp\modules\modifiers\Turbulence.cpp" />
+    <ClCompile Include="cpp\modules\utility\Normalize.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

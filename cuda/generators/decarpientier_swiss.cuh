@@ -3,6 +3,6 @@
 #include "../common/CUDA_Include.h"
 #include "../noise_generators.cuh"
 
-void DecarpientierSwissLauncher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
+void DecarpientierSwissLauncher(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves);
 
 #endif // !DECARPIENTIER_SWISS_CUH

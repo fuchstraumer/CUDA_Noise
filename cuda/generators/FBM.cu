@@ -41,7 +41,7 @@ __device__ float FBM2d(float2 point, const float freq, const float lacun, const 
 	return result;
 }
 
-__global__ void FBM2DKernel(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves){
+__global__ void FBM2DKernel(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves){
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -61,11 +61,11 @@ __global__ void FBM2DKernel(cudaSurfaceObject_t out, int width, int height, nois
 		}
 
 		// Write val to the surface
-		surf2Dwrite(val, out, i * sizeof(float), j);
+		out[(j * width) + i] = val;
 	}
 }
 
-void FBM_Launcher(cudaSurfaceObject_t out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves){
+void FBM_Launcher(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves){
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);

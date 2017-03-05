@@ -20,7 +20,7 @@ namespace cnoise {
 			if (!sourceModules.front()->Generated) {
 				sourceModules.front()->Generate();
 			}
-			TurbulenceLauncher(output, sourceModules.front()->output, dims.first, dims.second, noiseType, roughness, seed, strength);
+			TurbulenceLauncher(Output, sourceModules.front()->Output, dims.first, dims.second, noiseType, roughness, seed, strength);
 			Generated = true;
 		}
 

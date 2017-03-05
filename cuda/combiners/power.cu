@@ -1,23 +1,22 @@
 #include "power.cuh"
+#include "..\..\cpp\modules\combiners\Power.h"
 
 
-__global__ void powerKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t input0, cudaSurfaceObject_t input1, const int width, const int height) {
+__global__ void powerKernel(float* output, float* input0, float* input1, const int width, const int height) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i >= width || j >= height) {
 		return;
 	}
 	float prev0, prev1;
-	surf2Dread(&prev0, input0, i * sizeof(float), j);
-	surf2Dread(&prev1, input1, i * sizeof(float), j);
-	float final_value;
-	final_value = powf(prev0, prev1);
+	prev0 = input0[(j * width) + i];
+	prev1 = input1[(j * width) + i];
 
-	surf2Dwrite(final_value, output, i * sizeof(float), j);
-
+	// Raise prev0 to the power of prev1 and write to the output.
+	output[(j * width) + i] = powf(prev0, prev1);
 }
 
-void powerLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input0, cudaSurfaceObject_t input1, const int width, const int height) {
+void powerLauncher(float* output, float* input0, float* input1, const int width, const int height) {
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -31,7 +30,7 @@ void powerLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input0, cudaS
 	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, powerKernel, 0, 0); 
 	dim3 block(blockSize, blockSize, 1);
 	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
-	powerKernel<<<grid, block >>>(output, input0, input1, width, height, p); //Call Kernel
+	powerKernel<<<grid, block >>>(output, input0, input1, width, height); //Call Kernel
 	// Check for successful kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device
@@ -46,3 +45,5 @@ void powerLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input0, cudaS
 #endif // CUDA_KERNEL_TIMING
 	// If this completes, kernel is done and "output" contains correct data.
 }
+
+

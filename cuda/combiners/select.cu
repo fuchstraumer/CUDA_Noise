@@ -8,7 +8,7 @@ __device__ float lerp_s(float n0, float n1, float a) {
 	return ((1.0f - a) * n0) + (a * n1);
 }
 
-__global__ void SelectKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t select_item, cudaSurfaceObject_t subject0, cudaSurfaceObject_t subject1, int width, int height, float upper_bound, float lower_bound, float falloff){
+__global__ void SelectKernel(float* out, float* select_item, float* subject0, float* subject1, int width, int height, float upper_bound, float lower_bound, float falloff){
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
 	int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i >= width || j >= height) {
@@ -16,12 +16,11 @@ __global__ void SelectKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t select
 	}
 	// Get previous values to select between.
 	float prev0, prev1;
-	surf2Dread(&prev0, subject0, i * sizeof(float), j);
-	surf2Dread(&prev1, subject1, i * sizeof(float), j);
+	prev0 = subject0[(j * width) + i];
+	prev1 = subject1[(j * width) + i];
 
 	// Get value used for selection.
-	float select;
-	surf2Dread(&select, select_item, i * sizeof(float), j);
+	float select = select_item[(j * width) + i];
 
 	// Get result vlaue by checking select for bounds (and apply falloff)
 	float result, alpha;
@@ -63,10 +62,10 @@ __global__ void SelectKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t select
 	}
 
 	// Write value to surface object.
-	surf2Dwrite(result, out, i * sizeof(float), j);
+	out[(j * width) + i] = result;
 }
 
-void SelectLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t select_item, cudaSurfaceObject_t subject0, cudaSurfaceObject_t subject1, int width, int height, float upper_bound, float lower_bound, float falloff){
+void SelectLauncher(float* out, float* select_item, float* subject0, float* subject1, int width, int height, float upper_bound, float lower_bound, float falloff){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;

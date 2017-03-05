@@ -1,8 +1,8 @@
 #include "Add.h"
-#include "../cuda/modifiers/add.cuh"
+#include "../cuda/combiners/add.cuh"
 namespace cnoise {
 
-	namespace modifiers {
+	namespace combiners {
 
 		Add::Add(int width, int height, float add_value, Module* source) : Module(width, height) {
 			sourceModules.front() = std::shared_ptr<Module>(source);
@@ -20,7 +20,7 @@ namespace cnoise {
 				}
 			}
 			
-			AddLauncher(output, sourceModules[0]->output, sourceModules[1]->output, dims.first, dims.second);
+			AddLauncher(Output, sourceModules[0]->Output, sourceModules[1]->Output, dims.first, dims.second);
 			Generated = true;
 		}
 

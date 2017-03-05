@@ -15,7 +15,7 @@ namespace cnoise {
 		}
 
 		void FBM2D::Generate(){
-			FBM_Launcher(output, dims.first, dims.second, NoiseType, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			FBM_Launcher(Output, dims.first, dims.second, NoiseType, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 			Generated = true;
 		}
 	}

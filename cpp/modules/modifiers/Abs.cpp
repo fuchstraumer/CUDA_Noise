@@ -15,6 +15,6 @@ void cnoise::modifiers::Abs::Generate() {
 	if (!sourceModules.front()->Generated) {
 		sourceModules.front()->Generate();
 	}
-	absLauncher(output, sourceModules.front()->output, dims.first, dims.second);
+	absLauncher(Output, sourceModules.front()->Output, dims.first, dims.second);
 	Generated = true;
 }

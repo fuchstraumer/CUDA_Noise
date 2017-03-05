@@ -5,37 +5,15 @@
 
 namespace cnoise {
 
-	namespace module {
-
 		Module::Module(int width, int height) : dims(width, height) {
 			Generated = false;
-			// Setup cudaSurfaceObject_t and cudaTextureObject_t objects
-			// based on given dimensions.
-
-			// They will have dimensions of width x height, and use one 
-			// 32-bit channel of data.
-
-			// Channel format description.
-			cudaChannelFormatDesc cfDescr = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-
-			// Resource description
-			struct cudaResourceDesc soDesc;
-			memset(&soDesc, 0, sizeof(soDesc));
-			
-			// Allocate for arrays.
-			// cudaMallocArray(&texArray, &cfDescr, width, height);
-			// Flags only needed for surface object, in order for surface object to work.
+			// Allocate using managed memory, so that CPU/GPU can share a single pointer.
+			// Be sure to call cudaDeviceSynchronize() before accessing Output.
 			cudaError_t err = cudaSuccess;
-			err = cudaMallocArray(&surfArray, &cfDescr, width, height, cudaArraySurfaceLoadStore);
+			err = cudaMallocManaged(&Output, sizeof(float) * width * height);
 			cudaAssert(err);
 
-			// Now set resource description attributes.
-			soDesc.resType = cudaResourceTypeArray;
-			soDesc.res.array.array = surfArray;
-			// Setup surface object that will be used as output data for this module to write to
-			err = cudaCreateSurfaceObject(&output, &soDesc);
-			cudaAssert(err);
-
+			// Synchronize device to make sure we can access the Output pointer freely and safely.
 			err = cudaDeviceSynchronize();
 			cudaAssert(err);
 		}
@@ -45,11 +23,8 @@ namespace cnoise {
 			// Synchronize device to make sure its not doing anything with the elements we wish to destroy
 			err = cudaDeviceSynchronize();
 			cudaAssert(err);
-			// Free arrays
-			err = cudaFreeArray(surfArray);
-			cudaAssert(err);
-			// Destroy objects
-			err = cudaDestroySurfaceObject(output);
+			// Free managed memory.
+			err = cudaFree(Output);
 			cudaAssert(err);
 		}
 
@@ -71,8 +46,11 @@ namespace cnoise {
 			}
 		}
 
-		cudaSurfaceObject_t Module::GetData() const{
-			return output;
+		std::vector<float> Module::GetData() const{
+			// Make sure to sync device before trying to get data.
+			cudaAssert(cudaDeviceSynchronize());
+			std::vector<float> result(Output, Output + (dims.first * dims.second));
+			return result;
 		}
 
 		Module& Module::GetModule(size_t idx) const {
@@ -80,51 +58,23 @@ namespace cnoise {
 			return *sourceModules.at(idx);
 		}
 
-		std::vector<float> Module::GetGPUData() const{
-			// Setup result vector, allocate spacing so that memcpy succeeds.
-			std::vector<float> result;
-			result.resize(dims.first * dims.second);
-
-			cudaError_t err = cudaSuccess;
-			// Memcpy from device back to host
-			err = cudaMemcpyFromArray(result.data(), surfArray, 0, 0, sizeof(float) * result.size(), cudaMemcpyDeviceToHost);
-			cudaAssert(err);
-			// Return result data.
-			return result;
-		}
-
-		std::vector<float> Module::GetGPUDataNormalized() const{
-			std::vector<float> tmpBuffer;
-			std::vector<float> raw = GetGPUData();
-			tmpBuffer.resize(raw.size());
-			auto min_max = std::minmax_element(raw.begin(), raw.end());
-			float max = *min_max.first;
-			float min = *min_max.second;
-			// std::cerr << "max: " << max << " min: " << min << std::endl;
-			auto scaleRaw = [max, min](float val)->float {
-				float result;
-				result = (val - min) / (max - min);
-				return result;
-			};
-			std::transform(raw.begin(), raw.end(), tmpBuffer.begin(), scaleRaw);
-			return tmpBuffer;
+		std::vector<float> Module::GetDataNormalized(float upper_bound, float lower_bound) const{
+			return std::vector<float>();
 		}
 
 		void Module::SaveToPNG(const char * name){
-			std::vector<float> rawData = GetGPUData();
-			ImageWriter out(dims.first, dims.second);
+			std::vector<float> rawData = GetData();
+			img::ImageWriter out(dims.first, dims.second);
 			out.SetRawData(rawData);
 			out.WritePNG(name);
 		}
 
 		void Module::SaveToTER(const char * name) {
-			std::vector<float> rawData = GetGPUData();
-			ImageWriter out(dims.first, dims.second);
+			std::vector<float> rawData = GetData();
+			img::ImageWriter out(dims.first, dims.second);
 			out.SetRawData(rawData);
 			out.WriteTER(name);
 		}
 
-
-	}
 }
 

@@ -13,7 +13,7 @@ namespace cnoise {
 		}
 
 		void RidgedMulti::Generate(){
-			RidgedMultiLauncher(output, dims.first, dims.second, NoiseType, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+			RidgedMultiLauncher(Output, dims.first, dims.second, NoiseType, make_float2(Origin.first, Origin.second), Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 			Generated = true;
 		}
 
