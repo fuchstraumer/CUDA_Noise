@@ -5,13 +5,12 @@
 #include "modules\generators\RidgedMulti.h"
 #include "modules\generators\FBM.h"
 #include "modules\generators\DecarpientierSwiss.h"
+#include "modules\utility\Normalize.h"
 using namespace cnoise::generators;
+using namespace cnoise::utility;
 
 int main() {
-	static int img_size = 8192;
+	static int img_size = 1024;
 	int i = 0;
-	Billow2D ptb(img_size, img_size, noise_t::SIMPLEX, 0.12232f, -1.232f, 5474, 0.0003f, 1.60f, 8, 0.70f);
-	ptb.Generate();
-	ptb.SaveToPNG("dc_swiss_perlin.png");
-	//ptb.SaveToTER("decarpienter.ter");
+
 }

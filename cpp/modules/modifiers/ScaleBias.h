@@ -10,10 +10,10 @@ namespace cnoise {
 		class ScaleBias : public Module {
 		public:
 
-			ScaleBias(const size_t width, const size_t height, const float scale, const float bias);
+			ScaleBias(const size_t width, const size_t height, const float _scale, const float _bias);
 
 			void SetBias(const float bias);
-
+			
 			void SetScale(const float scale);
 
 			float GetBias() const;

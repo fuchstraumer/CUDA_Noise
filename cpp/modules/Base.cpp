@@ -24,7 +24,8 @@ namespace cnoise {
 			err = cudaDeviceSynchronize();
 			cudaAssert(err);
 			// Free managed memory.
-			cudaFree(Output);
+			err = cudaFree(Output);
+			cudaAssert(err);
 		}
 
 		void Module::ConnectModule(Module* other) {
@@ -57,32 +58,19 @@ namespace cnoise {
 			return *sourceModules.at(idx);
 		}
 
-		std::vector<float> Module::GetGPUData() const{
-			// Setup result vector, allocate spacing so that memcpy succeeds.
-			std::vector<float> result;
-			result.resize(dims.first * dims.second);
-
-			cudaError_t err = cudaSuccess;
-			// Memcpy from device back to host
-			err = cudaMemcpyFromArray(result.data(), surfArray, 0, 0, sizeof(float) * result.size(), cudaMemcpyDeviceToHost);
-			cudaAssert(err);
-			// Return result data.
-			return result;
-		}
-
 		std::vector<float> Module::GetDataNormalized(float upper_bound, float lower_bound) const{
 			return std::vector<float>();
 		}
 
 		void Module::SaveToPNG(const char * name){
-			std::vector<float> rawData = GetGPUData();
+			std::vector<float> rawData = GetData();
 			img::ImageWriter out(dims.first, dims.second);
 			out.SetRawData(rawData);
 			out.WritePNG(name);
 		}
 
 		void Module::SaveToTER(const char * name) {
-			std::vector<float> rawData = GetGPUData();
+			std::vector<float> rawData = GetData();
 			img::ImageWriter out(dims.first, dims.second);
 			out.SetRawData(rawData);
 			out.WriteTER(name);

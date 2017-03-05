@@ -51,9 +51,6 @@ namespace cnoise {
 			// Get number of source modules connected to this object.
 			virtual size_t GetSourceModuleCount() const = 0;
 
-			// Get texture data from GPU and return it as a vector of floating point values.
-			virtual std::vector<float> GetGPUData() const;
-
 			// Get texture from GPU and return it as a normalized (0.0 - 1.0) vector floating point values
 			virtual std::vector<float> GetDataNormalized(float upper_bound, float lower_bound) const;
 
