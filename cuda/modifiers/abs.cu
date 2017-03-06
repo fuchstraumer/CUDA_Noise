@@ -1,7 +1,7 @@
 #include "abs.cuh"
 
 
-__global__ void absKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in, const int width, const int height) {
+__global__ void absKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i >= width || j >= height) {
@@ -24,28 +24,26 @@ __global__ void absKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in, const
 	}
 	
 
-	surf2Dwrite(final_value, out, i * sizeof(float), j);
+	surf2Dwrite(final_value, output, i * sizeof(float), j);
 
 }
 
-void absLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t in, const int width, const int height) {
+void absLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const int width, const int height) {
 #ifdef CUDA_TIMING_TESTS
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
+	cudaEventRecord(start);
 #endif // CUDA_TIMING_TESTS
 
 	// Setup dimensions of kernel launch. 
+	dim3 threadsPerBlock(32, 32);
+	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 
-	// Use occupancy calc to find optimal sizes.
-	int blockSize, minGridSize;
-#ifdef CUDA_TIMING_TESTS
-	cudaEventRecord(start);
-#endif // CUDA_TIMING_TESTS
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, (void*)absKernel, 0, 0); //???
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
-	absKernel << <block, grid >> >(out, in, width, height);
+
+	absKernel << <numBlocks, threadsPerBlock >> >(output, input, width, height);
+
+
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device

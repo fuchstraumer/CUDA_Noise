@@ -10,7 +10,7 @@ __global__ void multiplyKernel(cudaSurfaceObject_t out, cudaSurfaceObject_t in, 
 	}
 
 	float prev;
-	surf2Dread(&prev, input, i * sizeof(float), j);
+	surf2Dread(&prev, in, i * sizeof(float), j);
 
 	float final_value;
 	final_value = prev * factor;
@@ -34,7 +34,7 @@ void multiplyLauncher(cudaSurfaceObject_t out, cudaSurfaceObject_t in, const int
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 
 
-	multiplyKernel << <block, grid >> >(out, in, width, height, factor);
+	multiplyKernel << <numBlocks, threadsPerBlock >> >(out, in, width, height, factor);
 
 
 	// Check for succesfull kernel launch

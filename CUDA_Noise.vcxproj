@@ -64,7 +64,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_61,sm_61</CodeGeneration>
+      <CodeGeneration>compute_30,sm_30</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <GenerateLineInfo>true</GenerateLineInfo>
       <MaxRegCount>0</MaxRegCount>
@@ -130,13 +130,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="cuda\modifiers\abs.cu" />
     <CudaCompile Include="cuda\modifiers\multiply.cu" />
     <CudaCompile Include="cuda\modifiers\power.cu" />
+    <CudaCompile Include="cuda\modifiers\scalebias.cu" />
     <CudaCompile Include="cuda\modifiers\Select.cu" />
-    <CudaCompile Include="cuda\vector_operators.cu" />
-    <CudaCompile Include="scalebias.cu" />
     <CudaCompile Include="cuda\generators\voronoi.cu" />
     <CudaCompile Include="cuda\modifiers\add.cu" />
     <CudaCompile Include="cuda\modifiers\curve.cu" />
-    <CudaCompile Include="cuda\modifiers\select.cu" />
     <CudaCompile Include="cuda\modifiers\Turbulence.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -145,21 +143,15 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cpp\common\CUDA_Include.h" />
     <ClInclude Include="cpp\image\Image.h" />
     <ClInclude Include="cpp\modules\Base.h" />
-    <ClInclude Include="cpp\modules\Billow.h" />
     <ClInclude Include="cpp\modules\generators\Billow.h" />
     <ClInclude Include="cpp\modules\generators\FBM.h" />
     <ClInclude Include="cpp\modules\generators\PerlinTex.h" />
     <ClInclude Include="cpp\modules\generators\RidgedMulti.h" />
     <ClInclude Include="cpp\modules\generators\Voronoi.h" />
-    <ClInclude Include="cpp\modules\Gradient.h" />
-    <ClInclude Include="cpp\modules\FBM.h" />
     <ClInclude Include="cpp\modules\modifiers\Add.h" />
     <ClInclude Include="cpp\modules\modifiers\Curve.h" />
     <ClInclude Include="cpp\modules\modifiers\Select.h" />
     <ClInclude Include="cpp\modules\modifiers\Turbulence.h" />
-    <ClInclude Include="cpp\modules\Perlin.h" />
-    <ClInclude Include="cpp\modules\Ridged.h" />
-    <ClInclude Include="cpp\modules\Select.h" />
     <ClInclude Include="cuda\cuda_assert.h" />
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
@@ -171,12 +163,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\modifiers\multiply.cuh" />
     <ClInclude Include="cuda\modifiers\power.cuh" />
     <ClInclude Include="cuda\generators\voronoi.cuh" />
-    <ClInclude Include="cuda\modifiers\add.cuh" />
     <ClInclude Include="cuda\modifiers\curve.cuh" />
-    <ClInclude Include="cuda\modifiers\select.cuh" />
+    <ClInclude Include="cuda\modifiers\scalebias.cuh" />
     <ClInclude Include="cuda\modifiers\Turbulence.cuh" />
     <ClInclude Include="ext\include\lodepng\lodepng.h" />
-    <ClInclude Include="scalebias.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\image\Image.cpp" />

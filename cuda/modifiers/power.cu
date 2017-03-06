@@ -21,7 +21,7 @@ __global__ void powerKernel(cudaSurfaceObject_t output, cudaSurfaceObject_t inpu
 
 
 
-	surf2Dwrite(final_value, out, i * sizeof(float), j);
+	surf2Dwrite(final_value, output, i * sizeof(float), j);
 
 }
 
@@ -38,7 +38,7 @@ void powerLauncher(cudaSurfaceObject_t output, cudaSurfaceObject_t input, const 
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 
 
-	powerKernel << <block, grid >> >(out, in, width, height, p); //Call Kernel
+	powerKernel << <numBlocks, threadsPerBlock >> >(output, input, width, height, p); //Call Kernel
 
 
 	// Check for succesfull kernel launch
