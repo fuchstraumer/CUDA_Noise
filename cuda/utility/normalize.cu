@@ -24,10 +24,8 @@ void NormalizeLauncher(float * output, float * input, const int width, const int
 	float max = thrust::reduce(thrust::device,input, input + (width * height), -1e10f, thrust::maximum<float>());
 	float min = thrust::reduce(thrust::device,in.begin(), in.end(), 1e10f, thrust::minimum<float>());
 
-	int blockSize, minGridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, NormalizeKernel, 0, 0); //???
-	dim3 block(blockSize, blockSize, 1);
-	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
+	dim3 block(32, 32, 1);
+	dim3 grid(width / block.x, height / block.y, 1);
 	NormalizeKernel<<<block, grid>>>(output, input, width, height, max, min);
 	// Confirm launch is good
 	cudaAssert(cudaGetLastError());
