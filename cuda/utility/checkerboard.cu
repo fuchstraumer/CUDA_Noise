@@ -3,10 +3,19 @@
 __global__ void CheckerboardKernel(float* output, const int width, const int height) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
+	const int center_x = width / 2;
+	const int center_y = height / 2;
 	if (i >= width || j >= height) {
 		return;
 	}
-	float result = (i & 1 ^ j & 1) ? -1.0f : 1.0f;
+	float dist = (i - center_x)*(i - center_x) + (j - center_y)*(j - center_y);
+	dist = sqrtf(dist);
+	float dist_smaller = dist - floorf(dist);
+	float dist_larger = 1.0f - dist;
+
+	float result = dist_smaller < dist_larger ? dist_smaller : dist_larger;
+	result = 1.0f - (result * 4.0f);
+	//float result = (i + j % 2 == 0) ? -0.25f : 1.0f;
 	output[(j * width) + i] = result;
 }
 
