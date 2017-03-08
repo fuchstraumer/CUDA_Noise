@@ -30,6 +30,11 @@ namespace cnoise {
 			return;
 		}
 
+		auto float_to_16 = [](const float& val) {
+			int16_t i = static_cast<int16_t>(val);
+			return ((i & 0x00ff) & ((i & 0xff00) >> 8));
+		};
+
 		template<typename T>
 		inline std::vector<T> convertRawData(const std::vector<float>& raw_data) {
 
@@ -119,7 +124,17 @@ namespace cnoise {
 			}
 
 			// Build header.
+			uint8_t buf[4];
 			os.write("BM", 2);
+			// Get/write filesize
+			size_t file_size = rawData.size() * 48; // num of elements * size of pixel
+			unpack_32bit(static_cast<int32_t>(file_size), buf);
+			os.write(reinterpret_cast<char*>(buf), 4);
+			os.write("\0\0\0\0", 4);
+			// Write size of header.
+			unpack_32bit(static_cast<int32_t>(54), buf);
+			os.write(reinterpret_cast<char*>(buf), 4);
+
 
 		}
 
@@ -136,7 +151,7 @@ namespace cnoise {
 			min = _mm_set1_ps(*min_max.first);
 			// register used as divisor
 			ratio = _mm_sub_ps(min, _mm_set1_ps(*min_max.second));
-			
+
 			for (size_t i = 0; i < rawData.size(); i += 4) {
 				__m128 reg; // Will hold floats in this register.
 				reg = _mm_load_ps1(&rawData[i]);
@@ -175,6 +190,42 @@ namespace cnoise {
 			}
 			pixelData.clear();
 			pixelData.shrink_to_fit();
+		}
+
+		void ImageWriter::WritePNG_16(const char* filename) {
+			std::vector<float> scaled_data;
+			// Copy values over to pixelData, for a grayscale image.
+			scaled_data.resize(rawData.size());
+			__m128 scale, min, ratio;
+			// Register used to scale up/down
+			scale = _mm_set1_ps(std::numeric_limits<int16_t>::max());
+			auto min_max = std::minmax_element(rawData.begin(), rawData.end());
+			// register holding min element
+			min = _mm_set1_ps(*min_max.first);
+			// register used as divisor
+			ratio = _mm_sub_ps(min, _mm_set1_ps(*min_max.second));
+
+			for (size_t i = 0; i < rawData.size(); i += 4) {
+				__m128 reg; // Will hold floats in this register.
+				reg = _mm_load_ps1(&rawData[i]);
+				// get "reg" into 0.0 - 1.0 scale.
+				reg = _mm_sub_ps(reg, min);
+				reg = _mm_div_ps(reg, ratio);
+				// Multiply reg by scale.
+				reg = _mm_mul_ps(reg, scale);
+				// Store data in tmpBuffer.
+				_mm_store1_ps(&scaled_data[i], reg);
+			}
+
+			std::vector<int16_t> pixel_data_16; 
+			pixel_data_16.reserve(scaled_data.size());
+			std::transform(scaled_data.begin(), scaled_data.end(), std::back_inserter(pixel_data_16), float_to_16);
+
+			unsigned err = lodepng::encode(filename, reinterpret_cast<unsigned char*>(&pixel_data_16[0]), width, height, LCT_GREY, 16);
+			if (!err) {
+				std::cerr << "PNG encode error: " << err << " desc: " << lodepng_error_text(err) << std::endl;
+			}
+			
 		}
 
 		void ImageWriter::WriteTER(const char* filename) {

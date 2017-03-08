@@ -75,9 +75,7 @@ void FBM_Launcher(float* out, int width, int height, noise_t noise_type, float2 
 	cudaEventRecord(start);
 #endif // CUDA_KERNEL_TIMING
 
-	cudaFuncAttributes attr;
-	cudaFuncGetAttributes(&attr, FBM2DKernel);
-	dim3 threadsPerBlock(4, 4);
+	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	FBM2DKernel<<<numBlocks, threadsPerBlock>>>(out, width, height, noise_type, origin, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
