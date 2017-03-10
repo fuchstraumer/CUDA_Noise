@@ -832,7 +832,7 @@ __device__ float simplex3d(const float px, const float py, const float pz, const
 	}
 
 	// Second corner
-	t1 = 0.60f - p1.x*p1.x - p1.y*p1.y * p1.z*p1.z;
+	t1 = 0.60f - p1.x*p1.x - p1.y*p1.y - p1.z*p1.z;
 	if (t1 < 0.0f) {
 		t1 = t1_2 = n1 = 0.0f;
 		g1 = make_float3(0, 0, 0);
@@ -843,7 +843,7 @@ __device__ float simplex3d(const float px, const float py, const float pz, const
 	}
 
 	// Third corner.
-	t2 = 0.60f - p2.x*p2.x - p2.x*p2.x - p2.z*p2.z;
+	t2 = 0.60f - p2.x*p2.x - p2.y*p2.y - p2.z*p2.z;
 	if (t2 < 0.0f) {
 		t2 = t2_2 = n2 = 0.0f;
 		g2 = make_float3(0, 0, 0);

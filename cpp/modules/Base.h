@@ -58,6 +58,8 @@ namespace cnoise {
 
 			void SaveToPNG_16(const char * filename);
 
+			void SaveRaw32(const char * filename);
+
 			void SaveToTER(const char * name);
 
 			// Tells us whether or not this module has already Generated data.
@@ -107,14 +109,18 @@ namespace cnoise {
 			// Returns Generated data.
 			virtual std::vector<float> GetData() const;
 
+			std::vector<float> GetLayer(size_t idx) const;
+
 			// Gets reference to module at given index in this modules "sourceModules" container
 			virtual Module3D* GetModule(size_t idx) const;
 
 			// Get number of source modules connected to this object.
 			virtual size_t GetSourceModuleCount() const = 0;
 
-			// Get texture from GPU and return it as a normalized (0.0 - 1.0) vector floating point values
-			virtual std::vector<float> GetDataNormalized(float upper_bound, float lower_bound) const;
+			// Save noise at depth "idx" to output image.
+			virtual void SaveToPNG(const char* name, size_t depth_idx);
+
+			void SaveAllToPNGs(const char * base_name);
 
 			// Tells us whether or not this module has already Generated data.
 			bool Generated;

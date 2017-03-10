@@ -36,6 +36,8 @@ namespace cnoise {
 			// Writes png like above, but does so with bit depth of 16.
 			void WritePNG_16(const char * filename);
 
+			void WriteRaw32(const char * filename);
+
 			void WriteTER(const char * filename);
 
 			// Sets rawData

@@ -47,7 +47,7 @@ __device__ float billow3D(float3 point, const float freq, const float lacun, con
 	point *= freq;
 	for (short i = 0; i < octaves; ++i) {
 		int seed = (init_seed + i) & 0xffffffff;
-		result += fabsf(simplex3d(point.x, point.y, point.z, seed, nullptr));
+		result += fabsf(simplex3d(point.x, point.y, point.z, seed, nullptr)) * amplitude;
 		point *= lacun;
 		amplitude *= persist;
 	}
@@ -94,7 +94,7 @@ __global__ void Billow3DKernel(float* output, const int width, const int height,
 
 	float val;
 	val = billow3D(make_float3(origin.x + i, origin.y + j, origin.z + k), freq, lacun, persist, seed, octaves);
-	output[(k * width * depth) + (j * width) + i] = val;
+	output[i + (j * width) + (k * width * height)] = val;
 }
 
 void BillowLauncher2D(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
@@ -134,7 +134,7 @@ void BillowLauncher3D(float* out, const int width, const int height, const int d
 	cudaEventRecord(start);
 #endif // CUDA_KERNEL_TIMING
 
-	dim3 threadsPerBlock(8, 8, 8);
+	dim3 threadsPerBlock(8, 8, 1);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y, depth / threadsPerBlock.z);
 	Billow3DKernel<<<numBlocks, threadsPerBlock >>>(out, width, height, depth, origin, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch

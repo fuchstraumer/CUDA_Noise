@@ -4,4 +4,6 @@
 
 void AddLauncher(float* output, float* input0, float* input1, const int width, const int height);
 
+void AddLauncher3D(float* output, float* input0, float* input1, const int width, const int height, const int depth);
+
 #endif // !ADD_CUH

@@ -1,7 +1,7 @@
 #include "Base.h"
 #include "cuda_assert.h"
 #include "../image/Image.h"
-
+#include "../cuda/utility/normalize.cuh"
 
 namespace cnoise {
 	
@@ -47,7 +47,12 @@ namespace cnoise {
 		}
 
 		std::vector<float> Module::GetDataNormalized(float upper_bound, float lower_bound) const{
-			return std::vector<float>();
+			cudaAssert(cudaDeviceSynchronize());
+			float* norm;
+			cudaAssert(cudaMallocManaged(&norm, dims.first * dims.second * sizeof(float)));
+			NormalizeLauncher(norm, Output, dims.first, dims.second);
+			cudaAssert(cudaDeviceSynchronize());
+			return std::vector<float>(norm, norm + (dims.first * dims.second));
 		}
 
 		void Module::SaveToPNG(const char * name){
@@ -62,6 +67,13 @@ namespace cnoise {
 			img::ImageWriter out(dims.first, dims.second);
 			out.SetRawData(raw);
 			out.WritePNG_16(filename);
+		}
+
+		void Module::SaveRaw32(const char* filename) {
+			std::vector<float> raw = GetData();
+			img::ImageWriter out(dims.first, dims.second);
+			out.SetRawData(raw);
+			out.WriteRaw32(filename);
 		}
 
 		void Module::SaveToTER(const char * name) {
@@ -104,12 +116,28 @@ namespace cnoise {
 			return std::vector<float>(Output, Output + (Dimensions.x * Dimensions.y * Dimensions.z));
 		}
 
+		std::vector<float> Module3D::GetLayer(size_t idx) const {
+			cudaAssert(cudaDeviceSynchronize());
+			return std::vector<float>(Output + (idx * Dimensions.x * Dimensions.y), Output + (Dimensions.x * Dimensions.y));
+		}
+
 		Module3D* Module3D::GetModule(size_t idx) const{
 			return sourceModules.at(idx);
 		}
 
-		std::vector<float> Module3D::GetDataNormalized(float upper_bound, float lower_bound) const{
-			return std::vector<float>();
+		void Module3D::SaveToPNG(const char * name, size_t depth_idx){
+			if (depth_idx < 0 || depth_idx > Dimensions.z) {
+				return;
+			}
+			std::vector<float> slice;
+			slice = GetLayer(depth_idx);
+			img::ImageWriter out(Dimensions.x, Dimensions.y);
+			out.SetRawData(slice);
+			out.WritePNG(name);
+		}
+
+		void Module3D::SaveAllToPNGs(const char* base_name) {
+
 		}
 
 }

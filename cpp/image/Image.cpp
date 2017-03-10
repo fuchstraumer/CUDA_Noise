@@ -31,8 +31,7 @@ namespace cnoise {
 		}
 
 		auto float_to_16 = [](const float& val) {
-			int16_t i = static_cast<int16_t>(val);
-			return ((i & 0x00ff) & ((i & 0xff00) >> 8));
+			return static_cast<uint16_t>(val);	
 		};
 
 		template<typename T>
@@ -198,7 +197,7 @@ namespace cnoise {
 			scaled_data.resize(rawData.size());
 			__m128 scale, min, ratio;
 			// Register used to scale up/down
-			scale = _mm_set1_ps(std::numeric_limits<int16_t>::max());
+			scale = _mm_set1_ps(std::numeric_limits<uint16_t>::max());
 			auto min_max = std::minmax_element(rawData.begin(), rawData.end());
 			// register holding min element
 			min = _mm_set1_ps(*min_max.first);
@@ -217,15 +216,27 @@ namespace cnoise {
 				_mm_store1_ps(&scaled_data[i], reg);
 			}
 
-			std::vector<int16_t> pixel_data_16; 
-			pixel_data_16.reserve(scaled_data.size());
+			std::vector<uint16_t> pixel_data_16; 
+			pixel_data_16.reserve(rawData.size());
 			std::transform(scaled_data.begin(), scaled_data.end(), std::back_inserter(pixel_data_16), float_to_16);
-
-			unsigned err = lodepng::encode(filename, reinterpret_cast<unsigned char*>(&pixel_data_16[0]), width, height, LCT_GREY, 16);
-			if (!err) {
-				std::cerr << "PNG encode error: " << err << " desc: " << lodepng_error_text(err) << std::endl;
-			}
+			std::vector<unsigned char> png;
 			
+			
+		}
+
+		void ImageWriter::WriteRaw32(const char* filename) {
+			std::ofstream out;
+			out.open(filename, std::ios::out | std::ios::binary);
+			for (size_t i = 0; i < rawData.size(); ++i) {
+				float val = rawData[i];
+				unsigned char buff[4];
+				unpack_float(val, buff);
+				out.write(reinterpret_cast<char*>(buff), 4);
+				if (i > 0 && i % width == 0) {
+					out.write("\0\0\0\0", 4);
+				}
+			}
+			out.close();
 		}
 
 		void ImageWriter::WriteTER(const char* filename) {

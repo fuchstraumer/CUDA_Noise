@@ -280,3 +280,4 @@ __pycache__/
 test/
 *.nvact
 *.ter
+img/
