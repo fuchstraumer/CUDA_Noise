@@ -36,7 +36,7 @@ void MaxLauncher(float *output, const float *in0, const float *in1, const int wi
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Max Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 
 }

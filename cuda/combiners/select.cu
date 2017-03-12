@@ -88,7 +88,7 @@ void SelectLauncher(float* out, float* select_item, float* subject0, float* subj
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Select Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 
 }

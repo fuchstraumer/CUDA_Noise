@@ -99,7 +99,7 @@ void CurveLauncher(float* output, float* input, const int width, const int heigh
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Curve Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 
 

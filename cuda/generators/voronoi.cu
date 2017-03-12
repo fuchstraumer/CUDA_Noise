@@ -137,7 +137,7 @@ void VoronoiLauncher(cudaSurfaceObject_t out, const int width, const int height,
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Voronoi Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 
 }

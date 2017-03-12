@@ -41,7 +41,7 @@ void powerLauncher(float* output, float* input0, float* input1, const int width,
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Power Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 	// If this completes, kernel is done and "output" contains correct data.
 }

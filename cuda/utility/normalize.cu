@@ -37,6 +37,6 @@ void NormalizeLauncher(float * output, float * input, const int width, const int
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Normalize Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 }

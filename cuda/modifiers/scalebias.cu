@@ -34,6 +34,6 @@ void scalebiasLauncher(float* output, float* input, const int width, const int h
 	cudaEventSynchronize(stop);
 	float elapsed = 0.0f;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Kernel execution time in ms: %f\n", elapsed);
+	printf("Scalebias Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 }
