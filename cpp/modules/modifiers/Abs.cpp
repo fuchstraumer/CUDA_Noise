@@ -19,3 +19,17 @@ void cnoise::modifiers::Abs::Generate() {
 	absLauncher(Output, sourceModules.front()->Output, dims.first, dims.second);
 	Generated = true;
 }
+
+size_t cnoise::modifiers::Abs3D::GetSourceModuleCount() const{
+	return 1;
+}
+
+void cnoise::modifiers::Abs3D::Generate(){
+	if (sourceModules.front() == nullptr || sourceModules.empty()) {
+		throw;
+	}
+	else {
+		absLauncher3D(Points, sourceModules.front()->Points, dimensions.x, dimensions.y);
+		Generated = true;
+	}
+}

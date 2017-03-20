@@ -32,6 +32,11 @@ namespace cnoise {
 			// Writes data contained in this image to PNG. Compression level set by
 			// second parameter, but is optional. Defaults to uncompressed.
 			void WritePNG(const char* filename, int compression_level = 0);
+			
+			// Writes png like above, but does so with bit depth of 16.
+			void WritePNG_16(const char * filename);
+
+			void WriteRaw32(const char * filename);
 
 			void WriteTER(const char * filename);
 
@@ -46,7 +51,7 @@ namespace cnoise {
 			std::vector<float> rawData;
 
 			// Holds pixel data converted from rawData.
-			std::vector<unsigned char> pixelData;
+			std::vector<uint8_t> pixelData;
 
 			// Dimensions of this image
 			int width, height;

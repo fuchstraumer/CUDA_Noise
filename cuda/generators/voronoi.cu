@@ -93,29 +93,8 @@ __device__ __constant__ float CELL_2D_Y[256] = {
 	-0.4315881062f, 0.2589231171f, 0.3773652989f, 0.12786735f,
 };
 
-__device__ float cellular(const float2 p, const float freq, const float displacement, const voronoi_distance_t dist_func, const voronoi_return_t return_t) {
-	int2 ip = make_int2(llrintf(p.x), llrintf(p.y));
-	float dist = FLT_MAX;
-	switch (dist_func) {
-		case voronoi_distance_t::EUCLIDEAN: {
-			for (int xi = ip.x - 1; xi <= ip.x + 1; ++xi) {
-				for (int yi = ip.y - 1; yi <= ip.y + 1; ++yi) {
-				}
-			}
-			break;
-		}
-	}
-}
 
-__global__ void CellularKernel(cudaSurfaceObject_t out, const int width, const int height, const float freq, const float displacement, const voronoi_distance_t dist_func, const voronoi_return_t return_t) {
-	const int i = blockDim.x * blockIdx.x + threadIdx.x;
-	const int j = blockDim.y * blockIdx.y + threadIdx.y;
-	if (i < width && j < height) {
-
-	}
-}
-
-void VoronoiLauncher(cudaSurfaceObject_t out, const int width, const int height, const float freq, const float displacement, const voronoi_distance_t dist_func, const voronoi_return_t return_t){
+void VoronoiLauncher(cudaSurfaceObject_t out, const int width, const int height, const float freq, const float displacement, const cnoise::voronoi_distance_t dist_func, const cnoise::voronoi_return_t return_t){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -126,7 +105,7 @@ void VoronoiLauncher(cudaSurfaceObject_t out, const int width, const int height,
 
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
-	CellularKernel<<<numBlocks, threadsPerBlock>>>(out, width, height, freq, displacement, dist_func, return_t);
+	//CellularKernel<<<numBlocks, threadsPerBlock>>>(out, width, height, freq, displacement, dist_func, return_t);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device

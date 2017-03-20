@@ -30,6 +30,28 @@ namespace cnoise {
 
 		};
 
+		class ScaleBias3D : public Module3D {
+		public:
+
+			ScaleBias3D(const int width, const int height, const float _scale, const float _bias);
+
+			void SetBias(const float bias);
+
+			void SetScale(const float scale);
+
+			float GetBias() const;
+
+			float GetScale() const;
+
+			virtual size_t GetSourceModuleCount() const override;
+
+			void Generate() override;
+
+		private:
+
+			float bias, scale;
+		};
+
 	}
 
 }

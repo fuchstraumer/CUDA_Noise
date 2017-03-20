@@ -54,9 +54,15 @@ namespace cnoise {
 			noise_t NoiseType;
 		};
 
-		class FBM3D {
+		class FBM3D : public Module3D {
 		public:
+			FBM3D(int width, int height, int seed = DEFAULT_FBM_SEED, float freq = DEFAULT_FBM_FREQUENCY, float lacun = DEFAULT_FBM_LACUNARITY, int octaves = DEFAULT_FBM_OCTAVES, float persist = DEFAULT_FBM_PERSISTENCE);
 
+			virtual size_t GetSourceModuleCount() const override;
+
+			virtual void Generate() override;
+
+			noiseCfg Attributes;
 		};
 
 		class FBM4D {

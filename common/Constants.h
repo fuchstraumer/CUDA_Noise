@@ -10,14 +10,5 @@
 
 */
 
-// Noise types.
-
-namespace cnoise {
-	namespace generators {
-
-		
-
-	}
-}
 
 #endif // !CONSTANTS_H

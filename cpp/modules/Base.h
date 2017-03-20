@@ -56,6 +56,10 @@ namespace cnoise {
 			// Save current module to an image with name "name"
 			virtual void SaveToPNG(const char* name);
 
+			void SaveToPNG_16(const char * filename);
+
+			void SaveRaw32(const char * filename);
+
 			void SaveToTER(const char * name);
 
 			// Tells us whether or not this module has already Generated data.
@@ -75,6 +79,71 @@ namespace cnoise {
 			// this one, and the front of the vector being the initial
 			// module.
 			std::vector<Module*> sourceModules;
+		};
+
+		class Module3D {
+			// Delete copy ctor and operator
+			Module3D(const Module3D& other) = delete;
+			Module3D& operator=(const Module3D& other) = delete;
+			Module3D(Module3D&& other) = delete;
+			Module3D& operator=(Module3D&& other) = delete;
+		public:
+
+			Module3D(int width, int height);
+
+			virtual ~Module3D();
+
+			// Connects this Module3D to another source Module3D
+			virtual void ConnectModule(Module3D* other);
+
+			// Generates data for all coordinates "coords", which is a flattened 2D grid of size width x height
+			virtual void Generate() = 0;
+
+			// Gets reference to module at given index in this modules "sourceModules" container
+			virtual Module3D* GetModule(size_t idx) const;
+
+			// Get number of source modules connected to this object.
+			virtual size_t GetSourceModuleCount() const = 0;
+
+			// Sets points between objects to have equivalent positions.
+			static void CopyPointPositions(const Module3D& source, Module3D& dest);
+			
+			// Propagates a set of points throughout a full module chain.
+			virtual void PropagateDataset(const Point* pts);
+			virtual void PropagateDataset();
+
+			// Frees data belonging to child modules without deleting them.
+			virtual void freeChildren();
+
+			// Returns number of points (i.e dimensions.x * dimensions.y)
+			size_t GetNumPts() const;
+
+			// Gets dimensions
+			int2 GetDimensions() const;
+
+			// Gets raw floating-point data.
+			virtual std::vector<float> GetPointValues() const;
+
+			std::vector<Point> GetPoints() const;
+			
+			// Saves data in "Points" to a PNG
+			virtual void SaveToPNG(const char* filename) const;
+
+			bool Generated;
+
+			Point* Points;
+
+		protected:
+
+			// Modules that precede this module, with the back 
+			// of the vector being the module immediately before 
+			// this one, and the front of the vector being the initial
+			// module.
+			std::vector<Module3D*> sourceModules;
+
+			
+
+			int2 dimensions;
 		};
 
 		namespace generators {

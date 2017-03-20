@@ -18,6 +18,17 @@ namespace cnoise {
 
 		};
 
+		class Min3D : public Module3D {
+		public:
+
+			Min3D(const int width, const int height, Module3D* in0 = nullptr, Module3D* in1 = nullptr);
+
+			virtual void Generate() override;
+
+			virtual size_t GetSourceModuleCount() const override;
+
+		};
+
 	}
 
 }

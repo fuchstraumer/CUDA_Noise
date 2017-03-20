@@ -48,11 +48,37 @@ namespace cnoise {
 
 		protected:
 
-			// Set if points are added after we already prepared the CUDA array, in which case we
-			// need to rebuild all the CUDA data.
-			bool update;
-
 			// Control points.
+			std::vector<ControlPoint> controlPoints;
+		};
+
+		class Curve3D : public Module3D {
+		public:
+
+			Curve3D(int width, int height);
+
+			// init with control points
+			Curve3D(int width, int height, const std::vector<ControlPoint>& init_points);
+
+			// Adds a control point
+			void AddControlPoint(float input_value, float output_value);
+			void AddControlPoint(const ControlPoint& pt);
+
+			virtual size_t GetSourceModuleCount() const override;
+
+			// Get control points
+			std::vector<ControlPoint> GetControlPoints() const;
+
+			// Set control points
+			void SetControlPoints(const std::vector<ControlPoint>& pts);
+
+			// Clear points
+			void ClearControlPoints();
+
+			virtual void Generate() override;
+
+		private:
+
 			std::vector<ControlPoint> controlPoints;
 		};
 
