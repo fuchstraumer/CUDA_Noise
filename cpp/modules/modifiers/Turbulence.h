@@ -54,6 +54,44 @@ namespace cnoise {
 			noise_t noiseType;
 
 		};
+
+		// Only difference: no noisetype for 3D module.
+		class Turbulence3D : public Module3D {
+		public:
+
+			Turbulence3D(int width, int height, Module3D* prev = nullptr, int roughness = DEFAULT_TURBULENCE_ROUGHNESS, int seed = DEFAULT_TURBULENCE_SEED, float strength = DEFAULT_TURBULENCE_STRENGTH, float freq = DEFAULT_TURBULENCE_FREQUENCY);
+
+			virtual size_t GetSourceModuleCount() const override;
+
+			virtual void Generate() override;
+
+			void SetStrength(float _strength);
+
+			float GetStrength() const;
+
+			void SetSeed(int _seed);
+
+			int GetSeed() const;
+
+			void SetRoughness(int _rough);
+
+			int GetRoughness() const;
+
+			float GetFrequency() const;
+
+			void SetFrequency(const float _freq);
+
+		private:
+
+			float strength;
+
+			float frequency;
+
+			int seed;
+
+			int roughness;
+
+		};
 	
 	}
 

@@ -56,17 +56,38 @@ __device__ float d_swiss_perlin(float px, float py, const float freq, const floa
 	return result;
 }
 
-__global__ void d_swiss_kernel(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+__device__ float d_swiss_3d(float3 position, const float freq, const float lacun, const float persist, const int init_seed, const int octaves) {
+	float amplitude = 1.0f;
+	position *= freq;
+	float warp = 0.01f;
+	float result = 0.0f;
+	float3 dsum = make_float3(0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < octaves; ++i) {
+		int seed = (init_seed + i) & 0xffffffff;
+		float3 d;
+		float n = simplex3d(position.x, position.y, position.z, seed, &d);
+		result += (1.0f - fabsf(n)) * amplitude;
+		d.x += amplitude * d.x * -n;
+		d.y += amplitude * d.y * -n;
+		d.z += amplitude * d.z * -n;
+		position *= lacun;
+		position += (warp * dsum);
+		amplitude *= persist * __saturatef(result);
+	}
+	return result;
+}
+
+__global__ void d_swiss_kernel(float* out, int width, int height, cnoise::noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i < width && j < height) {
 		// Call noise function
 		float val;
 		switch (noise_type) {
-		case noise_t::PERLIN:
+		case cnoise::noise_t::PERLIN:
 			val = d_swiss_perlin(origin.x + i, origin.y + j, freq, lacun, persist, seed, octaves);
 			break;
-		case noise_t::SIMPLEX:
+		case cnoise::noise_t::SIMPLEX:
 			val = d_swiss_simplex(make_float2(origin.x + i, origin.y + j), freq, lacun, persist, seed, octaves);
 			break;
 		}
@@ -75,7 +96,17 @@ __global__ void d_swiss_kernel(float* out, int width, int height, noise_t noise_
 	}
 }
 
-void DecarpientierSwissLauncher(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+__global__ void d_swiss_kernel_3d(cnoise::Point* coords, int width, int height, const float freq, const float lacun, const float persist, const int seed, const int octaves) {
+	const int i = blockIdx.x * blockDim.x + threadIdx.x;
+	const int j = blockIdx.y * blockDim.y + threadIdx.y;
+	if (i >= width || j >= height) {
+		return;
+	}
+	// Get value in 2D array at position of coordinate at position i,j in array
+	coords[i + (j * width)].Value = d_swiss_3d(coords[i + (j * width)].Position, freq, lacun, persist, seed, octaves);
+}
+
+void DecarpientierSwissLauncher(float* out, int width, int height, cnoise::noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -100,4 +131,31 @@ void DecarpientierSwissLauncher(float* out, int width, int height, noise_t noise
 #endif // CUDA_KERNEL_TIMING
 
 	// If this completes, kernel is done and "output" contains correct data.
+}
+
+void DecarpientierSwissLauncher3D(cnoise::Point* coords, int width, int height, float freq, float lacun, float persist, int seed, int octaves){
+
+#ifdef CUDA_KERNEL_TIMING
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start);
+#endif // CUDA_KERNEL_TIMING
+
+	dim3 threadsPerBlock(8, 8);
+	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
+	d_swiss_kernel_3d<<<numBlocks, threadsPerBlock>>>(coords, width, height, freq, lacun, persist, seed, octaves);
+	// Check for succesfull kernel launch
+	cudaAssert(cudaGetLastError());
+	// Synchronize device
+	cudaAssert(cudaDeviceSynchronize());
+
+#ifdef CUDA_KERNEL_TIMING
+	cudaEventRecord(stop);
+	cudaEventSynchronize(stop);
+	float elapsed = 0.0f;
+	cudaEventElapsedTime(&elapsed, start, stop);
+	printf("Kernel execution time in ms: %f\n", elapsed);
+#endif // CUDA_KERNEL_TIMING
+
 }

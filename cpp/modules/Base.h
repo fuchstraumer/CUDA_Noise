@@ -89,27 +89,15 @@ namespace cnoise {
 			Module3D& operator=(Module3D&& other) = delete;
 		public:
 
-			// Each Module3D must have a width and height, as this specifies the size of 
-			// the surface object a Module3D will write to, and must match the dimensions
-			// of the texture object the surface will read from.
-			Module3D(int width, int height, int depth);
+			Module3D(int width, int height);
 
-			// Destructor calls functions to clear CUDA objects/data
 			virtual ~Module3D();
-
-			// Conversion
-
 
 			// Connects this Module3D to another source Module3D
 			virtual void ConnectModule(Module3D* other);
 
-			// Generates data and stores it in this object
+			// Generates data for all coordinates "coords", which is a flattened 2D grid of size width x height
 			virtual void Generate() = 0;
-
-			// Returns Generated data.
-			virtual std::vector<float> GetData() const;
-
-			std::vector<float> GetLayer(size_t idx) const;
 
 			// Gets reference to module at given index in this modules "sourceModules" container
 			virtual Module3D* GetModule(size_t idx) const;
@@ -117,28 +105,45 @@ namespace cnoise {
 			// Get number of source modules connected to this object.
 			virtual size_t GetSourceModuleCount() const = 0;
 
-			// Save noise at depth "idx" to output image.
-			virtual void SaveToPNG(const char* name, size_t depth_idx);
+			// Sets points between objects to have equivalent positions.
+			static void CopyPointPositions(const Module3D& source, Module3D& dest);
+			
+			// Propagates a set of points throughout a full module chain.
+			virtual void PropagateDataset(const Point* pts);
+			virtual void PropagateDataset();
 
-			void SaveAllToPNGs(const char * base_name);
+			// Frees data belonging to child modules without deleting them.
+			virtual void freeChildren();
 
-			// Tells us whether or not this module has already Generated data.
+			// Returns number of points (i.e dimensions.x * dimensions.y)
+			size_t GetNumPts() const;
+
+			// Gets dimensions
+			int2 GetDimensions() const;
+
+			// Gets raw floating-point data.
+			virtual std::vector<float> GetPointValues() const;
+
+			std::vector<Point> GetPoints() const;
+			
+			// Saves data in "Points" to a PNG
+			virtual void SaveToPNG(const char* filename) const;
+
 			bool Generated;
 
-			// Each module will write self values into this, and allow other modules to read from this.
-			// Allocated with managed memory.
-			float* Output;
+			Point* Points;
 
 		protected:
-
-			// Dimensions of textures.
-			int3 Dimensions;
 
 			// Modules that precede this module, with the back 
 			// of the vector being the module immediately before 
 			// this one, and the front of the vector being the initial
 			// module.
 			std::vector<Module3D*> sourceModules;
+
+			
+
+			int2 dimensions;
 		};
 
 		namespace generators {

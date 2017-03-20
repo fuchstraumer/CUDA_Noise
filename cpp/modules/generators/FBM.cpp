@@ -20,3 +20,15 @@ namespace cnoise {
 		}
 	}
 }
+
+cnoise::generators::FBM3D::FBM3D(int width, int height, int seed, float freq, float lacun, int octaves, float persist) : Attributes(seed, freq, lacun, octaves, persist), Module3D(width, height) {}
+
+size_t cnoise::generators::FBM3D::GetSourceModuleCount() const{
+	return 0;
+}
+
+void cnoise::generators::FBM3D::Generate(){
+	FBM_Launcher3D(Points, dimensions.x, dimensions.y, Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
+	Generated = true;
+}
+

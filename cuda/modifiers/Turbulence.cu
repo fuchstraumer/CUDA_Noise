@@ -11,7 +11,7 @@
 
 */
 
-__global__ void TurbulenceKernel(float* out, const float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength, const float freq) {
+__global__ void TurbulenceKernel(float* out, const float* input, const int width, const int height, const cnoise::noise_t noise_type, const int roughness, const int seed, const float strength, const float freq) {
 	// Get current pixel.
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
@@ -21,7 +21,7 @@ __global__ void TurbulenceKernel(float* out, const float* input, const int width
 	}
 	// Position that will be displaced
 	float2 distort;
-	if (noise_type == noise_t::PERLIN) {
+	if (noise_type == cnoise::noise_t::PERLIN) {
 		distort.x = FBM2d(make_float2(i, j), freq, 2.20f, 0.90f, seed, roughness) * strength;
 		distort.y = FBM2d(make_float2(i, j), freq, 2.20f, 0.90f, seed, roughness) * strength;
 	}
@@ -46,7 +46,11 @@ __global__ void TurbulenceKernel(float* out, const float* input, const int width
 	out[(j * width) + i] = input[(j_offset * width) + i_offset];
 }
 
-void TurbulenceLauncher(float* out, const float* input, const int width, const int height, const noise_t noise_type, const int roughness, const int seed, const float strength, const float freq){
+__global__ void TurbulenceKernel3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, const int roughness, const int seed, const float strength, const float freq) {
+
+}
+
+void TurbulenceLauncher(float* out, const float* input, const int width, const int height, const cnoise::noise_t noise_type, const int roughness, const int seed, const float strength, const float freq){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -72,4 +76,7 @@ void TurbulenceLauncher(float* out, const float* input, const int width, const i
 #endif // CUDA_KERNEL_TIMING
 
 	// If this completes, kernel is done and "output" contains correct data.
+}
+
+void TurbulenceLauncher3D(cnoise::Point * output, const cnoise::Point * input, const int width, const int height, const int roughness, const int seed, const float strength, const float freq){
 }

@@ -59,10 +59,6 @@ namespace cnoise {
 				// Launches the kernel and fills this object's surface object with the relevant data.
 				virtual void Generate() override;
 
-				// Origin of this noise generator. Keep the seed constant and change this for 
-				// continuous "tileable" noise
-				float3 Origin;
-
 				// Configuration attributes.
 				noiseCfg Attributes;
 

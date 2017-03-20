@@ -56,7 +56,7 @@ __device__ float billow3D(float3 point, const float freq, const float lacun, con
 
 
 
-__global__ void Billow2DKernel(float* output, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+__global__ void Billow2DKernel(float* output, int width, int height, cnoise::noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -68,11 +68,11 @@ __global__ void Billow2DKernel(float* output, int width, int height, noise_t noi
 		// Call billow function
 		float val;
 		switch (noise_type) {
-			case(noise_t::PERLIN): {
+			case(cnoise::noise_t::PERLIN): {
 				val = billow2D(p, freq, lacun, persist, seed, octaves);
 				break;
 			}
-			case(noise_t::SIMPLEX): {
+			case(cnoise::noise_t::SIMPLEX): {
 				val = billow2D_Simplex(p, freq, lacun, persist, seed, octaves);
 				break;
 			}
@@ -84,20 +84,16 @@ __global__ void Billow2DKernel(float* output, int width, int height, noise_t noi
 	
 }
 
-__global__ void Billow3DKernel(float* output, const int width, const int height, const int depth, const float3 origin, const float freq, const float lacun, const float persist, const int seed, const int octaves) {
+__global__ void Billow3DKernel(cnoise::Point* coords, const int width, const int height, const float freq, const float lacun, const float persist, const int seed, const int octaves) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
-	const int k = blockIdx.z * blockDim.z + threadIdx.z;
-	if (i >= width || j >= height || k >= depth) {
+	if (i >= width || j >= height) {
 		return;
 	}
-
-	float val;
-	val = billow3D(make_float3(origin.x + i, origin.y + j, origin.z + k), freq, lacun, persist, seed, octaves);
-	output[i + (j * width) + (k * width * height)] = val;
+	coords[i + (j * width)].Value = billow3D(coords[i + (j * width)].Position, freq, lacun, persist, seed, octaves);
 }
 
-void BillowLauncher2D(float* out, int width, int height, noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
+void BillowLauncher2D(float* out, int width, int height, cnoise::noise_t noise_type, float2 origin, float freq, float lacun, float persist, int seed, int octaves) {
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -125,7 +121,7 @@ void BillowLauncher2D(float* out, int width, int height, noise_t noise_type, flo
 	// If this completes, kernel is done and "output" contains correct data.
 }
 
-void BillowLauncher3D(float* out, const int width, const int height, const int depth, const float3 origin, const float freq, const float lacun, const float persist, const int seed, const int octaves) {
+void BillowLauncher3D(cnoise::Point* coords, const int width, const int height, const float freq, const float lacun, const float persist, const int seed, const int octaves) {
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -135,8 +131,8 @@ void BillowLauncher3D(float* out, const int width, const int height, const int d
 #endif // CUDA_KERNEL_TIMING
 
 	dim3 threadsPerBlock(8, 8, 1);
-	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y, depth / threadsPerBlock.z);
-	Billow3DKernel<<<numBlocks, threadsPerBlock >>>(out, width, height, depth, origin, freq, lacun, persist, seed, octaves);
+	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y, 1);
+	Billow3DKernel<<<numBlocks, threadsPerBlock >>>(coords, width, height, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device
@@ -150,15 +146,4 @@ void BillowLauncher3D(float* out, const int width, const int height, const int d
 	printf("Kernel execution time in ms: %f\n", elapsed);
 #endif // CUDA_KERNEL_TIMING
 
-}
-
-cnoise::generators::Billow3D::Billow3D(int width, int height, int depth, float x, float y, float z, int seed, float freq, float lacun, int octaves, float persist) : Module3D(width, height, depth), 
-Attributes(seed, freq, lacun, octaves, persist), Origin(make_float3(x,y,z)) {}
-
-size_t cnoise::generators::Billow3D::GetSourceModuleCount() const{
-	return 0;
-}
-
-void cnoise::generators::Billow3D::Generate(){
-	BillowLauncher3D(Output, Dimensions.x, Dimensions.y, Dimensions.z, Origin, Attributes.Frequency, Attributes.Lacunarity, Attributes.Persistence, Attributes.Seed, Attributes.Octaves);
 }

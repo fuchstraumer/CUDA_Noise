@@ -42,6 +42,17 @@ namespace cnoise {
 			noise_t NoiseType;
 		};
 
+		class RidgedMulti3D : public Module3D {
+		public:
+			RidgedMulti3D(int width, int height, int seed = DEFAULT_RIDGED_SEED, float freq = DEFAULT_RIDGED_FREQUENCY, float lacun = DEFAULT_RIDGED_LACUNARITY, int octaves = DEFAULT_RIDGED_OCTAVES, float persist = DEFAULT_RIDGED_PERSISTENCE);
+
+			virtual size_t GetSourceModuleCount() const override;
+
+			virtual void Generate() override;
+
+			noiseCfg Attributes;
+		};
+
 	}
 
 }

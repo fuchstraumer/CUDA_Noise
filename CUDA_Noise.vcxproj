@@ -122,7 +122,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
     <CudaCompile Include="cuda\generators\decarpientier_swiss.cu" />
     <CudaCompile Include="cuda\generators\FBM.cu" />
-    <CudaCompile Include="cuda\generators\jordan.cu" />
     <CudaCompile Include="cuda\generators\ridged_multi.cu" />
     <CudaCompile Include="cuda\modifiers\abs.cu" />
     <CudaCompile Include="cuda\modifiers\clamp.cu" />
@@ -143,7 +142,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="common\CommonInclude.h" />
     <ClInclude Include="common\Constants.h" />
     <ClInclude Include="common\CUDA_Include.h" />
+    <ClInclude Include="cpp\cnoise.h" />
     <ClInclude Include="cpp\image\Image.h" />
+    <ClInclude Include="cpp\models\Models.h" />
     <ClInclude Include="cpp\models\Sphere.h" />
     <ClInclude Include="cpp\modules\Base.h" />
     <ClInclude Include="cpp\modules\combiners\Blend.h" />
@@ -180,7 +181,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="cuda\generators\billow.cuh" />
     <ClInclude Include="cuda\generators\decarpientier_swiss.cuh" />
     <ClInclude Include="cuda\generators\FBM.cuh" />
-    <ClInclude Include="cuda\generators\jordan.cuh" />
     <ClInclude Include="cuda\generators\ridged_multi.cuh" />
     <ClInclude Include="cuda\modifiers\abs.cuh" />
     <ClInclude Include="cuda\combiners\add.cuh" />
@@ -201,6 +201,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="cpp\image\Image.cpp" />
     <ClCompile Include="cpp\main.cpp" />
+    <ClCompile Include="cpp\models\Sphere.cpp" />
     <ClCompile Include="cpp\modules\Base.cpp" />
     <ClCompile Include="cpp\modules\combiners\Blend.cpp" />
     <ClCompile Include="cpp\modules\combiners\Max.cpp" />

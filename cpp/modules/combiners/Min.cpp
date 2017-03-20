@@ -22,3 +22,25 @@ void cnoise::combiners::Min::Generate(){
 size_t cnoise::combiners::Min::GetSourceModuleCount() const{
 	return 2;
 }
+
+cnoise::combiners::Min3D::Min3D(const int width, const int height, Module3D * in0, Module3D * in1) : Module3D(width, height) {
+	sourceModules.push_back(in0);
+	sourceModules.push_back(in1);
+}
+
+void cnoise::combiners::Min3D::Generate() {
+	for (const auto m : sourceModules) {
+		if (m == nullptr) {
+			throw;
+		}
+		if (!m->Generated) {
+			m->Generate();
+		}
+	}
+	MinLauncher3D(Points, sourceModules[0]->Points, sourceModules[1]->Points, dimensions.x, dimensions.y);
+	Generated = true;
+}
+
+size_t cnoise::combiners::Min3D::GetSourceModuleCount() const {
+	return 2;
+}

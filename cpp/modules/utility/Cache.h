@@ -32,6 +32,17 @@ namespace cnoise {
 
 		};
 
+		class Cache3D : public Module3D {
+		public:
+
+			Cache3D(int width, int height, Module3D* source = nullptr);
+
+			virtual void Generate() override;
+
+			virtual size_t GetSourceModuleCount() const override;
+
+		};
+
 	}
 
 }

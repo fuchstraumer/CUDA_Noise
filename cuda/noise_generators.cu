@@ -286,8 +286,8 @@ inline __device__ uint fnv_32_a_buf(const void* buf, const uint len) {
 	return hval;
 }
 
-inline __device__ uchar xor_fold_hash(const uint hash) {
-	return (uchar)((hash >> 8) ^ (hash & FNV_MASK_8));
+inline __device__ cnoise::uchar xor_fold_hash(const uint hash) {
+	return (cnoise::uchar)((hash >> 8) ^ (hash & FNV_MASK_8));
 }
 
 inline __device__ uint hash_2d(const int x, const int y, const int seed) {

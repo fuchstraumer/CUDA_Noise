@@ -16,19 +16,18 @@ __global__ void AddKernel(float* output, float* input0, float* input1, const int
 	output[(j * width) + i] = prev0 + prev1;
 }
 
-__global__ void AddKernel3D(float* output, float* input0, float* input1, const int width, const int height, const int depth) {
+__global__ void AddKernel3D(cnoise::Point* output, cnoise::Point* input0, cnoise::Point* input1, const int width, const int height) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
-	const int k = blockDim.z * blockIdx.z + threadIdx.z;
-	if (i >= width || j >= height || k >= depth) {
+	if (i >= width || j >= height) {
 		return;
 	}
 
 	float prev0, prev1;
-	prev0 = input0[i + (j * width) + (k * width * height)];
-	prev1 = input1[i + (j * width) + (k * width * height)];
+	prev0 = input0[i + (j * width)].Value;
+	prev1 = input1[i + (j * width)].Value;
 
-	output[i + (j * width) + (k * width * height)] = prev0 + prev1;
+	output[i + (j * width)].Value = prev0 + prev1;
 }
 
 void AddLauncher(float* output, float* input0, float* input1, const int width, const int height){
@@ -57,7 +56,7 @@ void AddLauncher(float* output, float* input0, float* input1, const int width, c
 #endif // CUDA_KERNEL_TIMING
 }
 
-void AddLauncher3D(float * output, float * input0, float * input1, const int width, const int height, const int depth){
+void AddLauncher3D(cnoise::Point* output, cnoise::Point* input0, cnoise::Point* input1, const int width, const int height){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -68,7 +67,7 @@ void AddLauncher3D(float * output, float * input0, float * input1, const int wid
 
 	// Setup dimensions of kernel launch using occupancy calculator.
 	dim3 block(16, 16, 1);
-	dim3 grid(width / block.x, height / block.y, depth / block.z);
+	dim3 grid(width / block.x, height / block.y, 1);
 	AddKernel3D<<<grid, block >>>(output, input0, input1, width, height);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());

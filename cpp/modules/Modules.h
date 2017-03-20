@@ -11,13 +11,4 @@
 #include "modifiers\Modifiers.h"
 #include "utility\Utility.h"
 
-// Simple macro to shortcut away the namespaces.
-#ifdef USING_CNOISE_NAMESPACES
-using namespace cnoise::combiners;
-using namespace cnoise::generators;
-using namespace cnoise::modifiers;
-using namespace cnoise::utility;
-#endif // USING_CNOISE_NAMESPACES
-
-
 #endif // !MODULES_H
