@@ -1,12 +1,8 @@
 # CUDA_Noise
-  CUDA-accelerated module-based noise, mainly accessed through a C++ wrapper to kernel launches and the like. WIP. In need of serious optimization when it comes to the CUDA code. Wiki is WIP too, this is inspired by libnoise and I'd like to match their documentation as best as I can. Should be release-ready by the end of next month: feel free to play with it until then, but its not really documented at all yet.
+  CUDA-accelerated module-based noise, mainly accessed through a C++ wrapper to kernel launches and the like. Undocumented, mostly untested, and has a number of large errors - sorry.
   
-  
-  Unfortunately, I don't have any plans to port this to OpenCL or HIP at this time. It is an option I'd like to explore, but the majority of the modular nature of this library requires using things like texture memory and texture objects - something that HIP does not support, and something I don't know how to use in OpenCL.
-  
-  
-  Due to HIPs current lack of many key features, I'll need to to what will amount to an OpenCL rewrite when I have time. School is picking back up - so this probably won't be soon. Apologies to non-Nvidia GPU-owning individuals.
- 
+  I'm in the middle of porting this to a vulkan compute-shader based application with a GUI for use in my terrain projects, currently, so I don't have any plans to touch this since I'm not a fan of vendor-locking this kind of stuff.
+
  ---
 ## Credit where credit is due
 
