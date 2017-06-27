@@ -105,10 +105,11 @@ void BillowLauncher2D(float* out, int width, int height, cnoise::noise_t noise_t
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	Billow2DKernel<<<numBlocks,threadsPerBlock>>>(out, width, height, noise_type, origin, freq, lacun, persist, seed, octaves);
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
@@ -133,10 +134,11 @@ void BillowLauncher3D(cnoise::Point* coords, const int width, const int height, 
 	dim3 threadsPerBlock(8, 8, 1);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y, 1);
 	Billow3DKernel<<<numBlocks, threadsPerBlock >>>(coords, width, height, freq, lacun, persist, seed, octaves);
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

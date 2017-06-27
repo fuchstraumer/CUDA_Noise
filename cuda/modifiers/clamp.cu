@@ -57,10 +57,11 @@ void ClampLauncher(float* output, float* input, const int width, const int heigh
 	dim3 block(32, 32, 1);
 	dim3 grid(width / block.x , height / block.y, 1);
 	ClampKernel<<<grid, block>>>(output, input, width, height, lower_value, upper_value);
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

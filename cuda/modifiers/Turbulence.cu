@@ -62,10 +62,11 @@ void TurbulenceLauncher(float* out, const float* input, const int width, const i
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	TurbulenceKernel<<<numBlocks, threadsPerBlock>>>(out, input, width, height, noise_type, roughness, seed, strength, freq);
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

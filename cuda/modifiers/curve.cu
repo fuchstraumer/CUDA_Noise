@@ -128,10 +128,11 @@ void CurveLauncher(float* output, float* input, const int width, const int heigh
 	// Launch kernel.
 	CurveKernel<<<grid, block>>>(output, input, width, height, device_point_array, control_points.size());
 
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 	// Free control points array
 	cudaFree(device_point_array);

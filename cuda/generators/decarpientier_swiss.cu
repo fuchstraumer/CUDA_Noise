@@ -117,10 +117,11 @@ void DecarpientierSwissLauncher(float* out, int width, int height, cnoise::noise
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	d_swiss_kernel<<<numBlocks, threadsPerBlock>>>(out, width, height, noise_type, origin, freq, lacun, persist, seed, octaves);
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
@@ -145,10 +146,11 @@ void DecarpientierSwissLauncher3D(cnoise::Point* coords, int width, int height, 
 	dim3 threadsPerBlock(8, 8);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	d_swiss_kernel_3d<<<numBlocks, threadsPerBlock>>>(coords, width, height, freq, lacun, persist, seed, octaves);
-	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
