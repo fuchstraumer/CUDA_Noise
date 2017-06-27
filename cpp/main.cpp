@@ -7,15 +7,15 @@ int main() {
 
 	//std::clock_t timer;
 	//int i = 0;
-	//Billow3D test(4096, 4096, 13213123, 0.4f, 1.70f, 12, 0.90f);
-	//Sphere test_projection(&test);
-	//test_projection.SetSourceModule(&test);
-	//test_projection.Build();
-	//const auto pts = test.GetPoints();
-	//test_projection.SaveToPNG("globe.png");
+	/*Billow3D test(4096, 4096, 13213123, 0.4f, 1.70f, 12, 0.90f);
+	Sphere test_projection(&test);
+	test_projection.SetSourceModule(&test);
+	test_projection.Build();
+	const auto pts = test.GetPoints();
+	test_projection.SaveToPNG("globe.png");*/
 
-	constexpr int img_size_x = 8192;
-	constexpr int img_size_y = 8192;
+	constexpr int img_size_x = 4096;
+	constexpr int img_size_y = 4096;
 	constexpr float sea_level = 0.10f;
 	constexpr float continent_freq = 1.5f;
 	constexpr float continent_lacun = 2.10f;
@@ -36,7 +36,7 @@ int main() {
 	using namespace cnoise;
 
 	// Base continent module.
-	FBM3D baseContinentDefinition_pe0(img_size_x, img_size_y, 123132, continent_freq, continent_lacun, 13, 0.70f);
+	Billow3D baseContinentDefinition_pe0(img_size_x, img_size_y, 123132, continent_freq, continent_lacun, 13, 0.70f);
 
 	// Curve output so that very high values are near sea level, which defines the positions of the mountain ranges.
 	Curve3D baseContinentDefinition_cu0(img_size_x, img_size_y);
@@ -55,8 +55,11 @@ int main() {
 	};
 	baseContinentDefinition_cu0.SetControlPoints(base_cu0_pts);
 
+	Cache3D baseContinentDef_ca0(img_size_x, img_size_y, &baseContinentDefinition_cu0);
+	baseContinentDef_ca0.Generate();
+
 	// This is used to carve out chunks from the mountain ranges, so that they don't become entirely impassable.
-	FBM3D baseContinentDefinition_pe1(img_size_x, img_size_y, 4674, continent_freq * 4.35f, continent_lacun, 15, 0.75f);
+	Billow3D baseContinentDefinition_pe1(img_size_x, img_size_y, 4674, continent_freq * 4.35f, continent_lacun, 15, 0.75f);
 
 	// This scales the output from the previous to be mostly near 1.0
 	ScaleBias3D baseContinentDef_sb(img_size_x, img_size_y, 0.375f, 0.625f);
@@ -64,26 +67,19 @@ int main() {
 
 	// This module carves out chunks from the curve module used to set ranges for continents, by selecting the min
 	// between the carver chain and the base continent chain.
-	Min3D baseContinentDef_min0(img_size_x, img_size_y, &baseContinentDef_sb, &baseContinentDefinition_cu0);
+	Min3D baseContinentDef_min0(img_size_x, img_size_y, &baseContinentDef_sb, &baseContinentDef_ca0);
 
 
-	Cache3D baseContinentDef_ca0(img_size_x, img_size_y, &baseContinentDef_min0);
+	Cache3D baseContinentDef_ca1(img_size_x, img_size_y, &baseContinentDef_min0);
 
-	//Turbulence baseContinentDef_tu0(img_size_x, img_size_y, noise_t::PERLIN, &baseContinentDef_cl, 13, 1341324, 10.0f, continent_freq);
-	//baseContinentDef_tu0.Generate();
+	Turbulence3D baseContinentDef_tu0(img_size_x, img_size_y, &baseContinentDef_ca1, 13, 1341324, 10.0f, continent_freq);
+	baseContinentDef_tu0.Generate();
 	////cudaDeviceSynchronize();
-	//baseContinentDef_tu0.SaveToPNG("turbulence.png");
+	baseContinentDef_tu0.SaveToPNG("turbulence.png");
 	
 
-	Sphere Test_Projection(&baseContinentDef_ca0);
+	Sphere Test_Projection(&baseContinentDef_ca1);
 	Test_Projection.Build();
-	baseContinentDefinition_cu0.Generate();
-	baseContinentDefinition_cu0.freeChildren();
-	baseContinentDef_sb.Generate();
-	baseContinentDef_sb.freeChildren();
-	baseContinentDef_min0.Generate();
-	baseContinentDef_min0.freeChildren();
-	baseContinentDef_ca0.Generate();
 	baseContinentDef_ca0.SaveToPNG("cache.png");
 	return 0;
 }

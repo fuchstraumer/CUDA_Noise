@@ -4,6 +4,6 @@
 
 void CurveLauncher(float* output, float* input, const int width, const int height, std::vector<cnoise::ControlPoint>& control_points);
 
-void CurveLauncher3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, std::vector<cnoise::ControlPoint>& control_pts);
+void CurveLauncher3D(cnoise::Point* data, const int width, const int height, std::vector<cnoise::ControlPoint>& control_pts);
 
 #endif // !CURVE_CUH

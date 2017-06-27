@@ -33,7 +33,7 @@ namespace cnoise {
 		class Clamp3D : public Module3D {
 		public:
 
-			Clamp3D(int width, int height, float lower_bound = 0.0f, float upper_bound = 1.0f, Module3D* source = nullptr);
+			Clamp3D(Module3D* source, int width, int height, float lower_bound = 0.0f, float upper_bound = 1.0f);
 
 			virtual size_t GetSourceModuleCount() const override;
 

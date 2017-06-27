@@ -12,15 +12,14 @@ __global__ void absKernel(float* output, float* input, const int width, const in
 	output[(j * width) + i] = (prev <= 0.0f) ? -prev : prev;
 }
 
-__global__ void absKernel3D(cnoise::Point* out, const cnoise::Point* in, const int width, const int height) {
+__global__ void absKernel3D(cnoise::Point* data, const int width, const int height) {
 	const int i = blockIdx.x * blockDim.x + threadIdx.x;
 	const int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i >= width || j >= height) {
 		return;
 	}
 	// Output value equals abs of input value.
-	out[i + (j * width)].Value = in[i + (j * width)].Value <= 0.0f ? -1.0f * (in[i + (j * width)].Value) : in[i + (j * width)].Value;
-	out[i + (j * width)].Position = in[i + (j * width)].Position;
+	data[i + (j * width)].Value = data[i + (j * width)].Value <= 0.0f ? -1.0f * (data[i + (j * width)].Value) : data[i + (j * width)].Value;
 }
 
 void absLauncher(float* output, float* input, const int width, const int height) {
@@ -52,7 +51,7 @@ void absLauncher(float* output, float* input, const int width, const int height)
 	// If this completes, kernel is done and "output" contains correct data.
 }
 
-void absLauncher3D(cnoise::Point * out, const cnoise::Point * in, const int width, const int height){
+void absLauncher3D(cnoise::Point* data, const int width, const int height){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -64,7 +63,7 @@ void absLauncher3D(cnoise::Point * out, const cnoise::Point * in, const int widt
 	// Setup dimensions of kernel launch using occupancy calculator.
 	dim3 block(32, 32, 1);
 	dim3 grid(width / block.x, height / block.y);
-	absKernel3D<<<block, grid>>>(out, in, width, height);
+	absKernel3D<<<block, grid>>>(data, width, height);
 	// Check for succesfull kernel launch
 	cudaAssert(cudaGetLastError());
 	// Synchronize device

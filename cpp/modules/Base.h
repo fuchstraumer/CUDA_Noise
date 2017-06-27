@@ -32,14 +32,10 @@ namespace cnoise {
 			// Destructor calls functions to clear CUDA objects/data
 			virtual ~Module();
 
-			// Conversion
-			
-			
-			// Connects this module to another source module
-			virtual void ConnectModule(Module* other);
-
 			// Generates data and stores it in this object
 			virtual void Generate() = 0;
+
+			virtual void ConnectModule(Module* module);
 
 			// Returns Generated data.
 			virtual std::vector<float> GetData() const;
@@ -78,7 +74,7 @@ namespace cnoise {
 			// of the vector being the module immediately before 
 			// this one, and the front of the vector being the initial
 			// module.
-			std::vector<Module*> sourceModules;
+			std::vector<std::shared_ptr<Module>> sourceModules;
 		};
 
 		class Module3D {
@@ -89,7 +85,10 @@ namespace cnoise {
 			Module3D& operator=(Module3D&& other) = delete;
 		public:
 
-			Module3D(int width, int height);
+			Module3D(Module3D* source, int width, int height);
+
+			// doesn't allocate, but adds given modules to source modules list.
+			Module3D(Module3D* left, Module3D* right, int width, int height);
 
 			virtual ~Module3D();
 
@@ -139,7 +138,7 @@ namespace cnoise {
 			// of the vector being the module immediately before 
 			// this one, and the front of the vector being the initial
 			// module.
-			std::vector<Module3D*> sourceModules;
+			std::vector<std::shared_ptr<Module3D>> sourceModules;
 
 			
 

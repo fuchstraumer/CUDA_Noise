@@ -2,8 +2,8 @@
 #include "../cuda/combiners/power.cuh"
 
 cnoise::combiners::Power::Power(const int width, const int height, Module * in0, Module * in1) : Module(width, height){
-	sourceModules.push_back(in0);
-	sourceModules.push_back(in1);
+	sourceModules.push_back(std::shared_ptr<Module>(in0));
+	sourceModules.push_back(std::shared_ptr<Module>(in1));
 }
 
 void cnoise::combiners::Power::Generate(){

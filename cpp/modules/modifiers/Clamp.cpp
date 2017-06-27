@@ -36,8 +36,8 @@ void cnoise::modifiers::Clamp::SetUpperBound(const float upper){
 	upperBound = upper;
 }
 
-cnoise::modifiers::Clamp3D::Clamp3D(int width, int height, float lower_bound, float upper_bound, Module3D * source) : Module3D(width, height) {
-	sourceModules.push_back(source);
+cnoise::modifiers::Clamp3D::Clamp3D(Module3D * source, int width, int height, float lower_bound, float upper_bound) : Module3D(source, width, height) {
+	sourceModules.push_back(std::shared_ptr<Module3D>(source));
 }
 
 size_t cnoise::modifiers::Clamp3D::GetSourceModuleCount() const{

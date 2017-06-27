@@ -64,7 +64,7 @@ namespace cnoise {
 			frequency = _freq;
 		}
 
-		Turbulence3D::Turbulence3D(int width, int height, Module3D* prev, int _roughness, int _seed, float _strength, float freq) : Module3D(width, height), roughness(_roughness), seed(_seed), strength(_strength), frequency(freq) {
+		Turbulence3D::Turbulence3D(int width, int height, Module3D* prev, int _roughness, int _seed, float _strength, float freq) : Module3D(prev, width, height), roughness(_roughness), seed(_seed), strength(_strength), frequency(freq) {
 			ConnectModule(prev);
 		}
 

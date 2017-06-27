@@ -23,7 +23,7 @@ __global__ void ClampKernel(float* output, float* input, const int width, const 
 
 }
 
-__global__ void ClampKernel3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, const float low, const float high) {
+__global__ void ClampKernel3D(cnoise::Point* data, const int width, const int height, const float low, const float high) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i >= width || j >= height) {
@@ -31,16 +31,16 @@ __global__ void ClampKernel3D(cnoise::Point* output, const cnoise::Point* input,
 	}
 
 	// Get previous value.
-	float prev = input[i + (j * width)].Value;
+	float prev = data[i + (j * width)].Value;
 
 	if (prev < low) {
-		output[i + (j * width)].Value = low;
+		data[i + (j * width)].Value = low;
 	}
 	else if (prev > high) {
-		output[i + (j * width)].Value = high;
+		data[i + (j * width)].Value = high;
 	}
 	else {
-		output[i + (j * width)].Value = prev;
+		data[i + (j * width)].Value = prev;
 	}
 }
 
@@ -72,7 +72,7 @@ void ClampLauncher(float* output, float* input, const int width, const int heigh
 
 }
 
-void ClampLauncher3D(cnoise::Point * output, const cnoise::Point * input, const int width, const int height, const float low_value, const float high_value){
+void ClampLauncher3D(cnoise::Point * data, const int width, const int height, const float low_value, const float high_value){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -84,11 +84,14 @@ void ClampLauncher3D(cnoise::Point * output, const cnoise::Point * input, const 
 	// Setup dimensions of kernel launch using occupancy calculator.
 	dim3 block(32, 32, 1);
 	dim3 grid(width / block.x, height / block.y, 1);
-	ClampKernel3D<<<grid, block >>>(output, input, width, height, low_value, high_value);
+	ClampKernel3D<<<grid, block >>>(data, width, height, low_value, high_value);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err;
+	error = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

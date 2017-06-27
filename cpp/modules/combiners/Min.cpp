@@ -2,8 +2,8 @@
 #include "../cuda/combiners/min.cuh"
 
 cnoise::combiners::Min::Min(const int width, const int height, Module * in0, Module * in1) : Module(width, height) {
-	sourceModules.push_back(in0);
-	sourceModules.push_back(in1);
+	sourceModules.push_back(std::shared_ptr<Module>(in0));
+	sourceModules.push_back(std::shared_ptr<Module>(in1));
 }
 
 void cnoise::combiners::Min::Generate(){
@@ -23,9 +23,9 @@ size_t cnoise::combiners::Min::GetSourceModuleCount() const{
 	return 2;
 }
 
-cnoise::combiners::Min3D::Min3D(const int width, const int height, Module3D * in0, Module3D * in1) : Module3D(width, height) {
-	sourceModules.push_back(in0);
-	sourceModules.push_back(in1);
+cnoise::combiners::Min3D::Min3D(const int width, const int height, Module3D * in0, Module3D * in1) : Module3D(in0, in1, width, height) {
+	sourceModules.push_back(std::shared_ptr<Module3D>(in0));
+	sourceModules.push_back(std::shared_ptr<Module3D>(in1));
 }
 
 void cnoise::combiners::Min3D::Generate() {

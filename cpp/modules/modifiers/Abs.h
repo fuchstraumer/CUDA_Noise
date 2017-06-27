@@ -21,7 +21,7 @@ namespace cnoise {
 		class Abs3D : public Module3D {
 		public:
 
-			Abs3D(int width, int height) : Module3D(width, height) {};
+			Abs3D(Module3D* source, int width, int height) : Module3D(source, width, height) {};
 
 			virtual size_t GetSourceModuleCount() const override;
 

@@ -55,10 +55,10 @@ namespace cnoise {
 		class Curve3D : public Module3D {
 		public:
 
-			Curve3D(int width, int height);
+			Curve3D(Module3D* source, int width, int height);
 
 			// init with control points
-			Curve3D(int width, int height, const std::vector<ControlPoint>& init_points);
+			Curve3D(Module3D* source, int width, int height, const std::vector<ControlPoint>& init_points);
 
 			// Adds a control point
 			void AddControlPoint(float input_value, float output_value);

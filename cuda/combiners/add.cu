@@ -16,7 +16,7 @@ __global__ void AddKernel(float* output, float* input0, float* input1, const int
 	output[(j * width) + i] = prev0 + prev1;
 }
 
-__global__ void AddKernel3D(cnoise::Point* output, cnoise::Point* input0, cnoise::Point* input1, const int width, const int height) {
+__global__ void AddKernel3D(cnoise::Point* left, const cnoise::Point* right, const int width, const int height) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i >= width || j >= height) {
@@ -24,10 +24,10 @@ __global__ void AddKernel3D(cnoise::Point* output, cnoise::Point* input0, cnoise
 	}
 
 	float prev0, prev1;
-	prev0 = input0[i + (j * width)].Value;
-	prev1 = input1[i + (j * width)].Value;
+	prev0 = left[i + (j * width)].Value;
+	prev1 = right[i + (j * width)].Value;
 
-	output[i + (j * width)].Value = prev0 + prev1;
+	left[i + (j * width)].Value = prev0 + prev1;
 }
 
 void AddLauncher(float* output, float* input0, float* input1, const int width, const int height){
@@ -43,10 +43,11 @@ void AddLauncher(float* output, float* input0, float* input1, const int width, c
 	dim3 grid((width - 1) / block.x + 1, (height - 1) / block.y + 1, 1);
 	AddKernel<<<grid, block>>>(output, input0, input1, width, height);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
-
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
@@ -56,7 +57,7 @@ void AddLauncher(float* output, float* input0, float* input1, const int width, c
 #endif // CUDA_KERNEL_TIMING
 }
 
-void AddLauncher3D(cnoise::Point* output, cnoise::Point* input0, cnoise::Point* input1, const int width, const int height){
+void AddLauncher3D(cnoise::Point* left, const cnoise::Point* right, const int width, const int height){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -68,11 +69,13 @@ void AddLauncher3D(cnoise::Point* output, cnoise::Point* input0, cnoise::Point* 
 	// Setup dimensions of kernel launch using occupancy calculator.
 	dim3 block(16, 16, 1);
 	dim3 grid(width / block.x, height / block.y, 1);
-	AddKernel3D<<<grid, block >>>(output, input0, input1, width, height);
+	AddKernel3D<<<grid, block >>>(left, right, width, height);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

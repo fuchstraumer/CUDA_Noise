@@ -1,7 +1,7 @@
 #include "Cache.h"
 
 cnoise::utility::Cache::Cache(int width, int height, Module * source) : Module(width, height) {
-	sourceModules.push_back(source);
+	sourceModules.push_back(std::shared_ptr<Module>(source));
 }
 
 void cnoise::utility::Cache::Generate(){
@@ -24,8 +24,8 @@ size_t cnoise::utility::Cache::GetSourceModuleCount() const{
 	return 1;
 }
 
-cnoise::utility::Cache3D::Cache3D(int width, int height, Module3D * source) : Module3D(width, height) {
-	sourceModules.push_back(source);
+cnoise::utility::Cache3D::Cache3D(int width, int height, Module3D * source) : Module3D(source, width, height) {
+	sourceModules.push_back(std::shared_ptr<Module3D>(source));
 }
 
 void cnoise::utility::Cache3D::Generate() {

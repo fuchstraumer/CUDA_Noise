@@ -2,9 +2,9 @@
 #include "../cuda/combiners/blend.cuh"
 
 cnoise::combiners::Blend::Blend(const int width, const int height, Module * in0, Module * in1, Module * weight_module) : Module(width, height) {
-	sourceModules.push_back(in0);
-	sourceModules.push_back(in1);
-	sourceModules.push_back(weight_module);
+	sourceModules.push_back(std::shared_ptr<Module>(in0));
+	sourceModules.push_back(std::shared_ptr<Module>(in1));
+	sourceModules.push_back(std::shared_ptr<Module>(weight_module));
 }
 
 void cnoise::combiners::Blend::Generate() {
@@ -28,9 +28,9 @@ void cnoise::combiners::Blend::SetSourceModule(const int idx, Module * source){
 	if (idx > 2 || idx < 0) {
 		return;
 	}
-	sourceModules[idx] = source;
+	sourceModules[idx] = std::shared_ptr<Module>(source);
 }
 
 void cnoise::combiners::Blend::SetControlModule(Module * control){
-	sourceModules[2] = control;
+	sourceModules[2] = std::shared_ptr<Module>(control);
 }

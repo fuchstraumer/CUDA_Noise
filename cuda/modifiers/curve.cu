@@ -62,7 +62,7 @@ __global__ void CurveKernel(float* output, float* input, const int width, const 
 	output[(j * width) + i] = cubicInterp(control_points[i0].OutputVal, control_points[i1].OutputVal, control_points[i2].OutputVal, control_points[i3].OutputVal, alpha);
 }
 
-__global__ void CurveKernel3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, cnoise::ControlPoint* control_points, size_t num_pts) {
+__global__ void CurveKernel3D(cnoise::Point* data, const int width, const int height, cnoise::ControlPoint* control_points, size_t num_pts) {
 	// Get current pos and return if out of bounds.
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
@@ -71,7 +71,7 @@ __global__ void CurveKernel3D(cnoise::Point* output, const cnoise::Point* input,
 	}
 
 	// Get previous value.
-	float prev = input[(j * width) + i].Value;
+	float prev = data[(j * width) + i].Value;
 
 	// Get appropriate control point.
 	size_t idx;
@@ -91,7 +91,7 @@ __global__ void CurveKernel3D(cnoise::Point* output, const cnoise::Point* input,
 
 	// If we don't have enough control points, just write control point value to output
 	if (i1 = i2) {
-		output[(j * width) + i].Value = control_points[i1].OutputVal;
+		data[(j * width) + i].Value = control_points[i1].OutputVal;
 		return;
 	}
 
@@ -101,7 +101,7 @@ __global__ void CurveKernel3D(cnoise::Point* output, const cnoise::Point* input,
 	float alpha = (prev - input0) / (input1 - input0);
 
 	// Perform the interpolation.
-	output[(j * width) + i].Value = cubicInterp(control_points[i0].OutputVal, control_points[i1].OutputVal, control_points[i2].OutputVal, control_points[i3].OutputVal, alpha);
+	data[(j * width) + i].Value = cubicInterp(control_points[i0].OutputVal, control_points[i1].OutputVal, control_points[i2].OutputVal, control_points[i3].OutputVal, alpha);
 }
 
 void CurveLauncher(float* output, float* input, const int width, const int height, std::vector<cnoise::ControlPoint>& control_points) {
@@ -147,7 +147,7 @@ void CurveLauncher(float* output, float* input, const int width, const int heigh
 
 }
 
-void CurveLauncher3D(cnoise::Point * output, const cnoise::Point * input, const int width, const int height, std::vector<cnoise::ControlPoint>& control_pts){
+void CurveLauncher3D(cnoise::Point * data, const int width, const int height, std::vector<cnoise::ControlPoint>& control_pts){
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -168,12 +168,14 @@ void CurveLauncher3D(cnoise::Point * output, const cnoise::Point * input, const 
 	dim3 block(16, 16, 1);
 	dim3 grid(width / block.x, height / block.y, 1);
 	// Launch kernel.
-	CurveKernel3D<<<grid, block >>>(output, input, width, height, device_point_array, control_pts.size());
+	CurveKernel3D<<<grid, block >>>(data, width, height, device_point_array, control_pts.size());
 
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 	// Free control points array
 	cudaFree(device_point_array);

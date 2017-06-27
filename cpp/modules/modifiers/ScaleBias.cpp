@@ -34,7 +34,7 @@ void cnoise::modifiers::ScaleBias::Generate(){
 	Generated = true;
 }
 
-cnoise::modifiers::ScaleBias3D::ScaleBias3D(const int width, const int height, const float _scale, const float _bias) : Module3D(width, height), scale(_scale), bias(_bias) {}
+cnoise::modifiers::ScaleBias3D::ScaleBias3D(Module3D* source, const int width, const int height, const float _scale, const float _bias) : Module3D(source, width, height), scale(_scale), bias(_bias) {}
 
 void cnoise::modifiers::ScaleBias3D::SetBias(const float _bias) {
 	bias = _bias;

@@ -11,16 +11,16 @@ __global__ void MaxKernel(float *output, const float *in0, const float *in1, con
 	output[(j * width) + i] = out_val;
 }
 
-__global__ void MaxKernel3D(cnoise::Point* output, const cnoise::Point* in0, const cnoise::Point* in1, const int width, const int height) {
+__global__ void MaxKernel3D(cnoise::Point* left, const cnoise::Point* right, const int width, const int height) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i >= width || j >= height) {
 		return;
 	}
 	float prev0, prev1;
-	prev0 = in0[i + (j * width)].Value;
-	prev1 = in0[i + (j * width)].Value;
-	output[i + (j * width)].Value = (prev0 > prev1) ? prev0 : prev1;
+	prev0 = left[i + (j * width)].Value;
+	prev1 = right[i + (j * width)].Value;
+	left[i + (j * width)].Value = (prev0 > prev1) ? prev0 : prev1;
 }
 
 void MaxLauncher(float *output, const float *in0, const float *in1, const int width, const int height) {
@@ -39,9 +39,11 @@ void MaxLauncher(float *output, const float *in0, const float *in1, const int wi
 	dim3 grid((width - 1) / blockSize + 1, (height - 1) / blockSize + 1, 1);
 	MaxKernel<<<grid, block>>>(output, in0, in1, width, height);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
@@ -53,7 +55,7 @@ void MaxLauncher(float *output, const float *in0, const float *in1, const int wi
 
 }
 
-void MaxLauncher3D(cnoise::Point* output, const cnoise::Point* in0, const cnoise::Point* in1, const int width, const int height){
+void MaxLauncher3D(cnoise::Point* left, const cnoise::Point* right, const int width, const int height){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -65,11 +67,13 @@ void MaxLauncher3D(cnoise::Point* output, const cnoise::Point* in0, const cnoise
 	// Setup dimensions of kernel launch using occupancy calculator.
 	dim3 block(16, 16, 1);
 	dim3 grid(width / block.x, width / block.y, 1);
-	MaxKernel3D<<<grid, block >>>(output, in0, in1, width, height);
+	MaxKernel3D<<<grid, block >>>(left, right, width, height);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

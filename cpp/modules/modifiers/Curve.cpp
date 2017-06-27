@@ -49,9 +49,9 @@ namespace cnoise {
 		}
 
 
-		Curve3D::Curve3D(int width, int height) : Module3D(width, height) {}
+		Curve3D::Curve3D(Module3D* source, int width, int height) : Module3D(source, width, height) {}
 
-		Curve3D::Curve3D(int width, int height, const std::vector<ControlPoint>& init_points) : Module3D(width, height), controlPoints(init_points) {}
+		Curve3D::Curve3D(Module3D* source, int width, int height, const std::vector<ControlPoint>& init_points) : Module3D(source, width, height), controlPoints(init_points) {}
 
 		void Curve3D::AddControlPoint(float input_val, float output_val) {
 			controlPoints.push_back(ControlPoint(input_val, output_val));

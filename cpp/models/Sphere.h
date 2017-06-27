@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef CNOISE_SPHERE_H
+#define CNOISE_SPHERE_H
 
 #include "../common/CUDA_Include.h"
 #include "../modules/Base.h"

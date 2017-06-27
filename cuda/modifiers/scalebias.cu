@@ -8,10 +8,10 @@ __global__ void scalebiasKernel(float* output, float* input, const int width, co
 		return;
 	}
 
-	output[(j * width) + i] = (input[(j * width) + i] * scale) + bias; // for default value for scale is 1 and bias is 0;
+	data[(j * width) + i] = (data[(j * width) + i] * scale) + bias; // for default value for scale is 1 and bias is 0;
 }
 
-__global__ void scalebiasKernel3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, float scale, float bias) {
+__global__ void scalebiasKernel3D(cnoise::Point* data, const int width, const int height, float scale, float bias) {
 	// Get current pixel.
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
@@ -36,9 +36,11 @@ void scalebiasLauncher(float* output, float* input, const int width, const int h
 	dim3 grid((width - 1) / block.x + 1, (height - 1) / block.y + 1, 1);
 	scalebiasKernel<<<grid, block>>>(output, input, width, height, scale, bias);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
@@ -49,7 +51,7 @@ void scalebiasLauncher(float* output, float* input, const int width, const int h
 #endif // CUDA_KERNEL_TIMING
 }
 
-void scalebiasLauncher3D(cnoise::Point * output, const cnoise::Point * input, const int width, const int height, const float bias, const float scale){
+void scalebiasLauncher3D(cnoise::Point * data, const int width, const int height, const float bias, const float scale){
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -58,13 +60,15 @@ void scalebiasLauncher3D(cnoise::Point * output, const cnoise::Point * input, co
 #endif // CUDA_KERNEL_TIMING
 
 	// Setup dimensions of kernel launch using occupancy calculator.
-	dim3 block(32, 32, 1);
+	dim3 block(16, 16, 1);
 	dim3 grid((width - 1) / block.x + 1, (height - 1) / block.y + 1, 1);
-	scalebiasKernel3D<<<grid, block>>>(output, input, width, height, scale, bias);
+	scalebiasKernel3D<<<grid, block>>>(data, width, height, scale, bias);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

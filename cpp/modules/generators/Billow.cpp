@@ -22,7 +22,7 @@ namespace cnoise {
 
 }
 
-cnoise::generators::Billow3D::Billow3D(int width, int height, int depth, float x, float y, float z, int seed, float freq, float lacun, int octaves, float persist) : Attributes(seed, freq, lacun, octaves, persist), Module3D(width, height) {}
+cnoise::generators::Billow3D::Billow3D(int width, int height, int depth, float x, float y, float z, int seed, float freq, float lacun, int octaves, float persist) : Attributes(seed, freq, lacun, octaves, persist), Module3D(nullptr, width, height) {}
 
 size_t cnoise::generators::Billow3D::GetSourceModuleCount() const {
 	return 0;

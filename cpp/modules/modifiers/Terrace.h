@@ -49,7 +49,7 @@ namespace cnoise {
 		class Terrace3D : public Module3D {
 		public:
 
-			Terrace3D(const int width, const int height);
+			Terrace3D(Module3D* source, const int width, const int height);
 
 			virtual void Generate() override;
 

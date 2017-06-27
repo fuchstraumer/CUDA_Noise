@@ -1,7 +1,7 @@
 #include "Normalize.h"
 #include "../cuda/utility/normalize.cuh"
 cnoise::utility::Normalize::Normalize(int width, int height, Module * source) : Module(width, height){
-	sourceModules.push_back(source);
+	sourceModules.push_back(std::shared_ptr<Module>(source));
 }
 
 void cnoise::utility::Normalize::Generate(){

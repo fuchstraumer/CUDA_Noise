@@ -52,7 +52,7 @@ __global__ void TerraceKernel(float* output, const float* input, const int width
 	return;
 }
 
-__global__ void TerraceKernel3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, const float* pts, const int num_pts, const bool invert) {
+__global__ void TerraceKernel3D(cnoise::Point* data, const int width, const int height, const float* pts, const int num_pts, const bool invert) {
 	const int i = blockDim.x * blockIdx.x + threadIdx.x;
 	const int j = blockDim.y * blockIdx.y + threadIdx.y;
 	if (i >= width || j >= height) {
@@ -60,7 +60,7 @@ __global__ void TerraceKernel3D(cnoise::Point* output, const cnoise::Point* inpu
 	}
 
 	// Terrace calculation.
-	float prev = input[(j * width) + i].Value;
+	float prev = data[(j * width) + i].Value;
 
 	// Get index to terrace near
 	int idx;
@@ -77,7 +77,7 @@ __global__ void TerraceKernel3D(cnoise::Point* output, const cnoise::Point* inpu
 
 	// Bounds check
 	if (idx0 == idx1) {
-		output[(j * width) + i].Value = pts[idx1];
+		data[(j * width) + i].Value = pts[idx1];
 		return;
 	}
 
@@ -99,7 +99,7 @@ __global__ void TerraceKernel3D(cnoise::Point* output, const cnoise::Point* inpu
 	alpha *= alpha;
 
 	// Write output value
-	output[(j * width) + i].Value = lerp(val0, val1, alpha);
+	data[(j * width) + i].Value = lerp(val0, val1, alpha);
 	return;
 }
 
@@ -143,7 +143,7 @@ void TerraceLauncher(float * output, const float * input, const int width, const
 
 }
 
-void TerraceLauncher3D(cnoise::Point * output, const cnoise::Point * input, const int width, const int height, const std::vector<float>& pts, bool invert){
+void TerraceLauncher3D(cnoise::Point* data, const int width, const int height, const std::vector<float>& pts, bool invert){
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEvent_t start, stop;
@@ -166,9 +166,13 @@ void TerraceLauncher3D(cnoise::Point * output, const cnoise::Point * input, cons
 	dim3 block(16, 16, 1);
 	dim3 grid(block.x / width, block.y / height, 1);
 	// Launch kernel.
-	TerraceKernel3D<<<grid, block>>>(output, input, width, height, device_pts, static_cast<int>(pts.size()), invert);
-	cudaAssert(cudaGetLastError());
-	cudaAssert(cudaDeviceSynchronize());
+	TerraceKernel3D<<<grid, block>>>(data, width, height, device_pts, static_cast<int>(pts.size()), invert);
+	// Check for succesfull kernel launch
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
+	// Synchronize device
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 	// Free device_pts
 	cudaFree(device_pts);

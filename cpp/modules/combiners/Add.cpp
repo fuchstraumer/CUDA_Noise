@@ -5,7 +5,7 @@ namespace cnoise {
 	namespace combiners {
 
 		Add::Add(int width, int height, float add_value, Module* source) : Module(width, height) {
-			sourceModules.front() = source;
+			sourceModules.push_back(std::shared_ptr<Module>(source));
 		}
 
 		void Add::Generate(){

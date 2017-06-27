@@ -33,9 +33,11 @@ void MinLauncher(float* output, const float* in0, const float* in1, const int wi
 	dim3 grid(width / block.x, height / block.y, 1);
 	MinKernel<<<grid, block>>>(output, in0, in1, width, height);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
@@ -59,11 +61,13 @@ void MinLauncher3D(cnoise::Point * output, const cnoise::Point * in0, const cnoi
 	// Setup dimensions of kernel launch using occupancy calculator.
 	dim3 block(32, 32, 1);
 	dim3 grid(width / block.x, height / block.y, 1);
-	MinKernel3D<<<grid, block>>>(output, in0, in1, width, height);
+	MinKernel3D<<<grid, block>>>(left, right, width, height);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

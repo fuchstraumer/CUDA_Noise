@@ -17,7 +17,7 @@ namespace cnoise {
 			Generated = true;
 		}
 
-		RidgedMulti3D::RidgedMulti3D(int width, int height, int seed, float freq, float lacun, int octaves, float persist) : Attributes(seed, freq, lacun, octaves, persist), Module3D(width, height) {}
+		RidgedMulti3D::RidgedMulti3D(int width, int height, int seed, float freq, float lacun, int octaves, float persist) : Attributes(seed, freq, lacun, octaves, persist), Module3D(nullptr, width, height) {}
 
 		size_t RidgedMulti3D::GetSourceModuleCount() const{
 			return 0;

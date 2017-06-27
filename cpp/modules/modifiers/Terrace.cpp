@@ -48,7 +48,7 @@ bool cnoise::modifiers::Terrace::GetInversion() const{
 	return inverted;
 }
 
-cnoise::modifiers::Terrace3D::Terrace3D(const int width, const int height) : Module3D(width, height), inverted(false) {}
+cnoise::modifiers::Terrace3D::Terrace3D(Module3D* source, const int width, const int height) : Module3D(source, width, height), inverted(false) {}
 
 void cnoise::modifiers::Terrace3D::Generate() {
 	if (sourceModules.front() == nullptr || sourceModules.empty()) {

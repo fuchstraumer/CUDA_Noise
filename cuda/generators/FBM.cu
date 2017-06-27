@@ -99,13 +99,16 @@ void FBM_Launcher(float* out, int width, int height, cnoise::noise_t noise_type,
 	cudaEventRecord(start);
 #endif // CUDA_KERNEL_TIMING
 
-	dim3 threadsPerBlock(8, 8);
+	dim3 threadsPerBlock(16, 16);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y);
 	FBM2DKernel<<<numBlocks, threadsPerBlock>>>(out, width, height, noise_type, origin, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err;
+	err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);
@@ -127,13 +130,16 @@ void FBM_Launcher3D(cnoise::Point* points, const int width, const int height, co
 	cudaEventRecord(start);
 #endif // CUDA_KERNEL_TIMING
 
-	dim3 threadsPerBlock(16, 16, 1);
+	dim3 threadsPerBlock(8, 8, 1);
 	dim3 numBlocks(width / threadsPerBlock.x, height / threadsPerBlock.y, 1);
 	FBM3DKernel<<<numBlocks, threadsPerBlock >>>(points, width, height, freq, lacun, persist, seed, octaves);
 	// Check for succesfull kernel launch
-	cudaAssert(cudaGetLastError());
+	cudaError_t err;
+	err = cudaGetLastError();
+	cudaAssert(err);
 	// Synchronize device
-	cudaAssert(cudaDeviceSynchronize());
+	err = cudaDeviceSynchronize();
+	cudaAssert(err);
 
 #ifdef CUDA_KERNEL_TIMING
 	cudaEventRecord(stop);

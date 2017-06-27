@@ -28,10 +28,8 @@ namespace cnoise {
 		cudaAssert(err);
 	}
 
-	void Module::ConnectModule(Module* other) {
-		if (sourceModules.size() < GetSourceModuleCount()) {
-			sourceModules.push_back(other);
-		}
+	void Module::ConnectModule(Module * module) {
+		sourceModules.push_back(std::shared_ptr<Module>(module));
 	}
 
 	std::vector<float> Module::GetData() const{
@@ -83,31 +81,49 @@ namespace cnoise {
 		out.WriteTER(name);
 	}
 
-	Module3D::Module3D(int width, int height) : Generated(false), dimensions(make_int2(width, height)) {
-		cudaError_t err = cudaSuccess;
-		err = cudaDeviceSynchronize();
-		cudaAssert(err);
-		err = cudaMallocManaged(&Points, width * height * sizeof(Point));
-		cudaAssert(err);
-		cudaAssert(cudaDeviceSynchronize());
+	Module3D::Module3D(Module3D* source, int width, int height) : Generated(false), dimensions(make_int2(width, height)) {
+		if (source == nullptr) {
+			cudaError_t err = cudaSuccess;
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
+			err = cudaMallocManaged(&Points, width * height * sizeof(Point));
+			cudaAssert(err);
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
+		}
+		else {
+			// Points is shared between modules: cuda synchronization
+			// call ensures each module can write to it once they launch.
+			Points = source->Points;
+			sourceModules.push_back(std::shared_ptr<Module3D>(source));
+		}
 	}
 
+	Module3D::Module3D(Module3D * left, Module3D * right, int width, int height) : Generated(false), dimensions(make_int2(width, height)) {
+		sourceModules.push_back(std::shared_ptr<Module3D>(left));
+		sourceModules.push_back(std::shared_ptr<Module3D>(right));
+		Points = left->Points;
+	}
+
+
 	Module3D::~Module3D(){
-		// Synchronize device before freeing device memory
-		cudaError_t err = cudaSuccess;
-		err = cudaDeviceSynchronize();
-		cudaAssert(err);
-		// Free managed memory
-		err = cudaFree(Points);
-		cudaAssert(err);
-		// Resync
-		err = cudaDeviceSynchronize();
-		cudaAssert(err);
+		if (sourceModules.empty()) {
+			// Synchronize device before freeing device memory
+			cudaError_t err = cudaSuccess;
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
+			// Free managed memory
+			err = cudaFree(Points);
+			cudaAssert(err);
+			// Resync
+			err = cudaDeviceSynchronize();
+			cudaAssert(err);
+		}
 	}
 
 	void Module3D::ConnectModule(Module3D * other){
 		if (sourceModules.size() <= GetSourceModuleCount()) {
-			sourceModules.push_back(other);
+			sourceModules.push_back(std::shared_ptr<Module3D>(other));
 		}
 		else {
 			return;
@@ -153,7 +169,9 @@ namespace cnoise {
 			cudaAssert(err);
 			err = cudaFree(sourceModules[i]->Points);
 			cudaAssert(err);
+			sourceModules[i].reset();
 		}
+
 	}
 
 	size_t Module3D::GetNumPts() const {

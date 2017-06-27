@@ -813,12 +813,12 @@ __device__ float simplex3d(const float px, const float py, const float pz, const
 	g3 = make_float3(grad_3d_lut[h3][0], grad_3d_lut[h3][1], grad_3d_lut[h3][2]);
 
 
-	float t0, t1, t2, t3;
+	volatile float t0, t1, t2, t3;
 	// Squares of t0-t3.
 	volatile float t0_2, t1_2, t2_2, t3_2;
 
 	// Actual contribution to final result
-	float n0, n1, n2, n3;
+	volatile float n0, n1, n2, n3;
 
 	// First corner
 	t0 = 0.60f - p0.x*p0.x - p0.y*p0.y - p0.z*p0.z;

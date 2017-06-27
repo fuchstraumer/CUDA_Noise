@@ -46,7 +46,7 @@ __global__ void TurbulenceKernel(float* out, const float* input, const int width
 	out[(j * width) + i] = input[(j_offset * width) + i_offset];
 }
 
-__global__ void TurbulenceKernel3D(cnoise::Point* output, const cnoise::Point* input, const int width, const int height, const int roughness, const int seed, const float strength, const float freq) {
+__global__ void TurbulenceKernel3D(cnoise::Point* data, const int width, const int height, const int roughness, const int seed, const float strength, const float freq) {
 
 }
 
@@ -78,5 +78,5 @@ void TurbulenceLauncher(float* out, const float* input, const int width, const i
 	// If this completes, kernel is done and "output" contains correct data.
 }
 
-void TurbulenceLauncher3D(cnoise::Point * output, const cnoise::Point * input, const int width, const int height, const int roughness, const int seed, const float strength, const float freq){
+void TurbulenceLauncher3D(cnoise::Point * data, const int width, const int height, const int roughness, const int seed, const float strength, const float freq){
 }

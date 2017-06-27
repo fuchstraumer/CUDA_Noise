@@ -68,7 +68,7 @@ namespace cnoise {
 			source->PropagateDataset(points);
 
 			// Call "source", and hopefully our points propagated...
-			//source->Generate();
+			source->Generate();
 		}
 
 		void Sphere::SetSourceModule(Module3D * src){
