@@ -106,6 +106,11 @@ namespace cnoise {
 	}
 
 
+	Module3D::Module3D(Module3D * left, Module3D * right, Module3D * control, const int & width, const int & height) : Generated(false), dimensions(make_int2(width, height)) {
+		Points = left->Points;
+		sourceModules.insert(sourceModules.end(), { std::shared_ptr<Module3D>(left), std::shared_ptr<Module3D>(right), std::shared_ptr<Module3D>(control) });
+	}
+
 	Module3D::~Module3D(){
 		if (sourceModules.empty()) {
 			// Synchronize device before freeing device memory

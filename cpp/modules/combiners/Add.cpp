@@ -28,6 +28,27 @@ namespace cnoise {
 			return 2;
 		}
 
+		Add3D::Add3D(Module3D* left, Module3D* right, const int& width, const int& height) : Module3D(left, right, width, height) {}
+
+		void Add3D::Generate() {
+			for (const auto& module : sourceModules) {
+				if (!module) {
+					std::cerr << "Module not supplied to Add3D module: a source module was nullptr!";
+					throw std::runtime_error("Invalid/null module given to Add3D Module");
+				}
+				if (!module->Generated) {
+					module->Generate();
+				}
+			}
+
+			AddLauncher3D(sourceModules[0]->Points, sourceModules[1]->Points, dimensions.x, dimensions.y);
+			Generated = true;
+		}
+
+		size_t Add3D::GetSourceModuleCount() const {
+			return 2;
+		}
+
 	}
 }
 

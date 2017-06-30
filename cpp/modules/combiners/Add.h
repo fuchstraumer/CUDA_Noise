@@ -20,6 +20,11 @@ namespace cnoise {
 
 		};
 
+		class Add3D : public Module3D {
+			Add3D(Module3D* left, Module3D* right, const int& width, const int& height);
+			virtual void Generate() override;
+			virtual size_t GetSourceModuleCount() const override;
+		};
 	}
 
 }

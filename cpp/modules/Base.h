@@ -90,6 +90,9 @@ namespace cnoise {
 			// doesn't allocate, but adds given modules to source modules list.
 			Module3D(Module3D* left, Module3D* right, int width, int height);
 
+			// Used for modules with 3 sources, usually a left+right setup like above plus some kind of control module.
+			Module3D(Module3D* left, Module3D* right, Module3D* control, const int& width, const int& height);
+
 			virtual ~Module3D();
 
 			// Connects this Module3D to another source Module3D

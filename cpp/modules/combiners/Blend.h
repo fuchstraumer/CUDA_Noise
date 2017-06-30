@@ -22,6 +22,14 @@ namespace cnoise {
 
 		};
 
+		class Blend3D : public Module3D {
+
+			Blend3D(Module3D* left, Module3D* right, Module3D* weight_module, const int& width, const int& height);
+
+			virtual size_t GetSourceModuleCount() const override;
+			virtual void Generate() override;
+		};
+
 	}
 
 }
